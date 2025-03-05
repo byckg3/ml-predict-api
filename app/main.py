@@ -4,9 +4,9 @@ from app.api.router import api_router
 app = FastAPI()
 app.include_router( api_router )
 
-@app.get( "/hello/{name}" )
-def hello( name: str ):
-    return { "Hello": f"{name}" }
+@app.get( "/check" )
+def check_status():
+    return { "status": "running" }
 
 # uvicorn app.main:app --reload
 # python -m app.main
