@@ -1,1 +1,1 @@
-# GAD245-groop1
+# GAD245-group1
