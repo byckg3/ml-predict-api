@@ -3,7 +3,7 @@ from app.models.dataset import MedicalRecord
 
 router = APIRouter( prefix="/heart" )
 
-@router.get( "/record", response_model = list[ MedicalRecord ] )
+@router.get( "/records", response_model = list[ MedicalRecord ] )
 def get_records():
 
     new_record = MedicalRecord( age = 45, 
@@ -26,8 +26,15 @@ def get_records():
 @router.post( "/predict" )
 async def predict_target( record: MedicalRecord ):
 
-    print( record )
-    record.age = 99
-    record.target = 1
+    try:
+        print( record )
+        record.age = 99
+        record.target = 1
+        
+        return { "result": record }
     
-    return { "result": record }
+    except Exception as e:
+        print( e )
+        return { "error": "An error occurred" }
+    
+    
