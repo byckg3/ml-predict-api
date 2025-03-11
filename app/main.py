@@ -1,12 +1,32 @@
-from fastapi import APIRouter, FastAPI
+from contextlib import asynccontextmanager
+from fastapi import FastAPI
 from app.api.router import api_router
+from app.models.db import MongoDB
+from app.models.records import RecordRepository
+from app.models.service import RecordService
 
-app = FastAPI()
+@asynccontextmanager
+async def app_lifespan( app: FastAPI ):
+    monogo = MongoDB()
+    app.state.mongo = monogo
+    app.state.db = monogo.db
+    app.state.record_repository = RecordRepository( app.state.db )
+    app.state.service = RecordService( app.state.record_repository )
+
+    yield
+
+    await monogo.close()
+
+app = FastAPI( lifespan = app_lifespan )
 app.include_router( api_router )
 
 @app.get( "/check" )
-def check_status():
-    return { "status": "running" }
+async def check_status():
+    if await app.state.mongo.ping_server():
+        return {"status": "running" }
+    else:
+        return {"status": "error" }
+    
 
 # uvicorn app.main:app --reload
 # python -m app.main

@@ -3,6 +3,7 @@ from typing import List, Optional
 
 
 class MedicalRecord( BaseModel ):
+    id: Optional[ str ] = None
     age: int
     sex: int
     cp: int                         # chest pain type ( 4 values )
@@ -14,6 +15,7 @@ class MedicalRecord( BaseModel ):
     exang: int = 0                  # exercise induced angina
     oldpeak: float                  # ST depression induced by exercise relative to rest
     slope: int                      # the slope of the peak exercise ST segment
+
     ca: int                         # number of major vessels (0-3) colored by flourosopy
     thal: int                       # 0 = normal; 1 = fixed defect; 2 = reversable defect
     target: Optional[ int ] = None  # the presence of heart disease in the patient, 0 = no disease and 1 = disease
