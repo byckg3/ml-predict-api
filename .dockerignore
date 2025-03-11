@@ -1,6 +1,7 @@
 Dockerfile
 README.md
 HELP.md
+tests/
 .dockerignore
 .gitignore
 .env
