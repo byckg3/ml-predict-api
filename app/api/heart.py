@@ -2,7 +2,7 @@ import traceback
 from typing import Annotated, Any
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from fastapi.responses import JSONResponse
-from app.models.dataset import MedicalRecord
+from app.models.dataset import HeartHealthMetrics
 from app.models.service import RecordService
 
 def get_record_service( request: Request ) -> RecordService:

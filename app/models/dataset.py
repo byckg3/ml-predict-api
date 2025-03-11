@@ -25,7 +25,6 @@ class HeartHealthMetrics( BaseModel ):
 
 # https://www.kaggle.com/datasets/rabieelkharoua/predict-liver-disease-1700-records-dataset
 class LiverHealthMetrics( Document ):
-    id:  Optional[ ObjectId ] = Field( alias="_id" )
     age: int
     gender: int
     bmi: float
