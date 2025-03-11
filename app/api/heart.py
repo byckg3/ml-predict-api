@@ -81,7 +81,7 @@ async def delete_record( id, service: RecordServiceDependency ):
                          status_code = status.HTTP_404_NOT_FOUND )
         
 @router.post( "/predict" )
-async def predict_target( record: MedicalRecord ):
+async def predict_target( record: HeartHealthMetrics ):
 
     try:
         print( record )
