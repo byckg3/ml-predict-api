@@ -1,6 +1,10 @@
 import asyncio
 import os
+from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
+
+from app.models.heart import HeartDiseaseRecord
+from app.models.liver import LiverDiseaseRecord
 
 if os.path.exists( ".env" ):
     from dotenv import load_dotenv
@@ -16,6 +20,11 @@ class MongoDB:
         self.db = self.client[ MongoDB.DB_NAME ]
         
         print( "create db connection successfully" )
+
+    async def init_beanie( self ):
+        await init_beanie( database = self.db, document_models = [ LiverDiseaseRecord, HeartDiseaseRecord ] )
+
+        print( "initialize beanie successfully" )
 
     async def ping_server( self ):
         # Send a ping to confirm a successful connection

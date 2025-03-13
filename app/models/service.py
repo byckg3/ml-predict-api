@@ -1,42 +1,40 @@
-from app.models.records import RecordRepository
+from typing import TypeVar
+from beanie import Document
 
-class RecordService:
-    def __init__(self, record_repository: RecordRepository ):
-        self.record_repository = record_repository
-        print( "create record service successfully" )
+T = TypeVar( "T", bound = Document )
+class DocumentService:
 
-    # def get_all(self):
-    #     return self.record_repository.get_all()
-
+    def __init__( self, document_class: T ):
+        self.model_class = document_class
+        
     async def get_by_id( self, id ):
-        record = None
-        if id:
-            record = await self.record_repository.find_one( id )
-
-        return record
+        return await self.model_class.get( id )
     
-    async def record_exists( self, id ):
+    async def save( self, doc: T ):
+        await doc.save()
+        return doc
+    
+    async def update_by_id( self, id, patch ):
+        result = None
+
+        doc = await self.get_by_id( id )
+        if doc:
+            result = await doc.update( { "$set": patch } )
+
+        return result
+    
+    async def delete_by_id( self, id ):
+        result = None
+
+        doc = await self.get_by_id( id )
+        if doc:
+            result = await doc.delete()
+        
+        return result 
+    
+    async def document_exists( self, id ):
         record = await self.get_by_id( id )
         if record:
             return True
         else:
             return False
-
-    async def create( self, record ):
-        new_record = None
-        new_id = None
-        if "_id" not in record:
-            new_id =  await self.record_repository.insert_one( record )
-       
-        if new_id:
-            new_record = record
-            new_record[ "_id" ] = new_id
-        
-        return new_record
-            
-    async def update_by_id( self, id, patch ):
-        if await self.record_exists( id ):
-            return await self.record_repository.update_one( id, patch )
-
-    async def delete_by_id( self, id ):
-        return await self.record_repository.delete_one( id )

@@ -2,17 +2,16 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.api.router import api_router
 from app.models.db import MongoDB
-from app.models.records import RecordRepository
-from app.models.service import RecordService
 
 @asynccontextmanager
 async def app_lifespan( app: FastAPI ):
+
     monogo = MongoDB()
+    await monogo.init_beanie()
+
     app.state.mongo = monogo
     app.state.db = monogo.db
-    app.state.record_repository = RecordRepository( app.state.db )
-    app.state.service = RecordService( app.state.record_repository )
-
+    
     yield
 
     await monogo.close()

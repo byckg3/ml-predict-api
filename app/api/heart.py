@@ -1,97 +1,64 @@
+import random
 import traceback
 from typing import Annotated, Any
-from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
-from fastapi.responses import JSONResponse
-from app.models.dataset import HeartHealthMetrics
-from app.models.service import RecordService
+from fastapi import APIRouter, Body, Depends, Request
+from app.api.controller import DocumentController
+from app.models.heart import HeartDiseaseRecord
+from app.models.service import DocumentService
 
-def get_record_service( request: Request ) -> RecordService:
-    return request.app.state.service
+def heart_record_service( request: Request ) -> DocumentService:
+
+    heart_record_service = None
+    if hasattr( request.app.state, "heart_record_service" ):
+        heart_record_service = request.app.state.heart_record_service
+    else:
+        heart_record_service = DocumentService( HeartDiseaseRecord )
+        request.app.state.heart_record_service = heart_record_service
+
+    return heart_record_service
+
+ServiceDependency = Annotated[ DocumentService, Depends( heart_record_service ) ]
 
 router = APIRouter( prefix="/heart" )
 
-RecordServiceDependency = Annotated[ RecordService, Depends( get_record_service ) ]
-
 @router.get( "/record/{id}" )
-async def get_record( id: str, service: RecordServiceDependency ):
-   
-    try:
-        record = await service.get_by_id( id )
-        if record:
-            return JSONResponse( content = record, status_code = status.HTTP_200_OK )      
-    except Exception as e:
-        print( e )
-        print( traceback.format_exc() )
-    
-    return JSONResponse( content = { "message": f"Record {id} not found" }, 
-                         status_code = status.HTTP_404_NOT_FOUND )
+async def get_record( id: str, service: ServiceDependency ) -> HeartDiseaseRecord:
+
+    return await DocumentController.get_document( id, service )
     
 @router.post( "/record" )
-async def save_record( record: dict[ str, Any ], service: RecordServiceDependency ):
+async def save_record( record: HeartDiseaseRecord, service: ServiceDependency ):
     
-    if await service.record_exists( record.get( "_id" ) ):
-        raise HTTPException( status_code = status.HTTP_409_CONFLICT,
-                             detail = f"Record {record[ '_id' ]} already exists" )
-    try:
-        new_record = await service.create( record )
-        if new_record:
-            return JSONResponse( content = new_record, 
-                                 status_code = status.HTTP_201_CREATED )
-    except Exception as e:
-        print( e )
-        print( traceback.format_exc() )
-    
-    return JSONResponse( content = { "message": "An error occurred" }, 
-                         status_code = status.HTTP_500_INTERNAL_SERVER_ERROR )
+    return await DocumentController.save_document( record, service )
 
 @router.put( "/record/{id}" )
-async def put_record( id: str, patch: dict[ str, Any ], service: RecordServiceDependency ):
-    
-    try:
-        matched, modified = await service.update_by_id( id, patch )
+async def put_record( id: str, service: ServiceDependency, 
+                      patch: dict[ str, Any ] = Body( ..., example = { "trestbps": 125, "target": 0 } ) ):
 
-        if matched or modified:
-            return JSONResponse( content = { "message": f"Record { id } updated successfully" }, 
-                                 status_code = status.HTTP_200_OK )
-    
-    except Exception as e:
-        print( e )
-        print( traceback.format_exc() )
-    
-    return JSONResponse( content = { "message": f"Record { id } not found" }, 
-                         status_code = status.HTTP_404_NOT_FOUND )
+    return await DocumentController.update_document( id, patch, service )
         
 @router.patch( "/record/{id}" )
-async def update_record( id: str, patch: dict[ str, Any ], service: RecordServiceDependency ):
+async def update_record( id: str, service: ServiceDependency, 
+                         patch: dict[ str, Any ] = Body( ..., example = { "chol": 212, "thalach": 168 } ) ):
+
     return await put_record( id, patch, service )
 
 @router.delete( "/record/{id}" )
-async def delete_record( id, service: RecordServiceDependency ):
-    
-    try:
-        deleted_count = await service.delete_by_id( id )
-        if deleted_count:
-            return Response( status_code = 204 )
-        
-    except Exception as e:
-        print( e )
-        print( traceback.format_exc() )
-    
-    return JSONResponse( content = { "message": f"Record { id } not found" }, 
-                         status_code = status.HTTP_404_NOT_FOUND )
+async def delete_record( id, service: ServiceDependency ):
+
+    return await DocumentController.delete_document( id, service )
         
 @router.post( "/predict" )
-async def predict_target( record: HeartHealthMetrics ):
+async def predict_target( record: HeartDiseaseRecord ):
 
     try:
-        print( record )
-        record.age = 99
-        record.target = 1
+        record.target = random.choice( [ 0, 1 ] )
         
         return { "result": record }
     
     except Exception as e:
         print( e )
+        print( traceback.format_exc() )
         return { "error": "An error occurred" }
     
     
