@@ -1,70 +1,70 @@
-# import pytest
-# import pytest_asyncio
-# from app.models.liver import LiverDiseaseRecord
-# from app.models.db import MongoDB
+import pytest
+import pytest_asyncio
+from app.models.liver import LiverDiseaseRecord
+from app.models.db import MongoDB
 
-# @pytest_asyncio.fixture( loop_scope = "module" )
-# async def setup_mongo():
-#     MongoDB.DB_NAME = "test"
-#     monogo = MongoDB()
-#     await monogo.init_beanie()
+@pytest_asyncio.fixture( loop_scope = "module" )
+async def setup_mongo():
+    MongoDB.DB_NAME = "test"
+    monogo = MongoDB()
+    await monogo.init_beanie()
 
-#     yield
+    yield
 
-#     await monogo.close()
+    await monogo.close()
 
-# @pytest_asyncio.fixture( loop_scope = "module" )
-# async def liver_disease_record():
-#     record = {  "age": 58,
-#                 "gender": 0,
-#                 "bmi": 35.8,
-#                 "alcohol_consumption": 17.2,
-#                 "smoking": 0,
-#                 "genetic_risk": 1,
-#                 "physical_activity": 0.658,
-#                 "diabetes": 0,
-#                 "hypertension": 0,
-#                 "liver_function_test": 42.73,
-#                 "diagnosis": 1 }
-#     liver_disease_record = LiverDiseaseRecord( **record )
+@pytest_asyncio.fixture( loop_scope = "module" )
+async def liver_disease_record():
+    record = {  "age": 58,
+                "gender": 0,
+                "bmi": 35.8,
+                "alcohol_consumption": 17.2,
+                "smoking": 0,
+                "genetic_risk": 1,
+                "physical_activity": 0.658,
+                "diabetes": 0,
+                "hypertension": 0,
+                "liver_function_test": 42.73,
+                "diagnosis": 1 }
+    liver_disease_record = LiverDiseaseRecord( **record )
 
-#     return liver_disease_record
+    return liver_disease_record
 
-# @pytest.mark.db
-# @pytest.mark.asyncio( loop_scope = "module" )
-# class TestLiverDiseaseRecord:
+@pytest.mark.db
+@pytest.mark.asyncio( loop_scope = "module" )
+class TestLiverDiseaseRecord:
 
-#     def setup_method( self, method ):
-#         pass
+    def setup_method( self, method ):
+        pass
         
-#     def teardown_method( self, method ):
-#         pass
+    def teardown_method( self, method ):
+        pass
 
-#     async def test_document_crud_operations( self, setup_mongo, liver_disease_record ):
+    async def test_document_crud_operations( self, setup_mongo, liver_disease_record ):
        
-#         # save
-#         save_result = await liver_disease_record.save()
+        # save
+        save_result = await liver_disease_record.save()
 
-#         assert save_result.id is not None
-#         assert save_result.id == liver_disease_record.id
+        assert save_result.id is not None
+        assert save_result.id == liver_disease_record.id
 
-#         # update
-#         update_result = await liver_disease_record.update( { "$set": { "age": 67, "smoking": 1 } } )
+        # update
+        update_result = await liver_disease_record.update( { "$set": { "age": 67, "smoking": 1 } } )
     
-#         assert update_result.age == 67
-#         assert update_result.smoking == 1
+        assert update_result.age == 67
+        assert update_result.smoking == 1
 
-#         # get
-#         get_result = await LiverDiseaseRecord.get( liver_disease_record.id )
+        # get
+        get_result = await LiverDiseaseRecord.get( liver_disease_record.id )
     
-#         assert get_result.id is not None
-#         assert get_result.id == liver_disease_record.id
+        assert get_result.id is not None
+        assert get_result.id == liver_disease_record.id
 
-#         # delete
-#         delete_result = await liver_disease_record.delete()
+        # delete
+        delete_result = await liver_disease_record.delete()
 
-#         assert delete_result.deleted_count == 1
+        assert delete_result.deleted_count == 1
 
-#         # get empty
-#         get_empty_result = await LiverDiseaseRecord.get( liver_disease_record.id )
-#         assert get_empty_result is None
+        # get empty
+        get_empty_result = await LiverDiseaseRecord.get( liver_disease_record.id )
+        assert get_empty_result is None
