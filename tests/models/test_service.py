@@ -21,7 +21,7 @@ async def heart_record_service():
 
     return heart_record_service
 
-
+@pytest.mark.db
 @pytest.mark.asyncio( loop_scope = "module" )
 async def test_service_crud_operations( setup_mongo, heart_record_service ):
 

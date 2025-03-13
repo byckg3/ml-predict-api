@@ -29,7 +29,8 @@ async def liver_disease_record():
     liver_disease_record = LiverDiseaseRecord( **record )
 
     return liver_disease_record
-        
+
+@pytest.mark.db
 @pytest.mark.asyncio( loop_scope = "module" )
 class TestLiverDiseaseRecord:
 
