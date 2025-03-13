@@ -23,7 +23,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pytest pytest-asyncio motor beanie
+        pip install -r requirements.txt
     
     - name: Checkout code
       uses: actions/checkout@v4
