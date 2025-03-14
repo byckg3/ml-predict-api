@@ -5,6 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 
 from app.models.heart import HeartDiseaseRecord
 from app.models.liver import LiverDiseaseRecord
+from app.models.user import UserProfile
 
 if os.path.exists( ".env" ):
     from dotenv import load_dotenv
@@ -22,7 +23,7 @@ class MongoDB:
         print( "create db connection successfully" )
 
     async def init_beanie( self ):
-        await init_beanie( database = self.db, document_models = [ LiverDiseaseRecord, HeartDiseaseRecord ] )
+        await init_beanie( database = self.db, document_models = [ LiverDiseaseRecord, HeartDiseaseRecord, UserProfile ] )
 
         print( "initialize beanie successfully" )
 
@@ -46,4 +47,3 @@ if __name__ == "__main__":
     monogoDB = MongoDB()
     asyncio.run( monogoDB.ping_server() )
     asyncio.run( monogoDB.close() )
-    

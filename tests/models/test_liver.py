@@ -68,3 +68,12 @@ class TestLiverDiseaseRecord:
         # get empty
         get_empty_result = await LiverDiseaseRecord.get( liver_disease_record.id )
         assert get_empty_result is None
+
+    @pytest.mark.asyncio( loop_scope = "module" )
+    async def test_service_delete_all_documents( self, setup_mongo, liver_disease_record ):
+
+        deleted_redult = await liver_disease_record.delete_all()
+        assert deleted_redult.deleted_count >= 0, f"failed: Expected >= 0 but got { deleted_redult.deleted_count }"
+
+        empty_list = await liver_disease_record.find( {} ).to_list()
+        assert len( empty_list ) == 0, f"failed: Expected 0 but got { len( empty_list ) }"

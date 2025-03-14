@@ -1,10 +1,10 @@
-from beanie import Document
-from bson import ObjectId
+from beanie import Document, PydanticObjectId
 from pydantic import BaseModel, Field
 from typing import List, Optional
 
 # https://www.kaggle.com/datasets/johnsmith88/heart-disease-dataset
 class HeartDiseaseRecord( Document ):
+    user_id: Optional[ PydanticObjectId ] = None
     age: int
     sex: int
     cp: int                         # chest pain type ( 4 values )
@@ -22,3 +22,21 @@ class HeartDiseaseRecord( Document ):
 
     class Settings:
         name = "heart-records"
+
+_example_value = {
+    "user_id": "67d1e37bf80ba6a47c3eee61",
+    "age": 52,
+    "sex": 1,
+    "cp": 0,
+    "trestbps": 125,
+    "chol": 212,
+    "fbs": 0,
+    "restecg": 1,
+    "thalach": 168,
+    "exang": 0,
+    "oldpeak": 1,
+    "slope": 2,
+    "ca": 2,
+    "thal": 3,
+    "target": 0
+}
