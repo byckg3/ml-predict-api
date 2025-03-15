@@ -2,8 +2,10 @@ from beanie import Document, PydanticObjectId
 from pydantic import BaseModel, Field
 from typing import List, Optional
 
+from app.models.base import BaseEntity
+
 # https://www.kaggle.com/datasets/rabieelkharoua/predict-liver-disease-1700-records-dataset
-class LiverDiseaseRecord( Document ):
+class LiverDiseaseRecord( BaseEntity, Document ):
     user_id: Optional[ PydanticObjectId ] = None
     age: int
     gender: int

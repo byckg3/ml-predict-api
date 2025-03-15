@@ -80,5 +80,5 @@ async def test_service_delete_all_documents( setup_mongo, heart_record_service )
     deleted_count = await heart_record_service.delete_all()
     assert deleted_count >= 0, f"failed: Expected >= 0 but got { deleted_count }"
 
-    empty_list = await heart_record_service.find_by_criteria( {} )
+    empty_list = await heart_record_service.find_all()
     assert len( empty_list ) == 0, f"failed: Expected 0 but got { len( empty_list ) }"

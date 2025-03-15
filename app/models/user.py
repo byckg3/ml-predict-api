@@ -1,13 +1,11 @@
 from typing import Optional
-
 from beanie import Document
+from app.models.base import BaseEntity
 
-
-class UserProfile( Document ):
+class UserProfile( BaseEntity, Document ):
     
     name: Optional[ str ] = None
     email: Optional[ str ] = None
-
     class Settings:
         name = "users"
 

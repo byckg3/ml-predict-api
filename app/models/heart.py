@@ -2,8 +2,10 @@ from beanie import Document, PydanticObjectId
 from pydantic import BaseModel, Field
 from typing import List, Optional
 
+from app.models.base import BaseEntity
+
 # https://www.kaggle.com/datasets/johnsmith88/heart-disease-dataset
-class HeartDiseaseRecord( Document ):
+class HeartDiseaseRecord( BaseEntity, Document ):
     user_id: Optional[ PydanticObjectId ] = None
     age: int
     sex: int
