@@ -1,6 +1,6 @@
 import pytest
 import pytest_asyncio
-from app.models.liver import LiverDiseaseRecord
+from app.models.liver import LiverDiseaseRecord, example_record
 from app.models.db import MongoDB
 from app.models.repository import DocumentRepository
 
@@ -16,18 +16,7 @@ async def setup_mongo():
 
 @pytest_asyncio.fixture( loop_scope = "module" )
 async def liver_disease_record():
-    record = {  "age": 58,
-                "gender": 0,
-                "bmi": 35.8,
-                "alcohol_consumption": 17.2,
-                "smoking": 0,
-                "genetic_risk": 1,
-                "physical_activity": 0.658,
-                "diabetes": 0,
-                "hypertension": 0,
-                "liver_function_test": 42.73,
-                "diagnosis": 1 }
-    liver_disease_record = LiverDiseaseRecord( **record )
+    liver_disease_record = LiverDiseaseRecord( **example_record )
 
     return liver_disease_record
 
@@ -43,7 +32,7 @@ class TestDocumentRepository:
     def teardown_method( self, method ):
         pass
 
-    async def test_document_crud_operations( self, setup_mongo, liver_disease_record ):
+    async def test_repository_crud_operations( self, setup_mongo, liver_disease_record ):
     
         # save
         saved_document = await self.repository.save( liver_disease_record )
@@ -52,10 +41,10 @@ class TestDocumentRepository:
 
         # update
         updated_document = await self.repository.update_by_id( saved_document.id, 
-                                                          { "age": 67, "smoking": 1 } )
+                                                               { LiverDiseaseRecord.features.age: 67, "features.smoking": 1 } )
     
-        assert updated_document.age == 67
-        assert updated_document.smoking == 1
+        assert updated_document.features.age == 67
+        assert updated_document.features.smoking == 1
 
         # get
         get_result = await self.repository.get_by_id( saved_document.id )

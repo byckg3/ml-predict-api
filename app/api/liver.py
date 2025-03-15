@@ -5,7 +5,7 @@ from beanie import PydanticObjectId
 from fastapi import APIRouter, Body, Depends, Request, status
 from fastapi.responses import JSONResponse
 from app.api.controller import DocumentController, RecordController
-from app.models.liver import LiverDiseaseRecord, _example_value
+from app.models.liver import LiverDiseaseRecord, example_record
 from app.models.service import RecordService, RecordService
 
 def liver_record_service( request: Request ) -> RecordService:
@@ -40,19 +40,19 @@ async def get_all_records( service: ServiceDependency, page: int = 1, page_size:
 
 @router.post( "/record", status_code = status.HTTP_201_CREATED )
 async def save_record( service: ServiceDependency, 
-                       record: LiverDiseaseRecord = Body( ..., example = _example_value ) ) -> LiverDiseaseRecord:
+                       record: LiverDiseaseRecord = Body( ..., example = example_record ) ) -> LiverDiseaseRecord:
     
     return await DocumentController.save_document( record, service )
 
 @router.put( "/record/{id}" )
 async def put_record( id: PydanticObjectId, service: ServiceDependency, 
-                      patch: dict[ str, Any ] = Body( ..., example = { "physical_activity": 0.657, "bmi": 33.2 } ) ) -> LiverDiseaseRecord:
+                      patch: dict[ str, Any ] = Body( ..., example = { "features.physical_activity": 0.657, "features.bmi": 33.2 } ) ) -> LiverDiseaseRecord:
 
     return await DocumentController.update_document( id, patch, service )
 
 @router.patch( "/record/{id}" )
 async def update_record( id: PydanticObjectId, service: ServiceDependency, 
-                         patch: dict[ str, Any ] = Body( ..., example = { "age": 31, "diagnosis": 1 } ) ) -> LiverDiseaseRecord:
+                         patch: dict[ str, Any ] = Body( ..., example = { "features.age": 31, "features.diagnosis": 1 } ) ) -> LiverDiseaseRecord:
 
     return await put_record( id, service, patch )
 

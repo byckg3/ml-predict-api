@@ -1,7 +1,7 @@
 
 import pytest
 import pytest_asyncio
-from app.models.heart import HeartDiseaseRecord
+from app.models.heart import HeartDiseaseRecord, example_record
 from app.models.db import MongoDB
 from app.models.service import RecordService
 
@@ -25,23 +25,7 @@ async def heart_record_service():
 @pytest.mark.asyncio( loop_scope = "module" )
 async def test_service_crud_operations( setup_mongo, heart_record_service ):
 
-    record = {
-        "user_id": "67d1e37bf80ba6a47c3eee61",
-        "age": 52,
-        "sex": 1,
-        "cp": 0,
-        "trestbps": 125,
-        "chol": 212,
-        "fbs": 0,
-        "restecg": 1,
-        "thalach": 168,
-        "exang": 0,
-        "oldpeak": 1,
-        "slope": 2,
-        "ca": 2,
-        "thal": 3
-    }
-    heart_record = HeartDiseaseRecord( **record )
+    heart_record = HeartDiseaseRecord( **example_record )
 
     # save
     save_result = await heart_record_service.save( heart_record )
@@ -50,10 +34,10 @@ async def test_service_crud_operations( setup_mongo, heart_record_service ):
     assert save_result.id == heart_record.id
     
     # update
-    update_result = await heart_record_service.update_by_id( heart_record.id, { "age": 67, "target": 1 } )
-    print( update_result )
-    assert update_result.age == 67
-    assert update_result.target == 1
+    update_result = await heart_record_service.update_by_id( heart_record.id, { "features.age": 67, "features.target": 1 } )
+    # print( update_result )
+    assert update_result.features.age == 67
+    assert update_result.features.target == 1
     
     # find recordss
     records = await heart_record_service.find_by_user_id( heart_record.user_id, limit = 20 )

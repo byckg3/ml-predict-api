@@ -5,8 +5,7 @@ from typing import List, Optional
 from app.models.base import BaseEntity
 
 # https://www.kaggle.com/datasets/rabieelkharoua/predict-liver-disease-1700-records-dataset
-class LiverDiseaseRecord( BaseEntity, Document ):
-    user_id: Optional[ PydanticObjectId ] = None
+class LiverDiseaseFeatures( BaseModel ):
     age: int
     gender: int
     bmi: float
@@ -19,20 +18,33 @@ class LiverDiseaseRecord( BaseEntity, Document ):
     liver_function_test: float
     diagnosis: Optional[ int ] = None
 
+class LiverDiseaseRecord( BaseEntity, Document ):
+    user_id: Optional[ PydanticObjectId ] = None
+    features: LiverDiseaseFeatures
+
     class Settings:
         name = "liver-records"
 
-_example_value = { 
+example_record = { 
     "user_id": "67d1e37bf80ba6a47c3eee61",
-    "age": 58,
-    "gender": 0,
-    "bmi": 35.8,
-    "alcohol_consumption": 17.2,
-    "smoking": 0,
-    "genetic_risk": 1,
-    "physical_activity": 0.658,
-    "diabetes": 0,
-    "hypertension": 0,
-    "liver_function_test": 42.73,
-    "diagnosis": 1 
+    "features": {
+        "age": 58,
+        "gender": 0,
+        "bmi": 35.8,
+        "alcohol_consumption": 17.2,
+        "smoking": 0,
+        "genetic_risk": 1,
+        "physical_activity": 0.658,
+        "diabetes": 0,
+        "hypertension": 0,
+        "liver_function_test": 42.73,
+        "diagnosis": 1 
+    }
+}
+
+updated_value = {
+    "features.alcohol_consumption": 18.2,
+    "features.smoking": 1,
+    "features.genetic_risk": 1,
+    "features.physical_activity": 0.658
 }

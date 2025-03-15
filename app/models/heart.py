@@ -1,12 +1,11 @@
 from beanie import Document, PydanticObjectId
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import Optional
 
 from app.models.base import BaseEntity
 
 # https://www.kaggle.com/datasets/johnsmith88/heart-disease-dataset
-class HeartDiseaseRecord( BaseEntity, Document ):
-    user_id: Optional[ PydanticObjectId ] = None
+class HeartDiseaseFeatures( BaseModel ):
     age: int
     sex: int
     cp: int                         # chest pain type ( 4 values )
@@ -22,23 +21,29 @@ class HeartDiseaseRecord( BaseEntity, Document ):
     thal: int                       # 0 = normal; 1 = fixed defect; 2 = reversable defect
     target: Optional[ int ] = None  # the presence of heart disease in the patient, 0 = no disease and 1 = disease
 
+class HeartDiseaseRecord( BaseEntity, Document ):
+    user_id: Optional[ PydanticObjectId ] = None
+    features: HeartDiseaseFeatures
+
     class Settings:
         name = "heart-records"
 
-_example_value = {
+example_record = {
     "user_id": "67d1e37bf80ba6a47c3eee61",
-    "age": 52,
-    "sex": 1,
-    "cp": 0,
-    "trestbps": 125,
-    "chol": 212,
-    "fbs": 0,
-    "restecg": 1,
-    "thalach": 168,
-    "exang": 0,
-    "oldpeak": 1,
-    "slope": 2,
-    "ca": 2,
-    "thal": 3,
-    "target": 0
+    "features": {
+        "age": 52,
+        "sex": 1,
+        "cp": 0,
+        "trestbps": 125,
+        "chol": 212,
+        "fbs": 0,
+        "restecg": 1,
+        "thalach": 168,
+        "exang": 0,
+        "oldpeak": 1,
+        "slope": 2,
+        "ca": 2,
+        "thal": 3,
+        "target": 0
+    }
 }

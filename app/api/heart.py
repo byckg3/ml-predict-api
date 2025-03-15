@@ -6,7 +6,7 @@ from fastapi import APIRouter, Body, Depends, Request
 from fastapi import status
 from fastapi.responses import JSONResponse
 from app.api.controller import DocumentController, RecordController
-from app.models.heart import HeartDiseaseRecord, _example_value
+from app.models.heart import HeartDiseaseRecord, example_record
 from app.models.service import RecordService
 
 def heart_record_service( request: Request ) -> RecordService:
@@ -30,7 +30,8 @@ async def get_record( id: PydanticObjectId, service: ServiceDependency ) -> Hear
     return await DocumentController.get_document( id, service )
     
 @router.get( "/records/{user_id}" )
-async def find_user_records( user_id: PydanticObjectId , service: ServiceDependency, page: int = 1, page_size: int = 10 ) -> list[ HeartDiseaseRecord ]:
+async def find_user_records( user_id: PydanticObjectId , service: ServiceDependency, 
+                             page: int = 1, page_size: int = 10 ) -> list[ HeartDiseaseRecord ]:
     
     return await RecordController.find_user_records( user_id, service, page, page_size )
 
@@ -41,19 +42,19 @@ async def get_all_records( service: ServiceDependency, page: int = 1, page_size:
 
 @router.post( "/record", status_code = status.HTTP_201_CREATED )
 async def save_record( service: ServiceDependency, 
-                       record: HeartDiseaseRecord = Body( ..., example = _example_value ) ) -> HeartDiseaseRecord:
+                       record: HeartDiseaseRecord = Body( ..., example = example_record ) ) -> HeartDiseaseRecord:
     
     return await DocumentController.save_document( record, service )
 
 @router.put( "/record/{id}" )
 async def put_record( id: PydanticObjectId, service: ServiceDependency, 
-                      patch: dict[ str, Any ] = Body( ..., example = { "trestbps": 125, "target": 0 } ) ) -> HeartDiseaseRecord:
+                      patch: dict[ str, Any ] = Body( ..., example = { "features.trestbps": 125, "features.target": 0 } ) ) -> HeartDiseaseRecord:
 
     return await DocumentController.update_document( id, patch, service )
         
 @router.patch( "/record/{id}" )
 async def update_record( id: PydanticObjectId, service: ServiceDependency, 
-                         patch: dict[ str, Any ] = Body( ..., example = { "chol": 212, "thalach": 168 } ) ) -> HeartDiseaseRecord:
+                         patch: dict[ str, Any ] = Body( ..., example = { "features.chol": 212, "features.thalach": 168 } ) ) -> HeartDiseaseRecord:
 
     return await put_record( id, service, patch )
 

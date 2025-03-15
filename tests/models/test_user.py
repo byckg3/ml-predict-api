@@ -50,3 +50,6 @@ async def test_timestamp_created_and_updated( setup_mongo, user_profile ):
     # print( updated_profile )
     assert updated_profile.created_at == profile.created_at
     assert updated_profile.updated_at > profile.updated_at
+
+    deleted_count = await repository.delete_all()
+    assert deleted_count >= 0, f"failed: Expected >= 0 but got { deleted_count }"
