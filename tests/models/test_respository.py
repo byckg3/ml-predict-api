@@ -1,6 +1,6 @@
 import pytest
 import pytest_asyncio
-from app.models.liver import LiverDiseaseRecord, example_record
+from app.models.liver import LiverDiseaseRecord, example
 from app.models.db import MongoDB
 from app.models.repository import DocumentRepository
 
@@ -16,7 +16,7 @@ async def setup_mongo():
 
 @pytest_asyncio.fixture( loop_scope = "module" )
 async def liver_disease_record():
-    liver_disease_record = LiverDiseaseRecord( **example_record )
+    liver_disease_record = LiverDiseaseRecord( **example[ "created_record" ] )
 
     return liver_disease_record
 
@@ -41,9 +41,9 @@ class TestDocumentRepository:
 
         # update
         updated_document = await self.repository.update_by_id( saved_document.id, 
-                                                               { LiverDiseaseRecord.features.age: 67, "features.smoking": 1 } )
+                                                               example[ "updated_value1" ] )
     
-        assert updated_document.features.age == 67
+        assert updated_document.features.alcohol_consumption == 18.2
         assert updated_document.features.smoking == 1
 
         # get

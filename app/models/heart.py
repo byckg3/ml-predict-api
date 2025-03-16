@@ -47,3 +47,33 @@ example_record = {
         "target": 0
     }
 }
+
+example = {
+    "created_record": {
+        "user_id": "67d1e37bf80ba6a47c3eee61",
+        "features": {
+            "age": 52,
+            "sex": 1,
+            "cp": 0,
+            "trestbps": 125,
+            "chol": 212,
+            "fbs": 0,
+            "restecg": 1,
+            "thalach": 168,
+            "exang": 0,
+            "oldpeak": 1,
+            "slope": 2,
+            "ca": 2,
+            "thal": 3,
+            "target": 0
+        }
+    },
+    "updated_value1": {
+        "features.trestbps": 125, 
+        "features.target": 0
+    },
+    "updated_value2": {
+        "features.chol": 212, 
+        "features.thalach": 168
+    }
+}

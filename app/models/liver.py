@@ -25,26 +25,29 @@ class LiverDiseaseRecord( BaseEntity, Document ):
     class Settings:
         name = "liver-records"
 
-example_record = { 
-    "user_id": "67d1e37bf80ba6a47c3eee61",
-    "features": {
-        "age": 58,
-        "gender": 0,
-        "bmi": 35.8,
-        "alcohol_consumption": 17.2,
-        "smoking": 0,
-        "genetic_risk": 1,
-        "physical_activity": 0.658,
-        "diabetes": 0,
-        "hypertension": 0,
-        "liver_function_test": 42.73,
-        "diagnosis": 1 
+example = {
+    "created_record": { 
+        "user_id": "67d1e37bf80ba6a47c3eee61",
+        "features": {
+            "age": 58,
+            "gender": 0,
+            "bmi": 35.8,
+            "alcohol_consumption": 17.2,
+            "smoking": 0,
+            "genetic_risk": 1,
+            "physical_activity": 0.658,
+            "diabetes": 0,
+            "hypertension": 0,
+            "liver_function_test": 42.73,
+            "diagnosis": 1 
+        }
+    },
+    "updated_value1": {
+        "features.alcohol_consumption": 18.2,
+        "features.smoking": 1
+    },
+    "updated_value2": {
+        "features.genetic_risk": 1,
+        "features.physical_activity": 0.658
     }
-}
-
-updated_value = {
-    "features.alcohol_consumption": 18.2,
-    "features.smoking": 1,
-    "features.genetic_risk": 1,
-    "features.physical_activity": 0.658
 }

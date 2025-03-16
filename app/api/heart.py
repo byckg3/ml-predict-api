@@ -6,7 +6,7 @@ from fastapi import APIRouter, Body, Depends, Request
 from fastapi import status
 from fastapi.responses import JSONResponse
 from app.api.controller import DocumentController, RecordController
-from app.models.heart import HeartDiseaseRecord, example_record
+from app.models.heart import HeartDiseaseRecord, example
 from app.models.service import RecordService
 
 def heart_record_service( request: Request ) -> RecordService:
@@ -42,19 +42,19 @@ async def get_all_records( service: ServiceDependency, page: int = 1, page_size:
 
 @router.post( "/record", status_code = status.HTTP_201_CREATED )
 async def save_record( service: ServiceDependency, 
-                       record: HeartDiseaseRecord = Body( ..., example = example_record ) ) -> HeartDiseaseRecord:
+                       record: HeartDiseaseRecord = Body( ..., example = example[ "created_record" ] ) ) -> HeartDiseaseRecord:
     
     return await DocumentController.save_document( record, service )
 
 @router.put( "/record/{id}" )
 async def put_record( id: PydanticObjectId, service: ServiceDependency, 
-                      patch: dict[ str, Any ] = Body( ..., example = { "features.trestbps": 125, "features.target": 0 } ) ) -> HeartDiseaseRecord:
+                      patch: dict[ str, Any ] = Body( ..., example = example[ "updated_value1" ] ) ) -> HeartDiseaseRecord:
 
     return await DocumentController.update_document( id, patch, service )
         
 @router.patch( "/record/{id}" )
 async def update_record( id: PydanticObjectId, service: ServiceDependency, 
-                         patch: dict[ str, Any ] = Body( ..., example = { "features.chol": 212, "features.thalach": 168 } ) ) -> HeartDiseaseRecord:
+                         patch: dict[ str, Any ] = Body( ..., example =  example[ "updated_value2" ] ) ) -> HeartDiseaseRecord:
 
     return await put_record( id, service, patch )
 
