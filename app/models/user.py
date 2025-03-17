@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Annotated, Optional
 from beanie import Document, Indexed
-from pydantic import Field
+from pydantic import EmailStr, Field
 from app.models.base import BaseEntity
 
 example = {
@@ -17,9 +17,8 @@ example = {
 class UserProfile( BaseEntity, Document ):
     
     name: str | None = "unknown"
-    email: Annotated[ str, Indexed( unique = True ) ] = Field( max_length = 30,
-                                                               pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$",
-                                                               examples=[ "mike123456@email.com" ] )
+    email: Annotated[ EmailStr, Indexed( unique = True ) ] = Field( max_length = 30,
+                                                                    examples=[ "mike123456@email.com" ] )
     class Settings:
         name = "users"
 
