@@ -1,5 +1,5 @@
 ## commands
-- .venv\Scripts\activate
+- .venv/Scripts/activate
 - uvicorn app.main:app --reload
 - python -m app.main
 - pytest -x tests/
