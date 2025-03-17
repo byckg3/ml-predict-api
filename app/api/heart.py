@@ -41,20 +41,19 @@ async def get_all_records( service: ServiceDependency, page: int = 1, page_size:
     return await DocumentController.get_all_documents( service, page, page_size )
 
 @router.post( "/record", status_code = status.HTTP_201_CREATED )
-async def save_record( service: ServiceDependency, 
-                       record: HeartDiseaseRecord = Body( ..., example = example[ "created_record" ] ) ) -> HeartDiseaseRecord:
+async def save_record( service: ServiceDependency, record: HeartDiseaseRecord ) -> HeartDiseaseRecord:
     
     return await DocumentController.save_document( record, service )
 
 @router.put( "/record/{id}" )
 async def put_record( id: PydanticObjectId, service: ServiceDependency, 
-                      patch: dict[ str, Any ] = Body( ..., example = example[ "updated_value1" ] ) ) -> HeartDiseaseRecord:
+                      patch: dict[ str, Any ] = Body( examples = [ example[ "updated_value1" ] ] ) ) -> HeartDiseaseRecord:
 
     return await DocumentController.update_document( id, patch, service )
         
 @router.patch( "/record/{id}" )
 async def update_record( id: PydanticObjectId, service: ServiceDependency, 
-                         patch: dict[ str, Any ] = Body( ..., example =  example[ "updated_value2" ] ) ) -> HeartDiseaseRecord:
+                         patch: dict[ str, Any ] = Body( examples =  [ example[ "updated_value2" ] ] ) ) -> HeartDiseaseRecord:
 
     return await put_record( id, service, patch )
 

@@ -5,7 +5,7 @@ from app.models.heart import HeartDiseaseRecord
 from app.models.db import MongoDB
 from app.models.repository import DocumentRepository
 from app.models.service import RecordService
-from app.models.user import UserProfile
+from app.models.user import UserProfile, example
 
 @pytest_asyncio.fixture( loop_scope = "module" )
 async def setup_mongo():
@@ -19,11 +19,7 @@ async def setup_mongo():
 
 @pytest_asyncio.fixture( loop_scope = "module" )
 async def user_profile():
-    profile = { 
-        "name": "Mike",
-        "email": f"mike{ datetime.now() }@email.com"
-    }
-    user_profile = UserProfile( **profile )
+    user_profile = UserProfile( **example[ "created_profile" ] )
 
     return user_profile
 
@@ -33,7 +29,7 @@ async def test_timestamp_created_and_updated( setup_mongo, user_profile ):
 
     # save
     saved_profile = await user_profile.save()
-    print( saved_profile )
+    # print( saved_profile )
     assert saved_profile.created_at is not None
     assert saved_profile.updated_at is not None
     
@@ -50,6 +46,12 @@ async def test_timestamp_created_and_updated( setup_mongo, user_profile ):
     # print( updated_profile )
     assert updated_profile.created_at == profile.created_at
     assert updated_profile.updated_at > profile.updated_at
+
+    # find one
+    finded_profile = await repository.find_one( UserProfile.email == user_profile.email )
+    # print( finded_profile )
+    assert finded_profile.email == user_profile.email
+
 
     deleted_count = await repository.delete_all()
     assert deleted_count >= 0, f"failed: Expected >= 0 but got { deleted_count }"

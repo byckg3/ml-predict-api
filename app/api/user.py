@@ -1,9 +1,12 @@
+import traceback
 from typing import Annotated, Any
 from beanie import PydanticObjectId
 from fastapi import APIRouter, Body, Depends, Request, status
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 from app.api.controller import DocumentController
-from app.models.service import DocumentService, RecordService
-from app.models.user import UserProfile, _example_value
+from app.models.service import DocumentService, UserService
+from app.models.user import UserProfile, example
 
 def user_profile_service( request: Request ) -> DocumentService:
 
@@ -11,12 +14,12 @@ def user_profile_service( request: Request ) -> DocumentService:
     if hasattr( request.app.state, "user_profile_service" ):
         user_profile_service = request.app.state.user_profile_service
     else:
-        user_profile_service = DocumentService( UserProfile )
+        user_profile_service = UserService( UserProfile )
         request.app.state.user_profile_service = user_profile_service
 
     return user_profile_service
 
-ServiceDependency = Annotated[ RecordService, Depends( user_profile_service ) ]
+ServiceDependency = Annotated[ UserService, Depends( user_profile_service ) ]
 
 router = APIRouter( prefix = "/user" )
 
@@ -30,9 +33,25 @@ async def get_all_profiles( service: ServiceDependency, page: int = 1, page_size
     
     return await DocumentController.get_all_documents( service, page, page_size )
 
+@router.post( "/login" )
+async def login( service: ServiceDependency, 
+                 login_info: dict[ str, Any ] = Body( ..., example = example[ "login_info" ] ) ) -> UserProfile:
+    
+    try:
+        user_profile = await service.find_by_email( login_info[ "email" ] )
+        if user_profile:
+            return JSONResponse( content = jsonable_encoder( user_profile ), 
+                                 status_code = status.HTTP_200_OK )     
+    except Exception as e:
+        print( e )
+        print( traceback.format_exc() )
+    
+    return JSONResponse( content = { "message": "Invalid credentials" }, 
+                         status_code = status.HTTP_401_UNAUTHORIZED )
+
 @router.post( "/profile", status_code = status.HTTP_201_CREATED )
 async def save_profile( service: ServiceDependency, 
-                        profile: UserProfile = Body( ..., example = _example_value ) ) -> UserProfile:
+                        profile: UserProfile = Body( ..., example = example[ "created_profile" ] ) ) -> UserProfile:
     
     return await DocumentController.save_document( profile, service )
 

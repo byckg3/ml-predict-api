@@ -19,6 +19,11 @@ class DocumentRepository:
 
         return documents
     
+    async def find_one( self, search_criteria: Any ) -> T:
+        document = await  self.beanie_document.find_one( search_criteria )
+
+        return document
+    
     async def find_all( self, skip = 0, limit = 10 ) -> list[ T ]:
         documents = await self.find_by_criteria( {}, skip, limit )
 

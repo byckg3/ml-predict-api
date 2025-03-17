@@ -4,27 +4,6 @@ from typing import List, Optional
 
 from app.models.base import BaseEntity
 
-# https://www.kaggle.com/datasets/rabieelkharoua/predict-liver-disease-1700-records-dataset
-class LiverDiseaseFeatures( BaseModel ):
-    age: int
-    gender: int
-    bmi: float
-    alcohol_consumption: float
-    smoking: int
-    genetic_risk: int
-    physical_activity: float
-    diabetes: int
-    hypertension: int
-    liver_function_test: float
-    diagnosis: Optional[ int ] = None
-
-class LiverDiseaseRecord( BaseEntity, Document ):
-    user_id: Optional[ PydanticObjectId ] = None
-    features: LiverDiseaseFeatures
-
-    class Settings:
-        name = "liver-records"
-
 example = {
     "created_record": { 
         "user_id": "67d1e37bf80ba6a47c3eee61",
@@ -51,3 +30,30 @@ example = {
         "features.physical_activity": 0.658
     }
 }
+
+# https://www.kaggle.com/datasets/rabieelkharoua/predict-liver-disease-1700-records-dataset
+class LiverDiseaseFeatures( BaseModel ):
+    age: int
+    gender: int
+    bmi: float
+    alcohol_consumption: float
+    smoking: int
+    genetic_risk: int
+    physical_activity: float
+    diabetes: int
+    hypertension: int
+    liver_function_test: float
+    diagnosis: int | None = None
+    
+class LiverDiseaseRecord( BaseEntity, Document ):
+    user_id: PydanticObjectId | None = None
+    features: LiverDiseaseFeatures
+
+    class Settings:
+        name = "liver-records"
+
+    model_config = {
+        "json_schema_extra": {
+            "examples": [ example[ "created_record" ] ]
+        }
+    }

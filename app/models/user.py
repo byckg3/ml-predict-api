@@ -1,15 +1,30 @@
-from typing import Optional
-from beanie import Document
+from datetime import datetime
+from typing import Annotated, Optional
+from beanie import Document, Indexed
+from pydantic import Field
 from app.models.base import BaseEntity
+
+example = {
+    "login_info": {
+        "email": f"mike123456@email.com"
+    },
+    "created_profile": {
+        "name": "Mike",
+        "email": f"mike{ int( datetime.now().timestamp() ) }@email.com"
+    }
+}
 
 class UserProfile( BaseEntity, Document ):
     
-    name: Optional[ str ] = None
-    email: Optional[ str ] = None
+    name: str | None = "unknown"
+    email: Annotated[ str, Indexed( unique = True ) ] = Field( max_length = 30,
+                                                               pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$",
+                                                               examples=[ "mike123456@email.com" ] )
     class Settings:
         name = "users"
 
-_example_value = { 
-    "name": "Mike",
-    "email": "mike123@email.com"
-}
+    model_config = {
+        "json_schema_extra": {
+            "examples": [ example[ "created_profile" ] ]
+        }
+    }

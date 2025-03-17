@@ -5,6 +5,7 @@ from beanie.operators import In
 from app.models.heart import HeartDiseaseRecord
 from app.models.liver import LiverDiseaseRecord
 from app.models.repository import DocumentRepository
+from app.models.user import UserProfile
 
 T = TypeVar( "T", bound = Document )
 class DocumentService:
@@ -44,3 +45,12 @@ class RecordService( DocumentService ):
         return await self.repository.find_by_criteria( self.record_class.user_id == PydanticObjectId( user_id ), 
                                                        skip, 
                                                        limit )
+
+class UserService( DocumentService ):
+
+    def __init__( self, user_class: UserProfile ):
+        super().__init__( user_class )
+        self.user_profile_class = user_class
+
+    async def find_by_email( self, email: str ): 
+        return await self.repository.find_one( self.user_profile_class.email == email )
