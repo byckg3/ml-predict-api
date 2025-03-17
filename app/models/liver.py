@@ -34,16 +34,16 @@ example = {
 # https://www.kaggle.com/datasets/rabieelkharoua/predict-liver-disease-1700-records-dataset
 class LiverDiseaseFeatures( BaseModel ):
     age: int
-    gender: int
+    gender: int                 = Field( ge = 0, le = 1 )
     bmi: float
     alcohol_consumption: float
-    smoking: int
-    genetic_risk: int
+    smoking: int                = Field( ge = 0, le = 1 )
+    genetic_risk: int           = Field( ge = 0, le = 2 )
     physical_activity: float
-    diabetes: int
-    hypertension: int
+    diabetes: int               = Field( ge = 0, le = 1 )
+    hypertension: int           = Field( ge = 0, le = 1 )
     liver_function_test: float
-    diagnosis: int | None = None
+    diagnosis: int | None
     
 class LiverDiseaseRecord( BaseEntity, Document ):
     user_id: PydanticObjectId | None = None
