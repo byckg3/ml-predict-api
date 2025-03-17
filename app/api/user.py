@@ -35,7 +35,7 @@ async def get_all_profiles( service: ServiceDependency, page: int = 1, page_size
 
 @router.post( "/login" )
 async def login( service: ServiceDependency, 
-                 login_info: dict[ str, Any ] = Body( ..., example = example[ "login_info" ] ) ) -> UserProfile:
+                 login_info: dict[ str, Any ] = Body( example = example[ "login_info" ] ) ) -> UserProfile:
     
     try:
         user_profile = await service.find_by_email( login_info[ "email" ] )
@@ -51,19 +51,19 @@ async def login( service: ServiceDependency,
 
 @router.post( "/profile", status_code = status.HTTP_201_CREATED )
 async def save_profile( service: ServiceDependency, 
-                        profile: UserProfile = Body( ..., example = example[ "created_profile" ] ) ) -> UserProfile:
+                        profile: UserProfile = Body( example = example[ "created_profile" ] ) ) -> UserProfile:
     
     return await DocumentController.save_document( profile, service )
 
 @router.put( "/profile/{id}" )
 async def put_profile( id: PydanticObjectId, service: ServiceDependency, 
-                      patch: dict[ str, Any ] = Body( ..., example = { "name": "John" } ) ) -> UserProfile:
+                      patch: dict[ str, Any ] = Body( example = { "name": "John" } ) ) -> UserProfile:
 
     return await DocumentController.update_document( id, patch, service )
         
 @router.patch( "/profile/{id}" )
 async def update_profile( id: PydanticObjectId, service: ServiceDependency, 
-                         patch: dict[ str, Any ] = Body( ..., example = { "email": "test123@email.com" } ) ) -> UserProfile:
+                         patch: dict[ str, Any ] = Body( example = { "email": "test123@email.com" } ) ) -> UserProfile:
 
     return await put_profile( id, service, patch )
 
