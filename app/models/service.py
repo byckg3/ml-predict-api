@@ -1,3 +1,4 @@
+import os
 from typing import Any, TypeVar, Union
 from beanie import Document, PydanticObjectId
 from beanie.operators import In
@@ -6,6 +7,7 @@ from app.models.heart import HeartDiseaseRecord
 from app.models.liver import LiverDiseaseRecord
 from app.models.repository import DocumentRepository
 from app.models.user import UserProfile
+import google.generativeai as genai
 
 T = TypeVar( "T", bound = Document )
 class DocumentService:
@@ -54,3 +56,22 @@ class UserService( DocumentService ):
 
     async def find_by_email( self, email: str ): 
         return await self.repository.find_one( self.user_profile_class.email == email )
+    
+
+class GenerativeAIService():
+
+    API_KEY = os.getenv( "GEMINI_API_KEY" )
+
+    def __init__( self ):
+        genai.configure( api_key = GenerativeAIService.API_KEY )
+        self.model = self.create_model( "gemini-2.0-flash" )
+
+    def create_model( self, model_name: str ):
+        model = genai.GenerativeModel( model_name )
+
+        return model
+    
+    def answer( self, question ):  
+        response = self.model.generate_content( question )
+
+        return response.text
