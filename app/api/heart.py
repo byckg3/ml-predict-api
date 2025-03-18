@@ -14,7 +14,7 @@ def heart_record_service( request: Request ) -> RecordService:
     if not hasattr( request.app.state, "heart_record_service" ):
         request.app.state.heart_record_service = RecordService( HeartDiseaseRecord )
 
-    return request.app.heart_record_service
+    return request.app.state.heart_record_service
 
 
 

@@ -13,7 +13,7 @@ def liver_record_service( request: Request ) -> RecordService:
     if not hasattr( request.app.state, "liver_record_service" ):
         request.app.state.liver_record_service = RecordService( LiverDiseaseRecord )
 
-    return request.app.liver_record_service
+    return request.app.state.liver_record_service
 
 ServiceDependency = Annotated[ RecordService, Depends( liver_record_service ) ]
 
