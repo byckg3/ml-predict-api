@@ -10,14 +10,10 @@ from app.models.user import UserProfile, example
 
 def user_profile_service( request: Request ) -> DocumentService:
 
-    user_profile_service = None
-    if hasattr( request.app.state, "user_profile_service" ):
-        user_profile_service = request.app.state.user_profile_service
-    else:
-        user_profile_service = UserService( UserProfile )
-        request.app.state.user_profile_service = user_profile_service
-
-    return user_profile_service
+    if not hasattr( request.app.state, "user_profile_service" ):
+        request.app.state.user_profile_service = UserService( UserProfile )
+        
+    return request.app.state.user_profile_service
 
 ServiceDependency = Annotated[ UserService, Depends( user_profile_service ) ]
 
