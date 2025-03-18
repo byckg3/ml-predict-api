@@ -16,8 +16,6 @@ def heart_record_service( request: Request ) -> RecordService:
 
     return request.app.state.heart_record_service
 
-
-
 ServiceDependency = Annotated[ RecordService, Depends( heart_record_service ) ]
 
 router = APIRouter( prefix = "/disease/heart" )
