@@ -71,7 +71,7 @@ class GenerativeAIService():
 
         return model
     
-    def answer( self, question ):  
-        response = self.model.generate_content( question )
+    def answer( self, question, stream = False ):  
+        response = self.model.generate_content( question, stream = False )
 
         return response.text
