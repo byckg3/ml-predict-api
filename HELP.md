@@ -13,3 +13,4 @@
 - [FastAPI Tutorial - User Guide](https://fastapi.tiangolo.com/tutorial/)
 - [MongoDB Atlas](https://cloud.mongodb.com/)
 - [Beanie Documentation](https://beanie-odm.dev/)
+- [Gemini API quickstart](https://ai.google.dev/gemini-api/docs/quickstart)

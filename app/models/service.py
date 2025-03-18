@@ -71,7 +71,13 @@ class GenerativeAIService():
 
         return model
     
-    def answer( self, question, stream = False ):  
-        response = self.model.generate_content( question, stream = False )
-
+    async def answer( self, question ):  
+        response = await self.model.generate_content_async( question )
+        
         return response.text
+    
+    async def answer_stream( self, question ):  
+        response = self.model.generate_content( question, stream = True )
+        
+        for chunk in response:
+            yield chunk.text
