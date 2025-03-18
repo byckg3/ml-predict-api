@@ -9,7 +9,6 @@ from app.models.service import GenerativeAIService
 
 def ai_service( request: Request ) -> GenerativeAIService:
 
-    ai_service = None
     if not hasattr( request.app.state, "ai_service" ):
         request.app.state.ai_service = GenerativeAIService()
 
@@ -23,7 +22,7 @@ router = APIRouter( prefix = "/chat" )
 def answer_question( prompt: Prompt, service: ServiceDependency ):
 
     try:
-        full_prompt = f"{prompt.context }\n{ prompt.user_question }" 
+        full_prompt = f"{ prompt.context }\n{ prompt.user_question }" 
         print( full_prompt )
         return service.answer( full_prompt )
     

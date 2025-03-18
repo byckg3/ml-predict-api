@@ -11,14 +11,12 @@ from app.models.service import RecordService
 
 def heart_record_service( request: Request ) -> RecordService:
 
-    heart_record_service = None
-    if hasattr( request.app.state, "heart_record_service" ):
-        heart_record_service = request.app.state.heart_record_service
-    else:
-        heart_record_service = RecordService( HeartDiseaseRecord )
-        request.app.state.heart_record_service = heart_record_service
+    if not hasattr( request.app.state, "heart_record_service" ):
+        request.app.state.heart_record_service = RecordService( HeartDiseaseRecord )
 
-    return heart_record_service
+    return request.app.heart_record_service
+
+
 
 ServiceDependency = Annotated[ RecordService, Depends( heart_record_service ) ]
 

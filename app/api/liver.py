@@ -10,14 +10,10 @@ from app.models.service import RecordService, RecordService
 
 def liver_record_service( request: Request ) -> RecordService:
 
-    liver_record_service = None
-    if hasattr( request.app.state, "liver_record_service" ):
-        liver_record_service = request.app.state.liver_record_service
-    else:
-        liver_record_service = RecordService( LiverDiseaseRecord )
-        request.app.state.liver_record_service = liver_record_service
+    if not hasattr( request.app.state, "liver_record_service" ):
+        request.app.state.liver_record_service = RecordService( LiverDiseaseRecord )
 
-    return liver_record_service
+    return request.app.liver_record_service
 
 ServiceDependency = Annotated[ RecordService, Depends( liver_record_service ) ]
 
