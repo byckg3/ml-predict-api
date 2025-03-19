@@ -7,7 +7,8 @@ from app.models.heart import HeartDiseaseRecord
 from app.models.liver import LiverDiseaseRecord
 from app.models.repository import DocumentRepository
 from app.models.user import UserProfile
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
 T = TypeVar( "T", bound = Document )
 class DocumentService:
@@ -63,21 +64,24 @@ class GenerativeAIService():
     API_KEY = os.getenv( "GEMINI_API_KEY" )
 
     def __init__( self ):
-        genai.configure( api_key = GenerativeAIService.API_KEY )
-        self.model = self.create_model( "gemini-2.0-flash" )
+        self.client = genai.Client( api_key = GenerativeAIService.API_KEY )
+        self.model = "gemini-2.0-flash"
+        self.content_config = types.GenerateContentConfig( 
+                                system_instruction = "堅持在醫療保健的領域內 提供使用者專業又溫暖的建議" )
 
-    def create_model( self, model_name: str ):
-        model = genai.GenerativeModel( model_name )
-
-        return model
     
-    async def answer( self, question ):  
-        response = await self.model.generate_content_async( question )
+    def answer( self, question ):  
+        response = self.client.models.generate_content(
+                                                model = self.model,
+                                                config = self.content_config,
+                                                contents = [ question ] )
         
         return response.text
     
-    async def answer_stream( self, question ):  
-        response = self.model.generate_content( question, stream = True )
-        
+    async def stream_answer( self, question ):  
+        response = self.client.models.generate_content_stream( 
+                                                model = self.model,
+                                                config = self.content_config,
+                                                contents = [ question ] )
         for chunk in response:
             yield chunk.text
