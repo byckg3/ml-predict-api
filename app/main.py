@@ -25,7 +25,7 @@ app.add_middleware(
     allow_origins =  [ "https://weiwei032835.github.io" ],
     allow_credentials = True,
     allow_methods = [ "*" ],
-    allow_headers = [ "*" ],
+    allow_headers = [ "*" ]
 )
 
 @app.get( "/check" )
