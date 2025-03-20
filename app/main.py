@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from app.api.router import api_router
 from app.models.db import MongoDB
 
@@ -18,6 +19,14 @@ async def app_lifespan( app: FastAPI ):
 
 app = FastAPI( lifespan = app_lifespan )
 app.include_router( api_router )
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins =  [ "https://weiwei032835.github.io" ],
+    allow_credentials = True,
+    allow_methods = [ "*" ],
+    allow_headers = [ "*" ],
+)
 
 @app.get( "/check" )
 async def check_status():
