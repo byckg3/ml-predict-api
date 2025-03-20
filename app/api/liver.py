@@ -6,7 +6,7 @@ from fastapi import APIRouter, Body, Depends, Request, status
 from fastapi.responses import JSONResponse
 from app.api.controller import DocumentController, RecordController
 from app.models.liver import LiverDiseaseRecord, example
-from app.models.service import RecordService, RecordService
+from app.models.service.base import RecordService
 
 def liver_record_service( request: Request ) -> RecordService:
 

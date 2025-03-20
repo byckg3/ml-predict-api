@@ -7,7 +7,7 @@ from fastapi import status
 from fastapi.responses import JSONResponse
 from app.api.controller import DocumentController, RecordController
 from app.models.heart import HeartDiseaseRecord, example
-from app.models.service import RecordService
+from app.models.service.base import RecordService
 
 def heart_record_service( request: Request ) -> RecordService:
 

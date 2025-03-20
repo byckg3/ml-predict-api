@@ -5,17 +5,18 @@ from fastapi import APIRouter, Body, Depends, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from app.api.controller import DocumentController
-from app.models.service import DocumentService, UserService
+from app.models.service.base import DocumentService
+from app.models.service.user import UserProfileService
 from app.models.user import UserProfile, example
 
 def user_profile_service( request: Request ) -> DocumentService:
 
     if not hasattr( request.app.state, "user_profile_service" ):
-        request.app.state.user_profile_service = UserService( UserProfile )
+        request.app.state.user_profile_service = UserProfileService( UserProfile )
         
     return request.app.state.user_profile_service
 
-ServiceDependency = Annotated[ UserService, Depends( user_profile_service ) ]
+ServiceDependency = Annotated[ UserProfileService, Depends( user_profile_service ) ]
 
 router = APIRouter( prefix = "/user" )
 

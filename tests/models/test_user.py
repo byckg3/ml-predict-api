@@ -1,10 +1,7 @@
-from datetime import datetime
 import pytest
 import pytest_asyncio
-from app.models.heart import HeartDiseaseRecord
 from app.models.db import MongoDB
 from app.models.repository import DocumentRepository
-from app.models.service import RecordService
 from app.models.user import UserProfile, example
 
 @pytest_asyncio.fixture( loop_scope = "module" )
