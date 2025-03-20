@@ -1,3 +1,4 @@
+import pandas as pd
 from beanie import Document, PydanticObjectId
 from pydantic import BaseModel, Field
 from typing import Optional
@@ -50,6 +51,29 @@ class HeartDiseaseFeatures( BaseModel ):
     ca: int                         # number of major vessels (0-3) colored by flourosopy
     thal: int                       # 0 = normal; 1 = fixed defect; 2 = reversable defect
     target: Optional[ int ] = None  # the presence of heart disease in the patient, 0 = no disease and 1 = disease
+
+    def to_df( self, exclude: list[ str ] = [] ):
+
+        features_dict = { "age": self.age, 
+                          "sex": self.sex, 
+                          "cp": self.cp, 
+                          "trestbps": self.trestbps, 
+                          "chol": self.chol, 
+                          "fbs": self.fbs, 
+                          "restecg": self.restecg, 
+                          "thalach": self.thalach, 
+                          "exang": self.exang, 
+                          "oldpeak": self.oldpeak, 
+                          "slope": self.slope,
+                          "ca": self.ca,
+                          "thal": self.thal,
+                          "target": self.target }
+        
+        features_df = pd.DataFrame( features_dict, index = [ 0 ] )
+        if exclude:
+            features_df.drop( columns = exclude, inplace = True )
+
+        return features_df
 
 class HeartDiseaseRecord( BaseEntity, Document ):
     user_id: PydanticObjectId | None = None

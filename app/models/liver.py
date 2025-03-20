@@ -1,3 +1,4 @@
+import pandas as pd
 from beanie import Document, PydanticObjectId
 from pydantic import BaseModel, Field
 from typing import List, Optional
@@ -44,6 +45,26 @@ class LiverDiseaseFeatures( BaseModel ):
     hypertension: int           = Field( ge = 0, le = 1 )
     liver_function_test: float
     diagnosis: int | None
+
+    def to_df( self, exclude: list[ str ] = [] ):
+
+        features_dict = { "Age": self.age, 
+                          "Gender": self.gender, 
+                          "BMI": self.bmi, 
+                          "AlcoholConsumption": self.alcohol_consumption, 
+                          "Smoking": self.smoking, 
+                          "GeneticRisk": self.genetic_risk, 
+                          "PhysicalActivity": self.physical_activity, 
+                          "Diabetes": self.diabetes, 
+                          "Hypertension": self.hypertension, 
+                          "LiverFunctionTest": self.liver_function_test, 
+                          "Diagnosis": self.diagnosis }
+        
+        features_df = pd.DataFrame( features_dict, index = [ 0 ] )
+        if exclude:
+            features_df.drop( columns = exclude, inplace = True )
+
+        return features_df
     
 class LiverDiseaseRecord( BaseEntity, Document ):
     user_id: PydanticObjectId | None = None
