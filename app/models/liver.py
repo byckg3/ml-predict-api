@@ -1,6 +1,7 @@
 import asyncio
 import os
 import joblib
+import numpy as np
 import pandas as pd
 from beanie import Document, PydanticObjectId
 from pydantic import BaseModel, Field
@@ -72,7 +73,7 @@ class LiverDiseaseFeatures( BaseModel ):
             features_df.drop( columns = exclude, inplace = True )
 
         return features_df
-    
+
 class LiverDiseaseRecord( BaseEntity, Document ):
     user_id: PydanticObjectId | None = None
     features: LiverDiseaseFeatures

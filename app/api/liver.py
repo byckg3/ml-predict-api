@@ -5,16 +5,10 @@ from beanie import PydanticObjectId
 from fastapi import APIRouter, Body, Depends, Request, status
 from fastapi.responses import JSONResponse
 from app.api.controller import DocumentController, RecordController
-from app.models.liver import LiverDiseaseRecord, example
+from app.api.dependencies import liver_record_service, predict_service
+from app.models.liver import LiverDiseaseFeatures, LiverDiseaseRecord, example
 from app.models.service.base import RecordService
 from app.models.service.disease import DiseasePredictionService
-
-def liver_record_service( request: Request ) -> RecordService:
-
-    if not hasattr( request.app.state, "liver_record_service" ):
-        request.app.state.liver_record_service = RecordService( LiverDiseaseRecord )
-
-    return request.app.state.liver_record_service
 
 ServiceDependency = Annotated[ RecordService, Depends( liver_record_service ) ]
 
@@ -63,12 +57,13 @@ async def delete_all_records( service: ServiceDependency ) -> None:
     return await DocumentController.delete_all_document( service )
 
 @router.post( "/predict" )
-async def predict_target( record: LiverDiseaseRecord, service: DiseasePredictionService ):
+async def predict_target( record: LiverDiseaseRecord, service: DiseasePredictionService = Depends( predict_service ) ):
 
     try:
         # record.diagnosis = random.choice( [ 0, 1 ] )
-        features = record.features
-        result = service.liver_predictor.predict( features )
+        features: LiverDiseaseFeatures = record.features
+        result = service.predict( features )
+        print( result)
         features.set_target( result )
         
         return features

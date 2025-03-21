@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.router import api_router
 from app.models.db import MongoDB
+from app.models.service.disease import DiseasePredictionService
 
 @asynccontextmanager
 async def app_lifespan( app: FastAPI ):
@@ -12,6 +13,11 @@ async def app_lifespan( app: FastAPI ):
 
     app.state.mongo = monogo
     app.state.db = monogo.db
+
+    predict_service = DiseasePredictionService()
+    await predict_service.models_init()
+
+    app.state.predict_service = predict_service
     
     yield
 

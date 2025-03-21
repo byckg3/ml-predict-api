@@ -12,6 +12,7 @@ build/
 develop-eggs/
 dist/
 downloads/
+hf_models/
 eggs/
 .eggs/
 lib/

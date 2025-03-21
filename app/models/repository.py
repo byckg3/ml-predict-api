@@ -82,10 +82,11 @@ class HFModelRepository:
         login( os.getenv( "HF_TOKEN" ) )
         self.api = HfApi()
 
-    def download( self, repo_filepath, dir = "." ):
+    async def download( self, repo_filepath, dir = "./hf_models" ):
 
-        file_path = hf_hub_download( repo_id = HFModelRepository.REPOSITORY_ID, 
-                                     local_dir = dir,
-                                     filename = repo_filepath )
+        model_path = hf_hub_download( repo_id = HFModelRepository.REPOSITORY_ID, 
+                                      local_dir = dir,
+                                      filename = repo_filepath )
+        print( "object_location:", model_path )
         
-        return file_path
+        return model_path

@@ -83,15 +83,10 @@ class TestHFModelRepository:
         
         repo_filepath = "liver/sklearn/random_forest/01/input_example.json"
 
-        relative_filepath = self.repository.download( repo_filepath, self.download_dir )
-
-        local_filepath = f"{relative_filepath}"
-        # print(local_filepath) 
+        local_filepath = await self.repository.download( repo_filepath, self.download_dir )
         file_path = Path( local_filepath )
         
         assert file_path.exists() == True, f"failed: Expected {file_path} exists"
-
-        file_path.unlink()
 
     def teardown_method( self, test_repository_download_successfully ):
         shutil.rmtree( self.download_dir )

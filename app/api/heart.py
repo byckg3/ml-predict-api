@@ -6,16 +6,10 @@ from fastapi import APIRouter, Body, Depends, Request
 from fastapi import status
 from fastapi.responses import JSONResponse
 from app.api.controller import DocumentController, RecordController
+from app.api.dependencies import heart_record_service
 from app.models.heart import HeartDiseaseRecord, example
 from app.models.service.base import RecordService
 from app.models.service.disease import DiseasePredictionService
-
-def heart_record_service( request: Request ) -> RecordService:
-
-    if not hasattr( request.app.state, "heart_record_service" ):
-        request.app.state.heart_record_service = RecordService( HeartDiseaseRecord )
-
-    return request.app.state.heart_record_service
 
 ServiceDependency = Annotated[ RecordService, Depends( heart_record_service ) ]
 
@@ -65,15 +59,15 @@ async def delete_all_records( service: ServiceDependency ) -> None:
     return await DocumentController.delete_all_document( service )
         
 @router.post( "/predict" )
-def predict_target( record: HeartDiseaseRecord, service: DiseasePredictionService ):
+def predict_target( record: HeartDiseaseRecord ): # , service: DiseasePredictionService
 
     try:
-        # record.target = random.choice( [ 0, 1 ] )
-        features = record.features
-        result = service.heart_predictor.predict( features )
-        features.set_target( result )
+        record.target = random.choice( [ 0, 1 ] )
+        # features = record.features
+        # result = service.heart_predictor.predict( features )
+        # features.set_target( result )
         
-        return features
+        return record
     
     except Exception as e:
         print( e )
