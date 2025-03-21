@@ -1,9 +1,13 @@
+import asyncio
+import os
+import joblib
 import pandas as pd
 from beanie import Document, PydanticObjectId
 from pydantic import BaseModel, Field
-from typing import List, Optional
 
-from app.models.base import BaseEntity
+from sklearn.ensemble import RandomForestClassifier
+
+from app.models.base import BaseEntity, SKLearnPredictor
 
 example = {
     "created_record": { 
@@ -46,6 +50,9 @@ class LiverDiseaseFeatures( BaseModel ):
     liver_function_test: float
     diagnosis: int | None
 
+    def set_target( self, result ):
+        self.diagnosis = result
+
     def to_df( self, exclude: list[ str ] = [] ):
 
         features_dict = { "Age": self.age, 
@@ -78,3 +85,30 @@ class LiverDiseaseRecord( BaseEntity, Document ):
             "examples": [ example[ "created_record" ] ]
         }
     }
+
+class LiverDiseasePredictor( SKLearnPredictor ):
+
+    def __init__( self, model_class ):
+        super().__init__( model_class )
+
+    def predict( self, features: LiverDiseaseFeatures ):
+
+        features_df = features.to_df( exclude = [ "Diagnosis" ] )
+        self._validate( features_df )
+
+        return self.model.predict( features_df )
+
+
+# python -m app.models.liver
+if __name__ == "__main__":
+    path = os.getenv( "LIVER_MODEL_URI" )
+    classifier = LiverDiseasePredictor( RandomForestClassifier )
+    asyncio.run( classifier.load( path ) )
+    
+    data = pd.read_csv( "D:/jupyter/data/Liver_disease_data.csv" )
+    
+    input = data.iloc[ 0:1 ].drop( columns = [ "Diagnosis" ] )
+    # print( input )
+    features = LiverDiseaseFeatures( **example[ "created_record" ][ "features" ]  )
+    
+    print( "predict:\n", classifier.predict( features ) )

@@ -1,6 +1,8 @@
 from datetime import datetime, timezone
+import os
 from typing import Any, TypeVar, Union
 from beanie import Document, PydanticObjectId
+from huggingface_hub import HfApi, hf_hub_download, login
 
 T = TypeVar( "T", bound = Document )
 class DocumentRepository:
@@ -69,3 +71,21 @@ class DocumentRepository:
             return True
         else:
             return False
+        
+
+class HFModelRepository:
+
+    REPOSITORY_ID = os.getenv( "REPOSITORY_ID" )
+
+    def __init__( self ):
+
+        login( os.getenv( "HF_TOKEN" ) )
+        self.api = HfApi()
+
+    def download( self, repo_filepath, dir = "." ):
+
+        file_path = hf_hub_download( repo_id = HFModelRepository.REPOSITORY_ID, 
+                                     local_dir = dir,
+                                     filename = repo_filepath )
+        
+        return file_path

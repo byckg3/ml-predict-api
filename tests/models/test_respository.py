@@ -1,8 +1,10 @@
+from pathlib import Path
+import shutil
 import pytest
 import pytest_asyncio
 from app.models.liver import LiverDiseaseRecord, example
 from app.models.db import MongoDB
-from app.models.repository import DocumentRepository
+from app.models.repository import DocumentRepository, HFModelRepository
 
 @pytest_asyncio.fixture( loop_scope = "module" )
 async def setup_mongo():
@@ -68,3 +70,28 @@ class TestDocumentRepository:
 
         empty_list = await self.repository.find_all()
         assert len( empty_list ) == 0, f"failed: Expected 0 but got { len( empty_list ) }"
+
+
+@pytest.mark.hf
+@pytest.mark.asyncio( loop_scope = "module" )
+class TestHFModelRepository:
+
+    repository = HFModelRepository()
+    download_dir = "./temp"
+
+    async def test_repository_download_successfully( self ):
+        
+        repo_filepath = "liver/sklearn/random_forest/01/input_example.json"
+
+        relative_filepath = self.repository.download( repo_filepath, self.download_dir )
+
+        local_filepath = f"{relative_filepath}"
+        # print(local_filepath) 
+        file_path = Path( local_filepath )
+        
+        assert file_path.exists() == True, f"failed: Expected {file_path} exists"
+
+        file_path.unlink()
+
+    def teardown_method( self, test_repository_download_successfully ):
+        shutil.rmtree( self.download_dir )

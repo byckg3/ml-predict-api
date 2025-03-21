@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 from app.api.controller import DocumentController, RecordController
 from app.models.heart import HeartDiseaseRecord, example
 from app.models.service.base import RecordService
+from app.models.service.disease import DiseasePredictionService
 
 def heart_record_service( request: Request ) -> RecordService:
 
@@ -64,12 +65,15 @@ async def delete_all_records( service: ServiceDependency ) -> None:
     return await DocumentController.delete_all_document( service )
         
 @router.post( "/predict" )
-async def predict_target( record: HeartDiseaseRecord ):
+def predict_target( record: HeartDiseaseRecord, service: DiseasePredictionService ):
 
     try:
-        record.target = random.choice( [ 0, 1 ] )
+        # record.target = random.choice( [ 0, 1 ] )
+        features = record.features
+        result = service.heart_predictor.predict( features )
+        features.set_target( result )
         
-        return { "result": record }
+        return features
     
     except Exception as e:
         print( e )

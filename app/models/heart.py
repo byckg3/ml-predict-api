@@ -3,7 +3,7 @@ from beanie import Document, PydanticObjectId
 from pydantic import BaseModel, Field
 from typing import Optional
 
-from app.models.base import BaseEntity
+from app.models.base import BaseEntity, SKLearnPredictor
 
 example = {
     "created_record": {
@@ -52,6 +52,9 @@ class HeartDiseaseFeatures( BaseModel ):
     thal: int                       # 0 = normal; 1 = fixed defect; 2 = reversable defect
     target: Optional[ int ] = None  # the presence of heart disease in the patient, 0 = no disease and 1 = disease
 
+    def set_target( self, result ):
+        self.target = result
+
     def to_df( self, exclude: list[ str ] = [] ):
 
         features_dict = { "age": self.age, 
@@ -88,4 +91,14 @@ class HeartDiseaseRecord( BaseEntity, Document ):
         }
     }
 
+class HeartDiseasePredictor( SKLearnPredictor ):
 
+    def __init__( self, model_class ):
+        super().__init__( model_class )
+
+    def predict( self, features: HeartDiseaseFeatures ):
+
+        features_df = features.to_df( exclude = [ "target" ] )
+        self._validate( features_df )
+
+        return self.model.predict( features_df )
