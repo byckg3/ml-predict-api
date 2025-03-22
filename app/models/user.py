@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Annotated, Optional
+from typing import Annotated
 from beanie import Document, Indexed
 from pydantic import EmailStr, Field
 from app.models.base import BaseEntity

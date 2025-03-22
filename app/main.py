@@ -1,9 +1,12 @@
+import gradio as gr
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.router import api_router
 from app.models.db import MongoDB
 from app.models.service.disease import DiseasePredictionService
+
+from app.web.widget import web_router, bmi_calculator, chat_window
 
 @asynccontextmanager
 async def app_lifespan( app: FastAPI ):
@@ -22,9 +25,15 @@ async def app_lifespan( app: FastAPI ):
     yield
 
     await monogo.close()
+    chat_window.close()
+    bmi_calculator.close()
 
 app = FastAPI( lifespan = app_lifespan )
 app.include_router( api_router )
+app.include_router( web_router )
+
+app = gr.mount_gradio_app( app, bmi_calculator, path = f"{web_router.prefix}/bmi" )
+app = gr.mount_gradio_app( app, chat_window, path = f"{web_router.prefix}/chat" )
 
 app.add_middleware(
     CORSMiddleware,

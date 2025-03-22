@@ -1,11 +1,9 @@
 import os
 import asyncio
-from datetime import datetime, timezone
-from beanie import Document, init_beanie
+from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import Field
 
-from app.models.base import BaseEntity
 from app.models.heart import HeartDiseaseRecord
 from app.models.liver import LiverDiseaseRecord
 from app.models.user import UserProfile

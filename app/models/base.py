@@ -1,8 +1,6 @@
+import joblib
 from abc import ABC, abstractmethod
 from datetime import datetime, timezone
-from typing import Optional
-from beanie import Document, Insert, before_event
-import joblib
 from pydantic import BaseModel, Field
 
 class BaseEntity( BaseModel ):

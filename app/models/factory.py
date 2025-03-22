@@ -2,6 +2,7 @@ import asyncio
 import os
 from sklearn.ensemble import RandomForestClassifier
 
+from app.models.heart import HeartDiseasePredictor
 from app.models.liver import LiverDiseaseFeatures, LiverDiseasePredictor, example
 
 
@@ -22,7 +23,7 @@ class DiseasePredictorFactory:
     }
 
     _wrapper = {
-        "heart": None,
+        "heart": HeartDiseasePredictor,
         "liver": LiverDiseasePredictor
     }
 
