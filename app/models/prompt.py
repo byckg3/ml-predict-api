@@ -1,9 +1,13 @@
 from beanie import PydanticObjectId
 from pydantic import BaseModel
 
-class Prompt( BaseModel ):
+class HealthCareDomain:
+    context: str = "堅持在醫療保健的領域內 提供專業又溫暖的建議\n並以簡單明瞭且長話短說的方式回答領域內的提問\n"
+    chat_context: str = "可以根據之前的對話內容來回應使用者問題\n"
 
-    context: str | None = "請盡量以簡單明瞭並且長話短說的方式回答以下使用者的問題:"
+class HealthCarePrompt( BaseModel ):
+
+    context: str | None = HealthCareDomain.context
     user_id: PydanticObjectId | None = None
     user_question: str | None = ""
 
@@ -19,3 +23,4 @@ class Prompt( BaseModel ):
             ]
         }
     }
+

@@ -5,9 +5,9 @@ from app.models.service.ai import GenerativeAIService
 
 web_router = APIRouter( prefix = "/widgets", tags = [ "Widgets" ] )
 
-@web_router.get("/" )
+@web_router.get( "/" )
 async def widgets_info():
-    """Gradio UI interface, please visit `/widgets/bmi`, `/widgets/chat`"""
+    """Gradio UI interface, please visit `/widgets/chat`"""
     
     return { "message": "Gradio UI is available at /widget/..."}
 
@@ -45,8 +45,6 @@ def chat_function( question, history ):
     input = ""
     for past_content in history:
 
-        # if past_content[ "role" ] == "assistant":
-        #     past_content[ "role" ] = "model"
         input += f"{past_content[ 'content' ]}\n"
 
     input += "綜合以上對答的紀錄 繼續回答下面的問題\n"
