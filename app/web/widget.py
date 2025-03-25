@@ -43,7 +43,7 @@ def chat_function( question, history ):
 
     qas = []
     for past_content in history:
-        qas.append( f"{past_content[ "role" ]}: {past_content[ "content" ]}" )
+        qas.append( f"{past_content[ 'role' ]}: {past_content[ 'content' ]}" )
 
     qas.append( question )
 
