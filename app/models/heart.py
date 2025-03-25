@@ -50,7 +50,7 @@ class HeartDiseaseFeatures( BaseModel ):
     slope: int                      # the slope of the peak exercise ST segment
     ca: int                         # number of major vessels (0-3) colored by flourosopy
     thal: int                       # 0 = normal; 1 = fixed defect; 2 = reversable defect
-    target: Optional[ int ] = None  # the presence of heart disease in the patient, 0 = no disease and 1 = disease
+    target: int | None = None       # the presence of heart disease in the patient, 0 = no disease and 1 = disease
 
     def set_target( self, result ):
         self.target = result

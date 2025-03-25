@@ -11,13 +11,16 @@ class DiseasePredictionService:
     def __init__( self ):      
         
         self.liver_predictor = DiseasePredictorFactory.create_disease_predictor( "liver", "random_forest" )
-        self.heart_predictor = None
+        self.heart_predictor = DiseasePredictorFactory.create_disease_predictor( "heart", "random_forest" )
         self.hf_repository = HFModelRepository()
 
     async def models_init( self ):
 
         liver_model_path = await self.hf_repository.download( "liver/sklearn/random_forest/01/model.pkl" )
         await self.liver_predictor.load( liver_model_path )
+
+        heart_model_path = await self.hf_repository.download( "heart/sklearn/random_forest/01/model.pkl" )
+        await self.heart_predictor.load( heart_model_path )
 
         print( f"DiseasePredictionService init models successfully")
     
@@ -33,8 +36,10 @@ class DiseasePredictionService:
         
         elif isinstance( features, HeartDiseaseFeatures ):
             result = self.heart_predictor.predict( features )
+
+        features.set_target( int( result[ 0 ] ) )
         
-        return int( result[ 0 ] )
+        return features
 
 # python -m app.models.service.disease
 if __name__ == "__main__":

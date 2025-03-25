@@ -49,7 +49,7 @@ class LiverDiseaseFeatures( BaseModel ):
     diabetes: int               = Field( ge = 0, le = 1 )
     hypertension: int           = Field( ge = 0, le = 1 )
     liver_function_test: float
-    diagnosis: int | None
+    diagnosis: int | None = None
 
     def set_target( self, result ):
         self.diagnosis = result
