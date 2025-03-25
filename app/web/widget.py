@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 import gradio as gr
 
+from app.models.prompt import HealthCareDomain
 from app.models.service.ai import GenerativeAIService
 
 web_router = APIRouter( prefix = "/widgets", tags = [ "Widgets" ] )
@@ -37,28 +38,22 @@ bmi_calculator = gr.Interface( fn = calculate_bmi,
                                title = "BMI Calculator",
                                description = "Enter your weight and height to instantly get your BMI" )
 
-
+healthcare_helper = GenerativeAIService( HealthCareDomain )
 def chat_function( question, history ):
 
-    chat = GenerativeAIService.create_chat()
-
-    input = ""
+    qas = []
     for past_content in history:
+        qas.append( f"{past_content[ "role" ]}: {past_content[ "content" ]}" )
 
-        input += f"{past_content[ 'content' ]}\n"
+    qas.append( question )
 
-    input += "記住以上對答的紀錄 繼續回答下面的問題\n"
-    input += question
-    # print( input )
-    response = chat.send_message_stream( input )
     msg = ""
-    for chunk in response:
-        msg = msg + chunk.text
+    for text in healthcare_helper.stream_answer( qas ):
+        msg = msg + text
         yield msg
 
-    # response = chat.send_message( input )
-    # return response.text
-
-chat_window = gr.ChatInterface( fn = chat_function, 
+chat_window = gr.ChatInterface( fn = chat_function,
+                                examples = [ "該如何預防心臟病?", "該如何預防肝病?" ],
+                                # editable = True,
                                 type = "messages", 
                                 autofocus = True )

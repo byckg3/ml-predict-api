@@ -22,7 +22,7 @@ class DiseasePredictionService:
         heart_model_path = await self.hf_repository.download( "heart/sklearn/random_forest/01/model.pkl" )
         await self.heart_predictor.load( heart_model_path )
 
-        print( f"DiseasePredictionService init models successfully")
+        print( f"DiseasePredictionService init models successfully" )
     
     @overload
     def predict( self, features: HeartDiseaseFeatures ):

@@ -9,7 +9,7 @@ class GenerativeAIService:
     
     API_KEY = os.getenv( "GEMINI_API_KEY" )
     MODEL = "gemini-2.0-flash" #  os.getenv( "TUNED_MODEL_ID" )
-
+    
     client = genai.Client( api_key = API_KEY )
     
     def __init__( self, domain = HealthCareDomain ):
@@ -22,11 +22,11 @@ class GenerativeAIService:
                                                         contents = [ question ] )
         return response.text
     
-    async def stream_answer( self, question ):
+    def stream_answer( self, qa_records ):
         response = GenerativeAIService.client.models.generate_content_stream( 
                                                         model = GenerativeAIService.MODEL,
                                                         config = self.content_config,
-                                                        contents = [ question ] )
+                                                        contents = qa_records )
                                         
         for chunk in response:
             yield chunk.text

@@ -37,7 +37,7 @@ class HealthCareDomain:
     6. 若未能識別緊急情況，可能導致錯過黃金治療時間
     7. 若錯誤建議使用者自行處理，可能導致生命危險
     """
-    chat_context: str = "可以根據之前的對話內容來回應使用者問題\n"
+    chat_context: str = "記住之前的對話內容來回應使用者問題\n"
 
 class HealthCarePrompt( BaseModel ):
 
