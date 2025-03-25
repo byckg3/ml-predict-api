@@ -22,10 +22,11 @@ router = APIRouter( prefix = "/chat" )
 async def stream_answer( prompt: HealthCarePrompt, service: ServiceDependency ):
 
     try:
-        full_prompt = f"{ prompt.context }\n{ prompt.user_question }" 
+        full_prompt = f"{ prompt.user_question }" 
         print( full_prompt )
     
         return StreamingResponse( service.stream_answer( full_prompt ), media_type = "text/event-stream" )
+        # return service.answer( full_prompt )
     
     except Exception as e:
             print( e )

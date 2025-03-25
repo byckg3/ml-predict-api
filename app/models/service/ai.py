@@ -6,9 +6,9 @@ from google.genai import types
 from app.models.prompt import HealthCareDomain
 
 class GenerativeAIService:
-
+    
     API_KEY = os.getenv( "GEMINI_API_KEY" )
-    MODEL = "gemini-2.0-flash"
+    MODEL = "gemini-2.0-flash" #  os.getenv( "TUNED_MODEL_ID" )
 
     client = genai.Client( api_key = API_KEY )
     
@@ -16,19 +16,18 @@ class GenerativeAIService:
         self.content_config = types.GenerateContentConfig( 
                                         system_instruction = domain.context )
     
-    
-    def answer( self, question ):  
+    def answer( self, question ):
         response = GenerativeAIService.client.models.generate_content(
                                                         model = GenerativeAIService.MODEL,
-                                                        config = self.content_config,
                                                         contents = [ question ] )
         return response.text
     
-    async def stream_answer( self, question ):  
+    async def stream_answer( self, question ):
         response = GenerativeAIService.client.models.generate_content_stream( 
                                                         model = GenerativeAIService.MODEL,
                                                         config = self.content_config,
                                                         contents = [ question ] )
+                                        
         for chunk in response:
             yield chunk.text
 
@@ -40,6 +39,12 @@ class GenerativeAIService:
                                         config = content_config )
         
         return chat
+
+    def embeddings( cls, contents ):
+        result = cls.client.models.embed_content( model = "gemini-embedding-exp-03-07",
+                                                  contents = contents )
+       
+        return result.embeddings
     
 class ChatSession:
 

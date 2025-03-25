@@ -47,7 +47,7 @@ def chat_function( question, history ):
 
         input += f"{past_content[ 'content' ]}\n"
 
-    input += "綜合以上對答的紀錄 繼續回答下面的問題\n"
+    input += "記住以上對答的紀錄 繼續回答下面的問題\n"
     input += question
     # print( input )
     response = chat.send_message_stream( input )

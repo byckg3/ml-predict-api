@@ -8,10 +8,6 @@ from app.models.heart import HeartDiseaseRecord
 from app.models.liver import LiverDiseaseRecord
 from app.models.user import UserProfile
 
-if os.path.exists( ".env" ):
-    from dotenv import load_dotenv
-    load_dotenv()
-
 class MongoDB:
 
     URI = os.getenv( "MONGO_URI" )
