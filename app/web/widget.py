@@ -53,7 +53,7 @@ def chat_function( question, history ):
         yield msg
 
 chat_window = gr.ChatInterface( fn = chat_function,
-                                examples = [ "該如何預防心臟病?", "該如何預防肝病?" ],
+                                examples = [ "提供哪些服務?", "該如何預防心臟病?", "該如何預防肝病?" ],
                                 # editable = True,
                                 type = "messages", 
                                 autofocus = True )

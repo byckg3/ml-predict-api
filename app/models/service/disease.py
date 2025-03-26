@@ -10,13 +10,13 @@ class DiseasePredictionService:
 
     def __init__( self ):      
         
-        self.liver_predictor = DiseasePredictorFactory.create_disease_predictor( "liver", "random_forest" )
+        self.liver_predictor = DiseasePredictorFactory.create_disease_predictor( "liver", "gradient_boosting" )
         self.heart_predictor = DiseasePredictorFactory.create_disease_predictor( "heart", "random_forest" )
         self.hf_repository = HFModelRepository()
 
     async def models_init( self ):
 
-        liver_model_path = await self.hf_repository.download( "liver/sklearn/random_forest/01/model.pkl" )
+        liver_model_path = await self.hf_repository.download( "liver/sklearn/gradient_boosting/01/model.pkl" )
         await self.liver_predictor.load( liver_model_path )
 
         heart_model_path = await self.hf_repository.download( "heart/sklearn/random_forest/01/model.pkl" )

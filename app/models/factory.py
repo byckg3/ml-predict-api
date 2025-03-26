@@ -1,6 +1,6 @@
 import asyncio
 import os
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 
 from app.models.heart import HeartDiseasePredictor
 from app.models.liver import LiverDiseaseFeatures, LiverDiseasePredictor, example
@@ -13,7 +13,8 @@ class DiseasePredictorFactory:
             "random_forest": RandomForestClassifier
         },
         "liver": {
-            "random_forest": RandomForestClassifier
+            "random_forest": RandomForestClassifier,
+            "gradient_boosting": GradientBoostingClassifier,
         }
     }
 
