@@ -11,7 +11,7 @@ class DBSettings( BaseSettings ):
     MONGO_URI: str
     DB_NAME: str
 
-    model_config = SettingsConfigDict( env_file = ".env", extra = "ignore" )
+    model_config = SettingsConfigDict( extra = "ignore" )
 
 class HuggingFaceSettings( BaseSettings ):
 
@@ -24,7 +24,7 @@ class HuggingFaceSettings( BaseSettings ):
     heart_classifier: str = "sklearn/random_forest"
     heart_model_uri: str = f"heart/{heart_classifier}/01/model.pkl"
 
-    model_config = SettingsConfigDict( env_file = ".env", extra = "ignore" )
+    model_config = SettingsConfigDict( extra = "ignore" )
 
 
 class GeminiAPISettings( BaseSettings ):
@@ -32,7 +32,7 @@ class GeminiAPISettings( BaseSettings ):
     GEMINI_API_KEY: str
     TUNED_MODEL_ID: str
 
-    model_config = SettingsConfigDict( env_file = ".env", extra = "ignore" )
+    model_config = SettingsConfigDict( extra = "ignore" )
 
 
 
