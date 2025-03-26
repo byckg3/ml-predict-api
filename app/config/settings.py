@@ -30,11 +30,9 @@ class HuggingFaceSettings( BaseSettings ):
 class GeminiAPISettings( BaseSettings ):
 
     GEMINI_API_KEY: str
-    TUNED_MODEL_ID: str
+    # ㄋTUNED_MODEL_ID: str
 
     model_config = SettingsConfigDict( extra = "ignore" )
-
-
 
 
 @lru_cache()
