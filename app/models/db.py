@@ -1,17 +1,16 @@
-import os
 import asyncio
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
-from pydantic import Field
 
+from app.config.settings import db_settings
 from app.models.heart import HeartDiseaseRecord
 from app.models.liver import LiverDiseaseRecord
 from app.models.user import UserProfile
 
 class MongoDB:
 
-    URI = os.getenv( "MONGO_URI" )
-    DB_NAME = os.getenv( "DB_NAME" )
+    URI = db_settings().MONGO_URI
+    DB_NAME = db_settings().DB_NAME
 
     def __init__( self ):
         self.client = AsyncIOMotorClient( MongoDB.URI )

@@ -1,13 +1,13 @@
-import os
 from fastapi import WebSocket
 from google import genai
 from google.genai import types
 
+from app.config.settings import gemini_settings
 from app.models.prompt import HealthCareDomain
 
 class GenerativeAIService:
     
-    API_KEY = os.getenv( "GEMINI_API_KEY" )
+    API_KEY = gemini_settings().GEMINI_API_KEY
     MODEL = "gemini-2.0-flash" #  os.getenv( "TUNED_MODEL_ID" )
     
     client = genai.Client( api_key = API_KEY )

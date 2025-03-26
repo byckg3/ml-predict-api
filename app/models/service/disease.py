@@ -1,5 +1,6 @@
 import asyncio
 from typing import overload
+from app.config.settings import hf_settings
 from app.models.factory import DiseasePredictorFactory
 from app.models.heart import HeartDiseaseFeatures
 from app.models.liver import LiverDiseaseFeatures, LiverDiseasePredictor
@@ -10,16 +11,16 @@ class DiseasePredictionService:
 
     def __init__( self ):      
         
-        self.liver_predictor = DiseasePredictorFactory.create_disease_predictor( "liver", "gradient_boosting" )
-        self.heart_predictor = DiseasePredictorFactory.create_disease_predictor( "heart", "random_forest" )
+        self.liver_predictor = DiseasePredictorFactory.create_disease_predictor( "liver", hf_settings().liver_classifier )
+        self.heart_predictor = DiseasePredictorFactory.create_disease_predictor( "heart", hf_settings().heart_classifier )
         self.hf_repository = HFModelRepository()
 
     async def models_init( self ):
-
-        liver_model_path = await self.hf_repository.download( "liver/sklearn/gradient_boosting/01/model.pkl" )
+        
+        liver_model_path = await self.hf_repository.download( hf_settings().liver_model_uri )
         await self.liver_predictor.load( liver_model_path )
 
-        heart_model_path = await self.hf_repository.download( "heart/sklearn/random_forest/01/model.pkl" )
+        heart_model_path = await self.hf_repository.download( hf_settings().heart_model_uri )
         await self.heart_predictor.load( heart_model_path )
 
         print( f"DiseasePredictionService init models successfully" )

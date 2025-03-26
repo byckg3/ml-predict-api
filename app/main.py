@@ -1,8 +1,3 @@
-import os
-if os.path.exists( ".env" ):
-    from dotenv import load_dotenv
-    load_dotenv()
-
 import gradio as gr
 from contextlib import asynccontextmanager
 from fastapi import FastAPI

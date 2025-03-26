@@ -10,11 +10,11 @@ class DiseasePredictorFactory:
 
     _model_registry = {
         "heart": {
-            "random_forest": RandomForestClassifier
+            "sklearn/random_forest": RandomForestClassifier
         },
         "liver": {
-            "random_forest": RandomForestClassifier,
-            "gradient_boosting": GradientBoostingClassifier,
+            "sklearn/random_forest": RandomForestClassifier,
+            "sklearn/gradient_boosting": GradientBoostingClassifier,
         }
     }
 
