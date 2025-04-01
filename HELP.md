@@ -16,3 +16,4 @@
 - [MongoDB Atlas](https://cloud.mongodb.com/)
 - [Beanie Documentation](https://beanie-odm.dev/)
 - [Gemini API quickstart](https://ai.google.dev/gemini-api/docs/quickstart)
+- [Chroma](https://docs.trychroma.com/docs/overview/introduction)

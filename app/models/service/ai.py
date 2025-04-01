@@ -1,3 +1,4 @@
+from chromadb import Documents, EmbeddingFunction, Embeddings
 from fastapi import WebSocket
 from google import genai
 from google.genai import types
@@ -85,3 +86,26 @@ class WSChatManager:
 
         for session in self.active_sessions:
             await session.websocket.send_text( message )
+
+class GenAIEmbeddingFunction( EmbeddingFunction[ Documents ] ):
+
+    def __init__( self, api_key: str = None, 
+                  model_name: str = "gemini-embedding-exp-03-07", 
+                  task_type = "SEMANTIC_SIMILARITY" ) -> None:
+        
+        self.api_key = api_key
+        if api_key is None:
+            self.api_key = gemini_settings().GEMINI_API_KEY
+            
+        self.client = genai.Client( api_key = self.api_key )
+        self.model_name = model_name
+        self.task_type = task_type
+
+    def __call__( self, input: Documents ) -> Embeddings:
+       
+        result = self.client.models.embed_content( model = self.model_name,
+                                                   contents = input,
+                                                   config = types.EmbedContentConfig( task_type = self.task_type )
+                                    )
+       
+        return [ embedding.values for embedding in result.embeddings ]

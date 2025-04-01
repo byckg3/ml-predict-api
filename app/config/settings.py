@@ -13,6 +13,13 @@ class DBSettings( BaseSettings ):
 
     model_config = SettingsConfigDict( extra = "ignore" )
 
+class ChromaSettings( BaseSettings ):
+
+    CHROMADB_COLLECTION_NAME = "gad245-g1-chromadb-embedding"
+    path: str = "./chroma"
+
+    model_config = SettingsConfigDict( extra = "ignore" )
+
 class HuggingFaceSettings( BaseSettings ):
 
     HF_TOKEN: str
@@ -36,8 +43,12 @@ class GeminiAPISettings( BaseSettings ):
 
 
 @lru_cache()
-def db_settings():
+def mongo_settings():
     return DBSettings()
+
+@lru_cache()
+def chroma_settings():
+    return ChromaSettings()
 
 @lru_cache()
 def hf_settings():

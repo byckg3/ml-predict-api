@@ -1,16 +1,18 @@
 import asyncio
+import chromadb
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from app.config.settings import db_settings
+from app.config.settings import chroma_settings, mongo_settings
 from app.models.heart import HeartDiseaseRecord
 from app.models.liver import LiverDiseaseRecord
+from app.models.service.ai import GenAIEmbeddingFunction
 from app.models.user import UserProfile
 
 class MongoDB:
 
-    URI = db_settings().MONGO_URI
-    DB_NAME = db_settings().DB_NAME
+    URI = mongo_settings().MONGO_URI
+    DB_NAME = mongo_settings().DB_NAME
 
     def __init__( self ):
         self.client = AsyncIOMotorClient( MongoDB.URI )
@@ -37,6 +39,18 @@ class MongoDB:
 
     async def close( self ):
         self.client.close()
+
+class ChromaDB:
+
+    COLLECTION_NAME = chroma_settings().CHROMADB_COLLECTION_NAME
+
+    def __init__( self, path = chroma_settings().path ):
+        self.path = path
+        self.client = chromadb.PersistentClient( path = self.path )
+        self.collection = self.client.get_collection( name = ChromaDB.COLLECTION_NAME,
+                                                      embedding_function = GenAIEmbeddingFunction() )
+
+    
 
 # python app/models/mongo.py
 if __name__ == "__main__":
