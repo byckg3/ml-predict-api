@@ -15,7 +15,7 @@ class DBSettings( BaseSettings ):
 
 class ChromaSettings( BaseSettings ):
 
-    CHROMADB_COLLECTION_NAME = "gad245-g1-chromadb-embedding"
+    CHROMADB_COLLECTION_NAME: str = "gad245-g1-chromadb-embedding"
     path: str = "./chroma"
 
     model_config = SettingsConfigDict( extra = "ignore" )
@@ -37,7 +37,7 @@ class HuggingFaceSettings( BaseSettings ):
 class GeminiAPISettings( BaseSettings ):
 
     GEMINI_API_KEY: str
-    # ㄋTUNED_MODEL_ID: str
+    # TUNED_MODEL_ID: str
 
     model_config = SettingsConfigDict( extra = "ignore" )
 

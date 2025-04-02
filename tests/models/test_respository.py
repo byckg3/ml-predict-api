@@ -4,7 +4,8 @@ import pytest
 import pytest_asyncio
 from app.models.liver import LiverDiseaseRecord, example
 from app.models.db import MongoDB
-from app.models.repository import DocumentRepository, HFModelRepository
+from app.repositories.nosql import DocumentRepository
+from app.repositories.models import HFModelRepository
 
 @pytest_asyncio.fixture( loop_scope = "module" )
 async def setup_mongo():

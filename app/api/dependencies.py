@@ -2,9 +2,8 @@ from fastapi import Request
 
 from app.models.heart import HeartDiseaseRecord
 from app.models.liver import LiverDiseaseRecord
-from app.models.service.ai import WSChatManager
-from app.models.service.base import RecordService
-from app.models.service.disease import DiseasePredictionService
+from app.services.nosql import RecordService
+from app.services.disease import DiseasePredictionService
 
 def heart_record_service( request: Request ) -> RecordService:
 

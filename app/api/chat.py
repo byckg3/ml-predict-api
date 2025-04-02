@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse, StreamingResponse
 
 from app.api import router
 from app.models.prompt import HealthCareDomain, HealthCarePrompt
-from app.models.service.ai import GenerativeAIService, WSChatManager
+from app.services.ai import GenerativeAIService, WSChatManager
 
 def ai_service( request: Request ) -> GenerativeAIService:
 

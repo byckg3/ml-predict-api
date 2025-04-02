@@ -4,8 +4,7 @@ from app.config.settings import hf_settings
 from app.models.factory import DiseasePredictorFactory
 from app.models.heart import HeartDiseaseFeatures
 from app.models.liver import LiverDiseaseFeatures, LiverDiseasePredictor
-from app.models.repository import HFModelRepository
-
+from app.repositories.models import HFModelRepository
 
 class DiseasePredictionService:
 
@@ -42,7 +41,7 @@ class DiseasePredictionService:
         
         return features
 
-# python -m app.models.service.disease
+# python -m app.services.disease
 if __name__ == "__main__":
     service = DiseasePredictionService()
     asyncio.run( service.models_init() ) 

@@ -1,11 +1,10 @@
-import os
 from typing import Any, TypeVar, Union
 from beanie import Document, PydanticObjectId
 from beanie.operators import In
 
 from app.models.heart import HeartDiseaseRecord
 from app.models.liver import LiverDiseaseRecord
-from app.models.repository import DocumentRepository
+from app.repositories.nosql import DocumentRepository
 
 T = TypeVar( "T", bound = Document )
 class DocumentService:

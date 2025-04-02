@@ -5,7 +5,7 @@ from fastapi import Response, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
-from app.models.service.base import DocumentService, RecordService
+from app.services.nosql import DocumentService, RecordService
 
 class DocumentController:
     

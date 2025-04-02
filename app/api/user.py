@@ -5,8 +5,8 @@ from fastapi import APIRouter, Body, Depends, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from app.api.controller import DocumentController
-from app.models.service.base import DocumentService
-from app.models.service.user import UserProfileService
+from app.services.nosql import DocumentService
+from app.services.user import UserProfileService
 from app.models.user import UserProfile, example
 
 def user_profile_service( request: Request ) -> DocumentService:

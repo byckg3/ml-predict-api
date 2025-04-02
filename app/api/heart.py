@@ -2,14 +2,14 @@ import random
 import traceback
 from typing import Annotated, Any
 from beanie import PydanticObjectId
-from fastapi import APIRouter, Body, Depends, Request
+from fastapi import APIRouter, Body, Depends
 from fastapi import status
 from fastapi.responses import JSONResponse
 from app.api.controller import DocumentController, RecordController
 from app.api.dependencies import heart_record_service, predict_service
 from app.models.heart import HeartDiseaseFeatures, HeartDiseaseRecord, example
-from app.models.service.base import RecordService
-from app.models.service.disease import DiseasePredictionService
+from app.services.nosql import RecordService
+from app.services.disease import DiseasePredictionService
 
 ServiceDependency = Annotated[ RecordService, Depends( heart_record_service ) ]
 

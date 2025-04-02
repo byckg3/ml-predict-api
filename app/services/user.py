@@ -1,4 +1,4 @@
-from app.models.service.base import DocumentService
+from app.services.nosql import DocumentService
 from app.models.user import UserProfile
 
 class UserProfileService( DocumentService ):

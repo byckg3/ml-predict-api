@@ -3,7 +3,7 @@ import pytest
 import pytest_asyncio
 from app.models.heart import HeartDiseaseRecord, example
 from app.models.db import MongoDB
-from app.models.service.base import RecordService
+from app.services.nosql import RecordService
 
 @pytest_asyncio.fixture( loop_scope = "module" )
 async def setup_mongo():

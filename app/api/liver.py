@@ -7,8 +7,8 @@ from fastapi.responses import JSONResponse
 from app.api.controller import DocumentController, RecordController
 from app.api.dependencies import liver_record_service, predict_service
 from app.models.liver import LiverDiseaseFeatures, LiverDiseaseRecord, example
-from app.models.service.base import RecordService
-from app.models.service.disease import DiseasePredictionService
+from app.services.nosql import RecordService
+from app.services.disease import DiseasePredictionService
 
 ServiceDependency = Annotated[ RecordService, Depends( liver_record_service ) ]
 
