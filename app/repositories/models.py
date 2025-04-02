@@ -1,6 +1,6 @@
 from huggingface_hub import HfApi, hf_hub_download, login
 
-from app.config.settings import hf_settings
+from app.core.config import hf_settings
 
 class HFModelRepository:
 

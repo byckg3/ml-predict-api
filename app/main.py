@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.router import api_router
-from app.schemas.db import MongoDB
+from app.core.db import MongoDB
 from app.services.disease import DiseasePredictionService
 
 from app.web.widget import web_router, chat_window

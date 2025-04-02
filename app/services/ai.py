@@ -3,7 +3,7 @@ from fastapi import WebSocket
 from google import genai
 from google.genai import types
 
-from app.config.settings import gemini_settings
+from app.core.config import gemini_settings
 from app.schemas.prompt import HealthCareDomain
 
 class GenerativeAIService:

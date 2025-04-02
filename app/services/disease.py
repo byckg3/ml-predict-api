@@ -1,6 +1,6 @@
 import asyncio
 from typing import overload
-from app.config.settings import hf_settings
+from app.core.config import hf_settings
 from app.schemas.factory import DiseasePredictorFactory
 from app.schemas.heart import HeartDiseaseFeatures
 from app.schemas.liver import LiverDiseaseFeatures, LiverDiseasePredictor
