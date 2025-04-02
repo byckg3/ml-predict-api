@@ -2,8 +2,8 @@ from pathlib import Path
 import shutil
 import pytest
 import pytest_asyncio
-from app.models.liver import LiverDiseaseRecord, example
-from app.models.db import MongoDB
+from app.schemas.liver import LiverDiseaseRecord, example
+from app.schemas.db import MongoDB
 from app.repositories.nosql import DocumentRepository
 from app.repositories.models import HFModelRepository
 

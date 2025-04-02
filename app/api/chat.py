@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Request, WebSocket, WebSocketDisconnect,
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from app.api import router
-from app.models.prompt import HealthCareDomain, HealthCarePrompt
+from app.schemas.prompt import HealthCareDomain, HealthCarePrompt
 from app.services.ai import GenerativeAIService, WSChatManager
 
 def ai_service( request: Request ) -> GenerativeAIService:

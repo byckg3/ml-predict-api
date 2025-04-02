@@ -4,10 +4,10 @@ from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from app.config.settings import chroma_settings, mongo_settings
-from app.models.heart import HeartDiseaseRecord
-from app.models.liver import LiverDiseaseRecord
+from app.schemas.heart import HeartDiseaseRecord
+from app.schemas.liver import LiverDiseaseRecord
+from app.schemas.user import UserProfile
 from app.services.ai import GenAIEmbeddingFunction
-from app.models.user import UserProfile
 
 class MongoDB:
 

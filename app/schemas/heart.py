@@ -1,9 +1,8 @@
 import pandas as pd
 from beanie import Document, PydanticObjectId
 from pydantic import BaseModel, Field
-from typing import Optional
 
-from app.models.base import BaseEntity, SKLearnPredictor
+from app.schemas.base import BaseEntity, SKLearnPredictor
 
 example = {
     "created_record": {

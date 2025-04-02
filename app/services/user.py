@@ -1,5 +1,5 @@
 from app.services.nosql import DocumentService
-from app.models.user import UserProfile
+from app.schemas.user import UserProfile
 
 class UserProfileService( DocumentService ):
 

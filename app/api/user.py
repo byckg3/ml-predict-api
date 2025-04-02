@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 from app.api.controller import DocumentController
 from app.services.nosql import DocumentService
 from app.services.user import UserProfileService
-from app.models.user import UserProfile, example
+from app.schemas.user import UserProfile, example
 
 def user_profile_service( request: Request ) -> DocumentService:
 

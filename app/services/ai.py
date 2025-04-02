@@ -4,7 +4,7 @@ from google import genai
 from google.genai import types
 
 from app.config.settings import gemini_settings
-from app.models.prompt import HealthCareDomain
+from app.schemas.prompt import HealthCareDomain
 
 class GenerativeAIService:
     

@@ -1,7 +1,7 @@
 from fastapi import Request
 
-from app.models.heart import HeartDiseaseRecord
-from app.models.liver import LiverDiseaseRecord
+from app.schemas.heart import HeartDiseaseRecord
+from app.schemas.liver import LiverDiseaseRecord
 from app.services.nosql import RecordService
 from app.services.disease import DiseasePredictionService
 

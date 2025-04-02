@@ -1,14 +1,12 @@
 import asyncio
 import os
-import joblib
-import numpy as np
 import pandas as pd
 from beanie import Document, PydanticObjectId
 from pydantic import BaseModel, Field
 
 from sklearn.ensemble import RandomForestClassifier
 
-from app.models.base import BaseEntity, SKLearnPredictor
+from app.schemas.base import BaseEntity, SKLearnPredictor
 
 example = {
     "created_record": { 

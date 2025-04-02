@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 import gradio as gr
 
-from app.models.prompt import HealthCareDomain
+from app.schemas.prompt import HealthCareDomain
 from app.services.ai import GenerativeAIService
 
 web_router = APIRouter( prefix = "/widgets", tags = [ "Widgets" ] )

@@ -1,9 +1,9 @@
 import asyncio
 from typing import overload
 from app.config.settings import hf_settings
-from app.models.factory import DiseasePredictorFactory
-from app.models.heart import HeartDiseaseFeatures
-from app.models.liver import LiverDiseaseFeatures, LiverDiseasePredictor
+from app.schemas.factory import DiseasePredictorFactory
+from app.schemas.heart import HeartDiseaseFeatures
+from app.schemas.liver import LiverDiseaseFeatures, LiverDiseasePredictor
 from app.repositories.models import HFModelRepository
 
 class DiseasePredictionService:

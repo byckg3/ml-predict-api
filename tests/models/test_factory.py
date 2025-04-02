@@ -1,5 +1,5 @@
-from app.models.factory import DiseasePredictorFactory
-from app.models.liver import LiverDiseasePredictor
+from app.schemas.factory import DiseasePredictorFactory
+from app.schemas.liver import LiverDiseasePredictor
 
 
 def test_factory_create_predictor_successfully():

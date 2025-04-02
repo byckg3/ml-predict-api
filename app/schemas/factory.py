@@ -2,8 +2,8 @@ import asyncio
 import os
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 
-from app.models.heart import HeartDiseasePredictor
-from app.models.liver import LiverDiseaseFeatures, LiverDiseasePredictor, example
+from app.schemas.heart import HeartDiseasePredictor
+from app.schemas.liver import LiverDiseaseFeatures, LiverDiseasePredictor, example
 
 
 class DiseasePredictorFactory:
