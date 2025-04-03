@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse, StreamingResponse
 
 from app.api import router
 from app.schemas.prompt import HealthCareDomain, HealthCarePrompt
-from app.services.ai import GenerativeAIService, WSChatManager
+from app.services.genai import GenerativeAIService, ChatManager
 
 def ai_service( request: Request ) -> GenerativeAIService:
 
@@ -40,12 +40,12 @@ async def websocket_info():
     """WebSocket endpoint is available, please visit `ws://{Host}/api/chat/{user_id}`"""
     return { "message": "websocket endpoint is available at ws://{Host}/api/chat/{user_id}" }
 
-chat_session_manager = WSChatManager()
+chat_manager = ChatManager()
 
 @router.websocket( "/{user_id}" )
 async def websocket_endpoint( user_id: str, websocket: WebSocket ):
     
-    user_session = await chat_session_manager.connect( user_id, websocket )
+    user_session = await chat_manager.connect( user_id, websocket )
     chatbot = user_session.chat
 
     print( f"{user_id} connectting..." )
@@ -55,8 +55,9 @@ async def websocket_endpoint( user_id: str, websocket: WebSocket ):
 
         while True:
             question = await websocket.receive_text()
-            prompt = HealthCareDomain.chat_context + question
-        
+
+            prompt = chat_manager.genai_service.rag_prompt( question )
+            # print( prompt )
             response = chatbot.send_message( prompt )
             
             await websocket.send_text( response.text )
@@ -66,4 +67,4 @@ async def websocket_endpoint( user_id: str, websocket: WebSocket ):
         print( e )
         print( traceback.format_exc() )
 
-    chat_session_manager.disconnect( user_id, websocket )
+    chat_manager.disconnect( user_id, websocket )

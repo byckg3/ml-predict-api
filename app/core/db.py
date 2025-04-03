@@ -6,7 +6,6 @@ from app.core.config import chroma_settings, mongo_settings
 from app.schemas.heart import HeartDiseaseRecord
 from app.schemas.liver import LiverDiseaseRecord
 from app.schemas.user import UserProfile
-from app.services.ai import GenAIEmbeddingFunction
 
 class MongoDB:
 
@@ -41,17 +40,31 @@ class MongoDB:
 
 class ChromaDB:
 
-    COLLECTION_NAME = chroma_settings().CHROMA_DB_COLLECTION
+    def __init__( self, path: str, name: str, embed_function = None ):
+        self.client = chromadb.PersistentClient( path )
+        self.collection = self.client.get_or_create_collection( name = name,
+                                                                embedding_function = embed_function )
 
-    def __init__( self, path = chroma_settings().CHROMA_DB_DIR ):
-        self.path = path
-        self.client = chromadb.PersistentClient( path = self.path )
-        self.collection = self.client.get_collection( name = ChromaDB.COLLECTION_NAME,
-                                                      embedding_function = GenAIEmbeddingFunction() )
+    def load( self, dataset = [], embeddings = [] ):
 
+        if self.ping():
+            print( "data loaded successfully" )
+        else:
+            print( "data loading failed" )
+        
     
+    def ping( self ):
+        try:
+            result = self.collection.get( limit = 1 )
+            if result:
+                return True
+            
+        except Exception as e:
+            print( e )
 
-# python -m app.schemas.db
+        return False
+
+# python -m app.core.db
 if __name__ == "__main__":
     chroma = ChromaDB()
     print( chroma.collection.get( limit = 1 ) )

@@ -2,7 +2,7 @@ from fastapi import APIRouter
 import gradio as gr
 
 from app.schemas.prompt import HealthCareDomain
-from app.services.ai import GenerativeAIService
+from app.services.genai import GenerativeAIService
 
 web_router = APIRouter( prefix = "/widgets", tags = [ "Widgets" ] )
 
@@ -45,7 +45,9 @@ def chat_function( question, history ):
     for past_content in history:
         qas.append( f"{past_content[ 'role' ]}: {past_content[ 'content' ]}" )
 
-    qas.append( question )
+    rag_prompt = healthcare_helper.rag_prompt( question )
+    # print( rag_prompt )
+    qas.append( rag_prompt )
 
     msg = ""
     for text in healthcare_helper.stream_answer( qas ):

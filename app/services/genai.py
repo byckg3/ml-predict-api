@@ -4,6 +4,7 @@ from google import genai
 from google.genai import types
 
 from app.core.config import gemini_settings
+from app.repositories.embed import ChromaRepository
 from app.schemas.prompt import HealthCareDomain
 
 class GenerativeAIService:
@@ -14,8 +15,11 @@ class GenerativeAIService:
     client = genai.Client( api_key = API_KEY )
     
     def __init__( self, domain = HealthCareDomain ):
+        self.domain = domain
+        self.embed_repository = ChromaRepository( function = GenAIEmbeddingFunction( self.API_KEY ) )
         self.content_config = types.GenerateContentConfig( 
-                                        system_instruction = domain.context )
+                                        system_instruction = self.domain.context )
+        
     
     def answer( self, question ):
         response = GenerativeAIService.client.models.generate_content(
@@ -32,6 +36,17 @@ class GenerativeAIService:
         for chunk in response:
             yield chunk.text
 
+    def rag_prompt( self, question ):
+        qas = self.embed_repository.find_qas( question )
+
+        input = {
+            "retrieved_content": "\n".join( qas ),
+            "user_query": question
+        }
+        prompt = HealthCareDomain.chat_template.format( **input )
+
+        return prompt
+
     @classmethod
     def create_chat( cls, domain = HealthCareDomain ):
 
@@ -40,12 +55,6 @@ class GenerativeAIService:
                                         config = content_config )
         
         return chat
-
-    def embeddings( cls, contents ):
-        result = cls.client.models.embed_content( model = "gemini-embedding-exp-03-07",
-                                                  contents = contents )
-       
-        return result.embeddings
     
 class ChatSession:
 
@@ -53,17 +62,18 @@ class ChatSession:
         self.chat = chat
         self.websocket = ws
 
-class WSChatManager:
+class ChatManager:
 
     def __init__( self ):
         self.active_sessions: dict[ str, ChatSession ] = {}
+        self.genai_service = GenerativeAIService()
 
     async def connect( self, user_id: str, websocket: WebSocket ):
         
         if user_id not in self.active_sessions:
             await websocket.accept()
            
-            chat = GenerativeAIService.create_chat()
+            chat = self.genai_service.create_chat()
             session = ChatSession( chat, websocket )
 
             self.active_sessions[ user_id ] = session
@@ -93,10 +103,10 @@ class GenAIEmbeddingFunction( EmbeddingFunction[ Documents ] ):
                   model_name: str = "gemini-embedding-exp-03-07", 
                   task_type = "SEMANTIC_SIMILARITY" ) -> None:
         
-        self.api_key = api_key
         if api_key is None:
-            self.api_key = gemini_settings().GEMINI_API_KEY
-            
+            api_key = gemini_settings().GEMINI_API_KEY
+
+        self.api_key = api_key  
         self.client = genai.Client( api_key = self.api_key )
         self.model_name = model_name
         self.task_type = task_type
