@@ -4,11 +4,12 @@ pydantic[email]
 pydantic-settings==2.8.1
 pytest==8.3.5
 pytest-asyncio==0.25.3
+pandas==2.2.3
+pyarrow==19.0.1
 motor==3.7.0
 beanie==1.29.0
 google-genai==1.7.0
 scikit-learn==1.6.1
-pandas==2.2.3
 joblib==1.4.2
 huggingface-hub==0.29.3
 gradio==5.23.3

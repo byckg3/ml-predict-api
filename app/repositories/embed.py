@@ -10,13 +10,11 @@ class ChromaRepository:
     def __init__( self, path = DB_PATH, name = COLLECTION_NAME, function = None ):
         self.embed_db = ChromaDB( path, name, function )
         self.collection = self.embed_db.collection
-        self.embed_db.load() 
+        self.embed_db.init() 
      
     def find_qas( self, contents, n = 2 ):
         result = self.collection.query( query_texts = contents, 
-                                         n_results = n,
-                                         where = { "tag": "qa" }
-                                  )
+                                        n_results = n,
+                                        where = { "category": "qa" }
+                                 )
         return result[ "documents" ][ 0 ]
-
-   
