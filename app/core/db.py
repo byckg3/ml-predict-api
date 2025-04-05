@@ -54,17 +54,16 @@ class ChromaDB:
 
     def load( self, n_records = -1 ):
 
-        qa_doc_df = pd.read_csv( "./qa_texts.csv" )
-        qa_embed_df = pd.read_parquet( "./qa_embeddings.parquet", engine = "pyarrow" )
+        qa_data_df = pd.read_parquet( "./qa_data.parquet", engine = "pyarrow" )
 
-        n = qa_embed_df.shape[ 0 ]
+        n = qa_data_df.shape[ 0 ]
         if n_records >= 0:
             n = min( n, n_records )
 
-        qa_embeddings = qa_embed_df[ "embedding" ].tolist()[ :n ]
-        qa_documents = qa_doc_df[ "document" ].tolist()[ :n ]
-        qa_ids = qa_doc_df[ "id" ].tolist()[ :n ]
-        qa_metadatas = qa_doc_df.drop( columns = [ "id", "document" ] ).to_dict( orient = "records" )[  :n ]
+        qa_embeddings = qa_data_df[ "embedding" ].tolist()[ :n ]
+        qa_documents = qa_data_df[ "document" ].tolist()[ :n ]
+        qa_ids = qa_data_df[ "id" ].tolist()[ :n ]
+        qa_metadatas = qa_data_df.drop( columns = [ "id", "document", "embedding" ] ).to_dict( orient = "records" )[  :n ]
 
         self.collection.add(
                 documents = qa_documents,
