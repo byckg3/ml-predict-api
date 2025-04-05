@@ -50,14 +50,7 @@ class ChromaDB:
 
         self.collection = self.client.get_or_create_collection( name = name,
                                                                 embedding_function = embed_function )
-        
-    def init( self ):
-        self.load()
-
-        if self.ping():
-            print( "data loaded successfully" )
-        else:
-            print( "data loading failed" )
+        print( "create chroma db connection successfully" )
 
     def load( self, n_records = -1 ):
 
@@ -79,6 +72,11 @@ class ChromaDB:
                 ids = qa_ids,
                 metadatas = qa_metadatas,
         )
+
+        if self.ping():
+            print( "data loaded successfully" )
+        else:
+            print( "data loading failed" )
     
     def ping( self ):
         try:
