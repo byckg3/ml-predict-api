@@ -38,7 +38,9 @@ bmi_calculator = gr.Interface( fn = calculate_bmi,
                                title = "BMI Calculator",
                                description = "Enter your weight and height to instantly get your BMI" )
 
-healthcare_helper = GenerativeAIService( HealthCareDomain )
+from app.api.chat import chat_manager
+
+healthcare_helper = chat_manager.genai_service
 def chat_function( question, history ):
 
     qas = []
