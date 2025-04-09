@@ -50,7 +50,7 @@ async def websocket_endpoint( user_id: str, websocket: WebSocket ):
 
     print( f"{user_id} connectting..." )
     try:
-        response = chatbot.send_message( f"有使用者想詢問問題 請親切地打招呼")
+        response = chatbot.send_message( "使用者想詢問問題 請先親切地打招呼" )
         await websocket.send_text( response.text )
 
         while True:

@@ -54,28 +54,36 @@ class ChromaDB:
 
     def load( self, n_records = -1 ):
 
-        qa_data_df = pd.read_parquet( "./qa_data.parquet", engine = "pyarrow" )
+        qa_data_df = pd.read_parquet( "./data/qa.parquet", engine = "pyarrow" )
+        heart_disease_df = pd.read_parquet( "./data/heart_disease.parquet", engine = "pyarrow" )
+        liver_disease_df = pd.read_parquet( "./data/liver_disease.parquet", engine = "pyarrow" )
 
-        n = qa_data_df.shape[ 0 ]
-        if n_records >= 0:
-            n = min( n, n_records )
-
-        qa_embeddings = qa_data_df[ "embedding" ].tolist()[ :n ]
-        qa_documents = qa_data_df[ "document" ].tolist()[ :n ]
-        qa_ids = qa_data_df[ "id" ].tolist()[ :n ]
-        qa_metadatas = qa_data_df.drop( columns = [ "id", "document", "embedding" ] ).to_dict( orient = "records" )[  :n ]
-
-        self.collection.add(
-                documents = qa_documents,
-                embeddings = qa_embeddings,
-                ids = qa_ids,
-                metadatas = qa_metadatas,
-        )
+        self.add( qa_data_df, n_records )
+        self.add( heart_disease_df, n_records )
+        self.add( liver_disease_df, n_records )
 
         if self.ping():
             print( "data loaded successfully" )
         else:
             print( "data loading failed" )
+
+    def add( self, df, n_records = -1 ):
+        
+        n = df.shape[ 0 ]
+        if n_records >= 0:
+            n = min( n, n_records )
+
+        embeddings = df[ "embedding" ].tolist()[ :n ]
+        documents = df[ "document" ].tolist()[ :n ]
+        ids = df[ "id" ].tolist()[ :n ]
+        metadatas = df.drop( columns = [ "id", "document", "embedding" ] ).to_dict( orient = "records" )[  :n ]
+
+        self.collection.upsert(
+                documents = documents,
+                embeddings = embeddings,
+                ids = ids,
+                metadatas = metadatas,
+        )
     
     def ping( self ):
         try:

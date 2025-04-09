@@ -1,3 +1,4 @@
+from typing import Any
 from chromadb import Documents, EmbeddingFunction, Embeddings
 from fastapi import WebSocket
 from google import genai
@@ -37,10 +38,12 @@ class GenerativeAIService:
             yield chunk.text
 
     def rag_prompt( self, question ):
-        qas = self.embed_repository.find_qas( question )
+        qas = self.embed_repository.find_qa_texts( question )
+        docs = self.embed_repository.find_pdf_documents( question )
 
         input = {
             "retrieved_content": "\n".join( qas ),
+            "retrieved_document": "\n".join( docs ),
             "user_query": question
         }
         prompt = HealthCareDomain.chat_template.format( **input )
@@ -119,3 +122,14 @@ class GenAIEmbeddingFunction( EmbeddingFunction[ Documents ] ):
                                     )
        
         return [ embedding.values for embedding in result.embeddings ]
+    
+    @staticmethod
+    def name() -> str:
+        return "GenAIEmbeddingFunction"
+    
+    def get_config(self) -> dict[ str, Any ]:
+        pass
+
+    @staticmethod
+    def build_from_config(config: dict[ str, Any ]) -> "EmbeddingFunction[D]":
+        pass

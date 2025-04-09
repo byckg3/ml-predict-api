@@ -21,7 +21,7 @@ class TestChromaDB:
         chroma.client.delete_collection( self.TEST_COLLECTION )
         del chroma.client
 
-    def test_find_qas( self, chroma ):
+    def test_find_documents( self, chroma ):
         
         chroma.load( n_records = self.DATA_SIZE )
         result = chroma.collection.get( limit = self.DATA_SIZE )

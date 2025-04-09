@@ -1,4 +1,5 @@
 ## commands
+- python -m venv .venv
 - .venv/Scripts/activate
 - uvicorn app.main:app --reload
 - python -m app.main

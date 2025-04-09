@@ -40,8 +40,11 @@ class HealthCareDomain:
     """ )
     
     chat_template: str = textwrap.dedent( """
-    以下是已檢索到的相關資料，可供參考:
+    以下是已檢索到相關的問答資料，可供參考:
     {retrieved_content}
+                                         
+    以下是已檢索到相關文件的段落，可供參考:
+    {retrieved_document}                                    
 
     若檢索到的資料有缺失空白或與使用者的問題不相關，則可忽略。
     若檢索到的資訊不足，請避免編造資訊。

@@ -12,9 +12,16 @@ class ChromaRepository:
         self.collection = self.embed_db.collection
         self.embed_db.load() 
      
-    def find_qas( self, contents, n = 2 ):
+    def find_qa_texts( self, contents, n = 2 ):
         result = self.collection.query( query_texts = contents, 
                                         n_results = n,
                                         where = { "category": "qa" }
+                                 )
+        return result[ "documents" ][ 0 ]
+    
+    def find_pdf_documents( self, contents, n = 2 ):
+        result = self.collection.query( query_texts = contents, 
+                                        n_results = n,
+                                        where = { "category": "pdf" }
                                  )
         return result[ "documents" ][ 0 ]
