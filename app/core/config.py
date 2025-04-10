@@ -17,6 +17,7 @@ class ChromaSettings( BaseSettings ):
 
     CHROMA_DB_COLLECTION: str = "gad245-g1-chromadb-embedding"
     CHROMA_DB_DIR: str = "./chroma"
+    CHROMA_DB_PERSISTENT: bool = False
 
     model_config = SettingsConfigDict( extra = "ignore" )
 

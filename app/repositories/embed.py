@@ -6,9 +6,13 @@ class ChromaRepository:
 
     DB_PATH = chroma_settings().CHROMA_DB_DIR
     COLLECTION_NAME = chroma_settings().CHROMA_DB_COLLECTION
+    DB_PERSISTENT = chroma_settings().CHROMA_DB_PERSISTENT
 
-    def __init__( self, path = DB_PATH, name = COLLECTION_NAME, function = None ):
-        self.embed_db = ChromaDB( path, name, function )
+    def __init__( self, function = None ):
+        self.embed_db = ChromaDB( self.DB_PATH, 
+                                  self.COLLECTION_NAME, 
+                                  function, 
+                                  self.DB_PERSISTENT )
         self.collection = self.embed_db.collection
         self.embed_db.load() 
      
