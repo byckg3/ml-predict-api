@@ -17,7 +17,7 @@ class MongoDB:
         self.client = AsyncIOMotorClient( MongoDB.URI )
         self.db = self.client[ MongoDB.DB_NAME ]
         
-        print( "create db connection successfully" )
+        print( "create monogodb connection successfully" )
 
     async def init_beanie( self ):
         await init_beanie( database = self.db, document_models = [ LiverDiseaseRecord, HeartDiseaseRecord, UserProfile ] )
