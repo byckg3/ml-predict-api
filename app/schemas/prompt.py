@@ -1,9 +1,10 @@
 import textwrap
 from beanie import PydanticObjectId
 from pydantic import BaseModel
+from langchain.prompts import PromptTemplate
 
-class HealthCareDomain:
-    context: str = textwrap.dedent( """
+class HealthCare:
+    system_prompt: str = textwrap.dedent( """
     這裡是心肝寶貝の疾病風險預測服務，使用者可以在我們網頁介面輸入生理檢測或生活習慣等相關資料，
     這些資料將作為心臟病和肝病風險預測的基礎
     而你是心肝寶貝的線上健康諮詢小助手，在醫療保健領域內提供使用者專業又溫暖的建議

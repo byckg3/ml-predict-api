@@ -1,6 +1,6 @@
 ## commands
 - python -m venv .venv
-- .venv/Scripts/activate
+- .venv/Scripts/activate(.venv\Scripts\activate)
 - uvicorn app.main:app --reload
 - python -m app.main
 - docker build . -t byckg3/ml-predict-api
@@ -18,3 +18,4 @@
 - [Beanie Documentation](https://beanie-odm.dev/)
 - [Gemini API quickstart](https://ai.google.dev/gemini-api/docs/quickstart)
 - [Chroma](https://docs.trychroma.com/docs/overview/introduction)
+- [LangChain Tutorials](https://python.langchain.com/docs/tutorials/)

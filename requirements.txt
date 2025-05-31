@@ -14,3 +14,5 @@ joblib==1.4.2
 huggingface-hub==0.29.3
 gradio==5.23.3
 chromadb==1.0.3
+langchain==0.3.23
+authlib==1.6.0

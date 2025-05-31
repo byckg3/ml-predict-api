@@ -6,7 +6,7 @@ from google.genai import types
 
 from app.core.config import gemini_settings
 from app.repositories.embed import ChromaRepository
-from app.schemas.prompt import HealthCareDomain
+from app.schemas.prompt import HealthCare
 
 class GenerativeAIService:
     
@@ -15,11 +15,11 @@ class GenerativeAIService:
     
     client = genai.Client( api_key = API_KEY )
     
-    def __init__( self, domain = HealthCareDomain ):
+    def __init__( self, domain = HealthCare ):
         self.domain = domain
         self.embed_repository = ChromaRepository( function = GenAIEmbeddingFunction( self.API_KEY ) )
         self.content_config = types.GenerateContentConfig( 
-                                        system_instruction = self.domain.context )
+                                        system_instruction = self.domain.system_prompt )
         
     
     def answer( self, question ):
@@ -46,14 +46,14 @@ class GenerativeAIService:
             "retrieved_document": "\n".join( docs ),
             "user_query": question
         }
-        prompt = HealthCareDomain.chat_template.format( **input )
+        prompt = HealthCare.chat_template.format( **input )
 
         return prompt
 
     @classmethod
-    def create_chat( cls, domain = HealthCareDomain ):
+    def create_chat( cls, domain = HealthCare ):
 
-        content_config = types.GenerateContentConfig( system_instruction = domain.context )
+        content_config = types.GenerateContentConfig( system_instruction = domain.system_prompt )
         chat = cls.client.chats.create( model = cls.MODEL,
                                         config = content_config )
         
