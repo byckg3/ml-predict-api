@@ -51,6 +51,13 @@ class GoogleAuthSettings( BaseSettings ):
 
     model_config = SettingsConfigDict( extra = "ignore" )
 
+class WebSettings( BaseSettings ):
+
+    FRONTEND_URL: str = "http://127.0.0.1:8000/docs"
+
+    model_config = SettingsConfigDict( extra = "ignore" )
+
+
 
 @lru_cache()
 def mongo_settings():
@@ -72,6 +79,9 @@ def gemini_settings():
 def google_auth_settings():
     return GoogleAuthSettings()
 
+@lru_cache()
+def web_settings():
+    return WebSettings()
 
 # python -m app.config.settings
 if __name__ == "__main__":

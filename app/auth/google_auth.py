@@ -2,11 +2,11 @@ from authlib.integrations.starlette_client import OAuth, OAuthError
 from datetime import timedelta
 from fastapi import APIRouter, HTTPException, Request, status
 from fastapi.encoders import jsonable_encoder
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 
 from app.api.user import ServiceDependency
 from app.auth.jwt import create_access_token
-from app.core.config import google_auth_settings
+from app.core.config import google_auth_settings, web_settings
 from app.schemas.user import UserProfile
 
 oauth = OAuth()
@@ -45,15 +45,24 @@ async def auth_via_google( request: Request, user_service: ServiceDependency ):
     json_profile = jsonable_encoder( user_profile, exclude = { "created_at", "updated_at" } )
     expires_delta = timedelta( minutes = 15 )
     jwt_token = create_access_token( json_profile, expires_delta )
-    # print( "jwt_token:\n", jwt_token )
+    print( f"jwt:\n{jwt_token}" )
 
-    return JSONResponse( content = { "access_token": jwt_token,
-                                     "token_type": "bearer",
-                                     "expires_in": int( expires_delta.total_seconds() ),
-                                     #  "user_profile": json_profile 
-                         }, 
-                         status_code = status.HTTP_200_OK )
+    # return JSONResponse( content = { "access_token": jwt_token,
+    #                                  "token_type": "bearer",
+    #                                  "expires_in": int( expires_delta.total_seconds() ),
+    #                                  #  "user_profile": json_profile 
+    #                      }, 
+    #                      status_code = status.HTTP_200_OK )
 
+    redirect_url = web_settings().FRONTEND_URL + f"#{jwt_token}"
+    response = RedirectResponse( redirect_url )
+    # response.set_cookie( key = "access_token",
+    #                      value = jwt_token,
+    #                      httponly = True,
+    #                      secure = True,  
+    #                      samesite = "strict",  # Set the SameSite attribute to None
+    # )
+    return response
 
 @auth_router.get( "/google/login" )
 async def login_via_google( request: Request ):
@@ -62,3 +71,11 @@ async def login_via_google( request: Request ):
     # print( "\nredirect_uri:", redirect_uri )
     
     return await oauth.google.authorize_redirect( request, redirect_uri )
+
+
+@auth_router.post( "/google/token" )
+async def token( request: Request ):
+    data = await request.json()
+    print( "data:",data["id_token"] )  
+    claims = await oauth.google.parse_id_token( token =  data, nonce = None)
+    # print( claims )        

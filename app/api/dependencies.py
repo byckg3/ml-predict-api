@@ -1,5 +1,6 @@
 import time
-from fastapi import HTTPException, Request, status
+from fastapi import Depends, HTTPException, Request, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from app.auth.jwt import decode_access_token
 from app.schemas.heart import HeartDiseaseRecord
 from app.schemas.liver import LiverDiseaseRecord
@@ -36,16 +37,13 @@ def predict_service( request: Request ) -> DiseasePredictionService:
 
     return request.app.state.predict_service
 
-
-def verify_jwt_token( request: Request ):
+bearer_auth = HTTPBearer()
+def verify_jwt_from_header( authorization: HTTPAuthorizationCredentials = Depends( bearer_auth ) ):
     
     try:
-        auth_header = request.headers.get( "Authorization" )
-        if not auth_header or not auth_header.startswith( "Bearer "):
-            raise ValueError( "Invalid Authorization header format" )
-           
-        token = auth_header.split( " " )[ 1 ]
-        claims = decode_access_token( token )
+        jwt = authorization.credentials
+
+        claims = decode_access_token( jwt )
         claims.validate_exp( time.time(), 0 )
 
         return claims
@@ -53,5 +51,5 @@ def verify_jwt_token( request: Request ):
     except Exception as e:
         print( e )
         raise HTTPException( status_code = status.HTTP_401_UNAUTHORIZED,
-                            headers = { "WWW-Authenticate": "Bearer" },
-                            detail = "Missing or invalid token" )
+                             headers = { "WWW-Authenticate": "Bearer" },
+                             detail = "Missing or invalid token" )
