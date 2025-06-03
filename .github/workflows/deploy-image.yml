@@ -49,16 +49,16 @@ jobs:
           push: true
           tags: "${{ vars.IMAGE_TAG }}:${{ github.sha }}"
 
-    - id: 'auth'
-      name: Authenticate to Google Cloud
-      uses: google-github-actions/auth@v2
-      with:
-        workload_identity_provider: "${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}"
-        service_account: "${{ secrets.GCP_SERVICE_ACCOUNT }}"
+    # - id: 'auth'
+    #   name: Authenticate to Google Cloud
+    #   uses: google-github-actions/auth@v2
+    #   with:
+    #     workload_identity_provider: "${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}"
+    #     service_account: "${{ secrets.GCP_SERVICE_ACCOUNT }}"
 
-    - name: Deploy to Cloud Run
-      uses: google-github-actions/deploy-cloudrun@v2
-      with:
-        service: "${{ secrets.SERVICE_NAME }}"
-        region: "${{ secrets.REGION }}"
-        image: "${{ vars.IMAGE_TAG }}:${{ github.sha }}"
+    # - name: Deploy to Cloud Run
+    #   uses: google-github-actions/deploy-cloudrun@v2
+    #   with:
+    #     service: "${{ secrets.SERVICE_NAME }}"
+    #     region: "${{ secrets.REGION }}"
+    #     image: "${{ vars.IMAGE_TAG }}:${{ github.sha }}"

@@ -1,7 +1,10 @@
+import secrets
 import gradio as gr
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
+from app.auth.google_auth import auth_router
 from app.api.router import api_router
 from app.core.db import MongoDB
 from app.services.disease import DiseasePredictionService
@@ -29,6 +32,7 @@ async def app_lifespan( app: FastAPI ):
 
 app = FastAPI( lifespan = app_lifespan )
 app.include_router( api_router )
+app.include_router( auth_router, tags = [ "Auth" ] )
 app.include_router( web_router )
 
 app = gr.mount_gradio_app( app, chat_window, path = f"{web_router.prefix}/chat" )
@@ -40,13 +44,14 @@ app.add_middleware(
     allow_methods = [ "*" ],
     allow_headers = [ "*" ]
 )
+app.add_middleware( SessionMiddleware, secret_key = secrets.token_urlsafe( 32 ) )
 
 @app.get( "/check" )
 async def check_status():
     if await app.state.mongo.ping_server():
-        return {"status": "running" }
+        return { "status": "running" }
     else:
-        return {"status": "error" }
+        return { "status": "error" }
     
 
 # uvicorn app.main:app --reload

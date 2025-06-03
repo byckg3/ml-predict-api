@@ -124,5 +124,6 @@ class RecordController:
         except Exception as e:
             print( e )
             print( traceback.format_exc() )
-            return JSONResponse( content = { "message": "An error occurred" }, 
-                                 status_code = status.HTTP_400_BAD_REQUEST )
+
+        return JSONResponse( content = { "message": "An error occurred" }, 
+                             status_code = status.HTTP_400_BAD_REQUEST )

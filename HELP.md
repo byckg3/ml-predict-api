@@ -14,6 +14,8 @@
 ### urls
 - http://localhost:8000/docs
 - [FastAPI Tutorial - User Guide](https://fastapi.tiangolo.com/tutorial/)
+- [Pydantic Settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings/)
+- [Authlib: Python Authentication](https://docs.authlib.org/en/latest/index.html)
 - [MongoDB Atlas](https://cloud.mongodb.com/)
 - [Beanie Documentation](https://beanie-odm.dev/)
 - [Gemini API quickstart](https://ai.google.dev/gemini-api/docs/quickstart)

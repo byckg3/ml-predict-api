@@ -11,9 +11,9 @@ from app.schemas.heart import HeartDiseaseFeatures, HeartDiseaseRecord, example
 from app.services.nosql import RecordService
 from app.services.disease import DiseasePredictionService
 
-ServiceDependency = Annotated[ RecordService, Depends( heart_record_service ) ]
-
 router = APIRouter( prefix = "/disease/heart" )
+
+ServiceDependency = Annotated[ RecordService, Depends( heart_record_service ) ]
 
 @router.get( "/record/{id}" )
 async def get_record( id: PydanticObjectId, service: ServiceDependency ) -> HeartDiseaseRecord:

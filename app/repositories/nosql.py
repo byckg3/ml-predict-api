@@ -9,7 +9,6 @@ class DocumentRepository:
 
         self.beanie_document = document_class
 
-        
     async def get_by_id( self, id: str ) -> Union[ T, None ]:
         return await self.beanie_document.get( id )
     

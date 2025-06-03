@@ -5,20 +5,14 @@ from fastapi import APIRouter, Body, Depends, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from app.api.controller import DocumentController
+from app.api.dependencies import user_profile_service, verify_jwt_token
 from app.services.nosql import DocumentService
 from app.services.user import UserProfileService
 from app.schemas.user import UserProfile, example
 
-def user_profile_service( request: Request ) -> DocumentService:
-
-    if not hasattr( request.app.state, "user_profile_service" ):
-        request.app.state.user_profile_service = UserProfileService( UserProfile )
-        
-    return request.app.state.user_profile_service
+router = APIRouter( prefix = "/user", )
 
 ServiceDependency = Annotated[ UserProfileService, Depends( user_profile_service ) ]
-
-router = APIRouter( prefix = "/user" )
 
 @router.get( "/profile/{id}" )
 async def get_profile( id: PydanticObjectId, service: ServiceDependency ) -> UserProfile:

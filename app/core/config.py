@@ -1,5 +1,6 @@
 import os
 from functools import lru_cache
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 if os.path.exists( ".env" ):
@@ -43,6 +44,14 @@ class GeminiAPISettings( BaseSettings ):
     model_config = SettingsConfigDict( extra = "ignore" )
 
 
+class GoogleAuthSettings( BaseSettings ):
+
+    CLIENT_ID: str = Field( validation_alias = "GOOGLE_CLIENT_ID" )
+    CLIENT_SECRET: str = Field( validation_alias = "GOOGLE_CLIENT_SECRET" )
+
+    model_config = SettingsConfigDict( extra = "ignore" )
+
+
 @lru_cache()
 def mongo_settings():
     return MongoDBSettings()
@@ -58,6 +67,10 @@ def hf_settings():
 @lru_cache()
 def gemini_settings():
     return GeminiAPISettings()
+
+@lru_cache()
+def google_auth_settings():
+    return GoogleAuthSettings()
 
 
 # python -m app.config.settings

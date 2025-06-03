@@ -10,9 +10,9 @@ from app.schemas.liver import LiverDiseaseFeatures, LiverDiseaseRecord, example
 from app.services.nosql import RecordService
 from app.services.disease import DiseasePredictionService
 
-ServiceDependency = Annotated[ RecordService, Depends( liver_record_service ) ]
-
 router = APIRouter( prefix = "/disease/liver" )
+
+ServiceDependency = Annotated[ RecordService, Depends( liver_record_service ) ]
 
 @router.get( "/record/{id}" )
 async def get_record( id: PydanticObjectId, service: ServiceDependency ) -> LiverDiseaseRecord:
