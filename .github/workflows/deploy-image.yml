@@ -47,7 +47,10 @@ jobs:
       with:
           context: .
           push: true
-          tags: "${{ vars.IMAGE_TAG }}:${{ github.sha }}"
+          tags: |
+            - "${{ vars.IMAGE_TAG }}:latest"
+            - "${{ vars.IMAGE_TAG }}:${{ github.sha }}"
+            
 
     # - id: 'auth'
     #   name: Authenticate to Google Cloud
