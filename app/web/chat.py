@@ -14,12 +14,12 @@ def ai_service( request: Request ) -> GenerativeAIService:
 
     return request.app.state.ai_service
 
+chat_router = APIRouter( prefix = "/chat", tags = [ "Chat" ] )
+
 ServiceDependency = Annotated[ GenerativeAIService, Depends( ai_service ) ]
 
-router = APIRouter( prefix = "/chat" )
-
-@router.post( "/ask", response_class = StreamingResponse )
-async def stream_answer( prompt: HealthCarePrompt, service: ServiceDependency ):
+@chat_router.post( "/ask", response_class = StreamingResponse )
+async def streaming_answer( prompt: HealthCarePrompt, service: ServiceDependency ):
 
     try:
         full_prompt = f"{ prompt.user_question }" 
@@ -35,14 +35,14 @@ async def stream_answer( prompt: HealthCarePrompt, service: ServiceDependency ):
     return JSONResponse( content = { "message": "An error occurred" }, 
                          status_code = status.HTTP_500_INTERNAL_SERVER_ERROR )
 
-@router.get( "/" )
+@chat_router.get( "/" )
 async def websocket_info():
-    """WebSocket endpoint is available, please visit `ws://{Host}/api/chat/{user_id}`"""
-    return { "message": "websocket endpoint is available at ws://{Host}/api/chat/{user_id}" }
+    """WebSocket endpoint is available, please visit `ws://{Host}/chat/{user_id}`"""
+    return { "message": "websocket endpoint is available at ws://{Host}/chat/{user_id}" }
 
 chat_manager = ChatManager()
 
-@router.websocket( "/{user_id}" )
+@chat_router.websocket( "/{user_id}" )
 async def websocket_endpoint( user_id: str, websocket: WebSocket ):
     
     user_session = await chat_manager.connect( user_id, websocket )

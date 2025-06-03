@@ -1,3 +1,4 @@
+import time
 from fastapi import HTTPException, Request, status
 from app.auth.jwt import decode_access_token
 from app.schemas.heart import HeartDiseaseRecord
@@ -44,10 +45,10 @@ def verify_jwt_token( request: Request ):
             raise ValueError( "Invalid Authorization header format" )
            
         token = auth_header.split( " " )[ 1 ]
-        payload = decode_access_token( token )
-        # print( "Decoded payload:\n", payload )
+        claims = decode_access_token( token )
+        claims.validate_exp( time.time(), 0 )
 
-        return payload
+        return claims
     
     except Exception as e:
         print( e )

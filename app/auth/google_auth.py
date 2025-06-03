@@ -12,7 +12,7 @@ from app.schemas.user import UserProfile
 oauth = OAuth()
 oauth.register(
         name = "google",
-        server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+        server_metadata_url = "https://accounts.google.com/.well-known/openid-configuration",
         client_id = google_auth_settings().CLIENT_ID,
         client_secret = google_auth_settings().CLIENT_SECRET,
         client_kwargs = {
