@@ -3,9 +3,12 @@
 - .venv/Scripts/activate(.venv\Scripts\activate)
 - uvicorn app.main:app --reload
 - python -m app.main
+- curl -o openapi.json http://127.0.0.1:8000/openapi.json
+
+## docker commands
+- docker pull docker.io/byckg3/ml-predict-api:latest
 - docker build . -t byckg3/ml-predict-api
 - docker run -it -p 8000:8000 --env-file .env byckg3/ml-predict-api:latest
-- curl -o openapi.json http://127.0.0.1:8000/openapi.json
 
 ### test commands
 - pytest -x tests/
