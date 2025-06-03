@@ -48,8 +48,8 @@ jobs:
           context: .
           push: true
           tags: |
-            - "${{ vars.IMAGE_TAG }}:latest"
-            - "${{ vars.IMAGE_TAG }}:${{ github.sha }}"
+            "${{ vars.IMAGE_TAG }}:latest"
+            "${{ vars.IMAGE_TAG }}:${{ github.sha }}"
             
 
     # - id: 'auth'
