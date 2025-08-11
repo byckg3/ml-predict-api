@@ -25,7 +25,7 @@ class ChromaSettings( BaseSettings ):
 class HuggingFaceSettings( BaseSettings ):
 
     HF_TOKEN: str
-    REPOSITORY_ID: str
+    HF_REPOSITORY_ID: str
 
     liver_classifier: str = "sklearn/gradient_boosting"
     liver_model_uri: str = f"liver/{liver_classifier}/01/model.pkl"

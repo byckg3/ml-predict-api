@@ -4,7 +4,7 @@ from app.core.config import hf_settings
 
 class HFModelRepository:
 
-    REPOSITORY_ID = hf_settings().REPOSITORY_ID
+    REPOSITORY_ID = hf_settings().HF_REPOSITORY_ID
 
     def __init__( self ):
 
