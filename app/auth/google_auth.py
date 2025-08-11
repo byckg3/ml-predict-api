@@ -68,7 +68,7 @@ async def auth_via_google( request: Request, user_service: ServiceDependency ):
 async def login_via_google( request: Request ):
     
     redirect_uri = request.url_for( "auth_via_google" )
-    # print( "\nredirect_uri:", redirect_uri )
+    print( "\nredirect_uri:", redirect_uri )
     
     return await oauth.google.authorize_redirect( request, redirect_uri )
 
