@@ -54,7 +54,7 @@ app.add_middleware( SessionMiddleware, secret_key = secrets.token_urlsafe( 32 ) 
 
 @app.get( "/" )
 def greet_json():
-    return RedirectResponse( "/widgets/chat" )
+    return { "Hello": "World" }
 
 @app.get( "/check" )
 async def check_status():
