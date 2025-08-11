@@ -38,8 +38,11 @@ bmi_calculator = gr.Interface( fn = calculate_bmi,
 from app.web.chat import chat_manager
 
 healthcare_helper = chat_manager.genai_service
-def chat_function( question, history ):
+def chat_function( question, history, request: gr.Request ):
 
+    if request:
+        print( "Request headers dictionary:", request.headers )
+        
     try:
         qas = []
         for past_content in history:

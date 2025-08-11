@@ -1,4 +1,5 @@
 import secrets
+from fastapi.responses import RedirectResponse
 import gradio as gr
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
@@ -36,7 +37,11 @@ app.include_router( auth_router, tags = [ "Auth" ] )
 app.include_router( chat_router )
 app.include_router( web_router )
 
-app = gr.mount_gradio_app( app, chat_window, path = f"{web_router.prefix}/chat" )
+app = gr.mount_gradio_app( app, 
+                           chat_window, 
+                           path = f"{web_router.prefix}/chat",
+                        #  auth_dependency = ,
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -49,7 +54,7 @@ app.add_middleware( SessionMiddleware, secret_key = secrets.token_urlsafe( 32 ) 
 
 @app.get( "/" )
 def greet_json():
-    return { "Hello": "World!" }
+    return RedirectResponse( "/widgets/chat" )
 
 @app.get( "/check" )
 async def check_status():

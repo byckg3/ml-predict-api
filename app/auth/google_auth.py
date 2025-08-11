@@ -22,6 +22,15 @@ oauth.register(
 
 auth_router = APIRouter( prefix = "/auth" )
 
+@auth_router.get( "/google/login" )
+async def login_via_google( request: Request ):
+    
+    redirect_uri = request.url_for( "auth_via_google" )
+    # print( "\nredirect_uri:", redirect_uri )
+    
+    return await oauth.google.authorize_redirect( request, redirect_uri )
+
+
 @auth_router.get( "/google/callback" )
 async def auth_via_google( request: Request, user_service: ServiceDependency ):
 
@@ -47,6 +56,7 @@ async def auth_via_google( request: Request, user_service: ServiceDependency ):
     jwt_token = create_access_token( json_profile, expires_delta )
     print( f"jwt:\n{jwt_token}" )
 
+
     # return JSONResponse( content = { "access_token": jwt_token,
     #                                  "token_type": "bearer",
     #                                  "expires_in": int( expires_delta.total_seconds() ),
@@ -56,21 +66,15 @@ async def auth_via_google( request: Request, user_service: ServiceDependency ):
 
     redirect_url = web_settings().FRONTEND_URL + f"#{jwt_token}"
     response = RedirectResponse( redirect_url )
-    # response.set_cookie( key = "access_token",
-    #                      value = jwt_token,
-    #                      httponly = True,
-    #                      secure = True,  
-    #                      samesite = "strict",  # Set the SameSite attribute to None
-    # )
-    return response
+    response.set_cookie( key = "access_token",
+                         value = jwt_token,
+                         httponly = True,
+                         secure = True,  
+                         samesite = "strict",  # "strict", "lax", "none"
+                         max_age = 3600,
+    )
 
-@auth_router.get( "/google/login" )
-async def login_via_google( request: Request ):
-    
-    redirect_uri = request.url_for( "auth_via_google" )
-    print( "\nredirect_uri:", redirect_uri )
-    
-    return await oauth.google.authorize_redirect( request, redirect_uri )
+    return response
 
 
 @auth_router.post( "/google/token" )
