@@ -47,7 +47,7 @@ app.add_middleware(
 )
 app.add_middleware( SessionMiddleware, secret_key = secrets.token_urlsafe( 32 ) )
 
-@app.get( "/hello" )
+@app.get( "/" )
 def greet_json():
     return { "Hello": "World!" }
 
