@@ -47,6 +47,10 @@ app.add_middleware(
 )
 app.add_middleware( SessionMiddleware, secret_key = secrets.token_urlsafe( 32 ) )
 
+@app.get( "/" )
+def greet_json():
+    return { "Hello": "World!" }
+
 @app.get( "/check" )
 async def check_status():
     if await app.state.mongo.ping_server():
