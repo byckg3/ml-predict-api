@@ -38,10 +38,10 @@ def predict_service( request: Request ) -> DiseasePredictionService:
     return request.app.state.predict_service
 
 bearer_auth = HTTPBearer()
-def verify_jwt_from_header( authorization: HTTPAuthorizationCredentials = Depends( bearer_auth ) ):
+def verify_jwt( request: Request ):
     
     try:
-        jwt = authorization.credentials
+        jwt = get_token_from_header_or_cookie( request  )
 
         claims = decode_access_token( jwt )
         claims.validate_exp( time.time(), 0 )
@@ -53,3 +53,16 @@ def verify_jwt_from_header( authorization: HTTPAuthorizationCredentials = Depend
         raise HTTPException( status_code = status.HTTP_401_UNAUTHORIZED,
                              headers = { "WWW-Authenticate": "Bearer" },
                              detail = "Missing or invalid token" )
+    
+
+def get_token_from_header_or_cookie( request: Request  ) -> str:
+   
+    auth_header = request.headers.get( "Authorization" )
+    if auth_header and auth_header.startswith( "Bearer " ):
+        return auth_header.split( " ", 1 )[ 1 ]
+
+    token = request.cookies.get( "access_token" )
+    if token:
+        return token
+
+    raise HTTPException( status_code = 403, detail = "Not authenticated" )
