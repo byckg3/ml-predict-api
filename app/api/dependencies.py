@@ -52,7 +52,7 @@ def verify_jwt( request: Request ):
         print( e )
         raise HTTPException( status_code = status.HTTP_401_UNAUTHORIZED,
                              headers = { "WWW-Authenticate": "Bearer" },
-                             detail = "Missing or invalid token" )
+                             detail = "Not authenticated" )
     
 
 def get_token_from_header_or_cookie( request: Request  ) -> str:
@@ -65,4 +65,4 @@ def get_token_from_header_or_cookie( request: Request  ) -> str:
     if token:
         return token
 
-    raise HTTPException( status_code = 403, detail = "Not authenticated" )
+    raise HTTPException( status_code = status.HTTP_401_UNAUTHORIZED, detail = "Missing token" )
