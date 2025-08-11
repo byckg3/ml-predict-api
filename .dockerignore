@@ -1,0 +1,11 @@
+Dockerfile
+README.md
+HELP.md
+pytest.ini
+tests/
+.dockerignore
+.gitignore
+.env
+__pycache__/
+*.pyc
+*.pyo
