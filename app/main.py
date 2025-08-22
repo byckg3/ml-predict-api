@@ -10,7 +10,9 @@ from app.api.router import api_router
 from app.core.db import MongoDB
 from app.services.disease import DiseasePredictionService
 from app.web.chat import chat_router
-from app.web.widget import web_router, chat_window
+from app.web.chatbot import chat_window
+from app.web.bmi import bmi_calculator
+from app.web.index import signin
 
 @asynccontextmanager
 async def app_lifespan( app: FastAPI ):
@@ -35,11 +37,22 @@ app = FastAPI( lifespan = app_lifespan )
 app.include_router( api_router )
 app.include_router( auth_router, tags = [ "Auth" ] )
 app.include_router( chat_router )
-app.include_router( web_router )
+
+app = gr.mount_gradio_app( app, 
+                           bmi_calculator,
+                           path = "/bmi",
+                        #  auth_dependency = ,
+)
 
 app = gr.mount_gradio_app( app, 
                            chat_window, 
-                           path = f"{web_router.prefix}/chat",
+                           path = "/chatbot",
+                        #  auth_dependency = ,
+)
+
+app = gr.mount_gradio_app( app, 
+                           signin, 
+                           path = "/index",
                         #  auth_dependency = ,
 )
 

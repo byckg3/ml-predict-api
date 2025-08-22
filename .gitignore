@@ -17,6 +17,7 @@ chroma/
 test_chroma/
 eggs/
 .eggs/
+.gradio/
 lib/
 lib64/
 parts/
