@@ -2,17 +2,34 @@ import gradio as gr
 from app.web.chat import chat_manager
 
 healthcare_helper = chat_manager.genai_service
-def chat_function( question, history, request: gr.Request ):
 
+# https://ai.google.dev/api/caching?hl=zh-tw#Content
+def add_past_message( messages ):
+
+    past = []
+    for msg in messages:
+        
+        payload = { "role": "", "parts": [] }
+        if msg[ "role" ] == "user":
+            payload[ "role" ] = "user"
+
+        else:
+            payload[ "role" ] = "model"
+
+        payload[ "parts" ].append( { "text": msg[ "content" ] } )
+        past.append( payload )
+        
+    return past
+
+
+def chat_function( question, history: list, request: gr.Request ):
+    
     try:
-        qas = []
-        for past_content in history:
-            qas.append( f"{past_content[ 'role' ]}: {past_content[ 'content' ]}" )
-
+        qas = add_past_message( history )
+        
         rag_prompt = healthcare_helper.rag_prompt( question )
-        # print( rag_prompt )
-        qas.append( rag_prompt )
-
+        qas.append( { "role": "user", "parts": [ { "text": rag_prompt } ] } )
+        # print( qas )
         msg = ""
         for text in healthcare_helper.stream_answer( qas ):
             msg = msg + str( text )
