@@ -61,7 +61,7 @@ async def auth_via_google( request: Request, user_service: ServiceDependency ):
                          value = jwt_token, 
                          httponly = True,
                          secure = True,  
-                         samesite = "lax",  # "strict", "lax", "none"
+                         samesite = "none",  # "strict", "lax", "none"
                          domain = web_settings().COOKIE_DOMAIN,
                          max_age = 3600,
     )
