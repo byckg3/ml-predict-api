@@ -5,9 +5,8 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse, RedirectResponse
 
 from app.api.user import ServiceDependency
-from app.auth.jwt import create_access_token
+from app.auth.dependencies.token_utils import create_access_token
 from app.core.config import google_auth_settings, web_settings
-from app.schemas.user import UserProfile
 
 oauth = OAuth()
 oauth.register(
@@ -20,9 +19,9 @@ oauth.register(
         }
 )
 
-auth_router = APIRouter( prefix = "/auth" )
+router = APIRouter( prefix = "/google" )
 
-@auth_router.get( "/google/login" )
+@router.get( "/login" )
 async def login_via_google( request: Request ):
     
     redirect_uri = request.url_for( "auth_via_google" )
@@ -31,7 +30,7 @@ async def login_via_google( request: Request ):
     return await oauth.google.authorize_redirect( request, redirect_uri )
 
 
-@auth_router.get( "/google/callback" )
+@router.get( "/callback" )
 async def auth_via_google( request: Request, user_service: ServiceDependency ):
 
     try:
@@ -54,7 +53,7 @@ async def auth_via_google( request: Request, user_service: ServiceDependency ):
     json_profile = jsonable_encoder( user_profile, exclude = { "created_at", "updated_at" } )
     expires_delta = timedelta( minutes = 15 )
     jwt_token = create_access_token( json_profile, expires_delta )
-    print( f"jwt:\n{jwt_token}" )
+    # print( f"jwt:\n{jwt_token}" )
 
 
     # return JSONResponse( content = { "access_token": jwt_token,
@@ -64,20 +63,20 @@ async def auth_via_google( request: Request, user_service: ServiceDependency ):
     #                      }, 
     #                      status_code = status.HTTP_200_OK )
 
-    redirect_url = web_settings().FRONTEND_URL + f"#{jwt_token}"
+    redirect_url = web_settings().FRONTEND_URL + "/index"
     response = RedirectResponse( redirect_url )
     response.set_cookie( key = "access_token",
-                         value = jwt_token,
+                         value = jwt_token, 
                          httponly = True,
                          secure = True,  
-                         samesite = "strict",  # "strict", "lax", "none"
+                         samesite = "lax",  # "strict", "lax", "none"
                          max_age = 3600,
     )
 
     return response
 
 
-@auth_router.post( "/google/token" )
+# @router.post( "/token" )
 async def token( request: Request ):
     data = await request.json()
     print( "data:",data["id_token"] )  

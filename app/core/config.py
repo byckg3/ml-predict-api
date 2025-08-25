@@ -53,7 +53,7 @@ class GoogleAuthSettings( BaseSettings ):
 
 class WebSettings( BaseSettings ):
 
-    FRONTEND_URL: str = "http://127.0.0.1:8000/docs"
+    FRONTEND_URL: str
 
     model_config = SettingsConfigDict( extra = "ignore" )
 

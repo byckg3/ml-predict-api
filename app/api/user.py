@@ -5,7 +5,7 @@ from fastapi import APIRouter, Body, Depends, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from app.api.controller import DocumentController
-from app.api.dependencies import user_profile_service, verify_jwt
+from app.api.dependencies.service import user_profile_service
 from app.services.nosql import DocumentService
 from app.services.user import UserProfileService
 from app.schemas.user import UserProfile, example

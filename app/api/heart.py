@@ -6,7 +6,7 @@ from fastapi import APIRouter, Body, Depends
 from fastapi import status
 from fastapi.responses import JSONResponse
 from app.api.controller import DocumentController, RecordController
-from app.api.dependencies import heart_record_service, predict_service
+from app.api.dependencies.service import heart_record_service, predict_service
 from app.schemas.heart import HeartDiseaseFeatures, HeartDiseaseRecord, example
 from app.services.nosql import RecordService
 from app.services.disease import DiseasePredictionService

@@ -5,7 +5,7 @@ from beanie import PydanticObjectId
 from fastapi import APIRouter, Body, Depends, Request, status
 from fastapi.responses import JSONResponse
 from app.api.controller import DocumentController, RecordController
-from app.api.dependencies import liver_record_service, predict_service
+from app.api.dependencies.service import liver_record_service, predict_service
 from app.schemas.liver import LiverDiseaseFeatures, LiverDiseaseRecord, example
 from app.services.nosql import RecordService
 from app.services.disease import DiseasePredictionService

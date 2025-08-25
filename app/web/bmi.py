@@ -1,7 +1,7 @@
 import gradio as gr
 
 def calculate_bmi( weight_kg: float, height_m: float ):
-
+    
     bmi = weight_kg / ( height_m ** 2 )
     category = ""
 
@@ -17,6 +17,7 @@ def calculate_bmi( weight_kg: float, height_m: float ):
     output_text = f"{bmi:.2f} ( {category} )"
 
     return output_text
+
 
 container_css = """
 .gradio-container {

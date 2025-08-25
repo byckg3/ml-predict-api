@@ -1,5 +1,5 @@
 import gradio as gr
-from app.web.chat import chat_manager
+from app.api.chat import chat_manager
 
 healthcare_helper = chat_manager.genai_service
 
