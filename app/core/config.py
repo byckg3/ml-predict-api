@@ -54,6 +54,7 @@ class GoogleAuthSettings( BaseSettings ):
 class WebSettings( BaseSettings ):
 
     FRONTEND_URL: str
+    COOKIE_DOMAIN: str | None = None
 
     model_config = SettingsConfigDict( extra = "ignore" )
 

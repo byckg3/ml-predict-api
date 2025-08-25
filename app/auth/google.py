@@ -55,14 +55,6 @@ async def auth_via_google( request: Request, user_service: ServiceDependency ):
     jwt_token = create_access_token( json_profile, expires_delta )
     # print( f"jwt:\n{jwt_token}" )
 
-
-    # return JSONResponse( content = { "access_token": jwt_token,
-    #                                  "token_type": "bearer",
-    #                                  "expires_in": int( expires_delta.total_seconds() ),
-    #                                  #  "user_profile": json_profile 
-    #                      }, 
-    #                      status_code = status.HTTP_200_OK )
-
     redirect_url = web_settings().FRONTEND_URL + "/index"
     response = RedirectResponse( redirect_url )
     response.set_cookie( key = "access_token",
@@ -70,6 +62,7 @@ async def auth_via_google( request: Request, user_service: ServiceDependency ):
                          httponly = True,
                          secure = True,  
                          samesite = "lax",  # "strict", "lax", "none"
+                         domain = web_settings().COOKIE_DOMAIN,
                          max_age = 3600,
     )
 
