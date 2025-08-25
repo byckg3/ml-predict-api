@@ -53,8 +53,8 @@ class GoogleAuthSettings( BaseSettings ):
 
 class WebSettings( BaseSettings ):
 
-    FRONTEND_URL: str
-    COOKIE_DOMAIN: str | None = None
+    FRONTEND_URL: str = "http://127.0.0.1:8000"
+    BACKEND_URL: str = "http://127.0.0.1:8000"
 
     model_config = SettingsConfigDict( extra = "ignore" )
 

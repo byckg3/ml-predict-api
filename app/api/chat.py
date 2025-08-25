@@ -2,8 +2,8 @@ import traceback
 from typing import Annotated
 from fastapi import APIRouter, Depends, Request, WebSocket, WebSocketDisconnect, status
 from fastapi.responses import JSONResponse, StreamingResponse
-
 from app.api import router
+from app.schemas.chat import QAPayload
 from app.schemas.prompt import HealthCare, HealthCarePrompt
 from app.services.genai import GenerativeAIService, ChatManager
 
@@ -14,26 +14,28 @@ def ai_service( request: Request ) -> GenerativeAIService:
 
     return request.app.state.ai_service
 
-chat_router = APIRouter( prefix = "/chat", tags = [ "Chat" ] )
+router = APIRouter( prefix = "/chat" )
 
 ServiceDependency = Annotated[ GenerativeAIService, Depends( ai_service ) ]
 
-@chat_router.get( "/" )
+@router.get( "/" )
 async def websocket_info():
     """WebSocket endpoint is available, please visit `ws://{Host}/chat/{user_id}`"""
     return { "message": "websocket endpoint is available at ws://{Host}/chat/{user_id}" }
 
 
-@chat_router.post( "/ask", response_class = StreamingResponse )
-async def streaming_answer( prompt: HealthCarePrompt, service: ServiceDependency ):
+@router.post( "/ask", response_class = StreamingResponse )
+async def streaming_answer( qa: QAPayload, service: ServiceDependency ):
 
     try:
-        full_prompt = f"{ prompt.user_question }" 
-        print( full_prompt )
+        qas = service.add_chat_history( qa.history )
+        
+        rag_prompt = service.rag_prompt( qa.question )
+        qas.append( { "role": "user", "parts": [ { "text": rag_prompt } ] } )
     
-        return StreamingResponse( service.stream_answer( full_prompt ), media_type = "text/event-stream" )
-        # return service.answer( full_prompt )
-    
+        return StreamingResponse( service.streaming_answer( qas ), 
+                                  media_type = "text/event-stream" )
+       
     except Exception as e:
             print( e )
             print( traceback.format_exc() ) 
@@ -44,7 +46,7 @@ async def streaming_answer( prompt: HealthCarePrompt, service: ServiceDependency
 
 chat_manager = ChatManager()
 
-@chat_router.websocket( "/{user_id}" )
+@router.websocket( "/{user_id}" )
 async def websocket_endpoint( user_id: str, websocket: WebSocket ):
     
     user_session = await chat_manager.connect( user_id, websocket )

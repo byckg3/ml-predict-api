@@ -8,7 +8,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from app.auth.dependencies.token_utils import auth_for_gradio
 from app.auth.router import auth_router
 from app.api.router import api_router
-from app.api.chat import chat_router
+from app.api.chat import router
 from app.core.config import web_settings
 from app.core.db import MongoDB
 from app.services.disease import DiseasePredictionService
@@ -38,7 +38,6 @@ async def app_lifespan( app: FastAPI ):
 app = FastAPI( lifespan = app_lifespan )
 app.include_router( api_router )
 app.include_router( auth_router )
-app.include_router( chat_router )
 
 app = gr.mount_gradio_app( app, 
                            bmi_calculator,

@@ -28,7 +28,7 @@ class GenerativeAIService:
                                                         contents = [ question ] )
         return response.text
     
-    def stream_answer( self, qa_records ):
+    def streaming_answer( self, qa_records ):
         response = GenerativeAIService.client.models.generate_content_stream( 
                                                         model = GenerativeAIService.MODEL,
                                                         config = self.content_config,
@@ -49,6 +49,24 @@ class GenerativeAIService:
         prompt = HealthCare.chat_template.format( **input )
 
         return prompt
+    
+    # https://ai.google.dev/api/caching?hl=zh-tw#Content
+    def add_chat_history( self, past_messages ):
+
+        past = []
+        for msg in past_messages:
+            
+            payload = { "role": "", "parts": [] }
+            if msg[ "role" ] == "user":
+                payload[ "role" ] = "user"
+
+            else:
+                payload[ "role" ] = "model"
+
+            payload[ "parts" ].append( { "text": msg[ "content" ] } )
+            past.append( payload )
+            
+        return past
 
     @classmethod
     def create_chat( cls, domain = HealthCare ):

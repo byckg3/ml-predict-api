@@ -18,7 +18,7 @@ class UserProfile( BaseEntity, Document ):
     
     name: str | None = "unknown"
     email: Annotated[ EmailStr, Indexed( unique = True ) ] = Field( max_length = 30,
-                                                                    examples=[ "mike123456@email.com" ] )
+                                                                    examples = [ "mike123456@email.com" ] )
     class Settings:
         name = "users"
 
