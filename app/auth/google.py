@@ -62,7 +62,6 @@ async def auth_via_google( request: Request, user_service: ServiceDependency ):
                          httponly = True,
                          secure = True,  
                          samesite = "none",  # "strict", "lax", "none"
-                         domain = web_settings().COOKIE_DOMAIN,
                          max_age = 3600,
     )
 
