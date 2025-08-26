@@ -3,7 +3,6 @@ from datetime import timedelta
 from fastapi import APIRouter, HTTPException, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse, RedirectResponse
-
 from app.api.user import ServiceDependency
 from app.auth.dependencies.token_utils import create_access_token
 from app.core.config import google_auth_settings, web_settings
