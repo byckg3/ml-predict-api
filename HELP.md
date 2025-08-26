@@ -1,6 +1,6 @@
 ### commands
 - python -m venv .venv
-- .venv/Scripts/activate(.venv\Scripts\activate)
+- source .venv/bin/activate(.venv\Scripts\activate)
 - uvicorn app.main:app --reload
 - python -m app.main
 - curl -o openapi.json http://127.0.0.1:8000/openapi.json
