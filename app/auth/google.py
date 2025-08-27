@@ -4,7 +4,8 @@ from fastapi import APIRouter, HTTPException, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse, RedirectResponse
 from app.api.user import ServiceDependency
-from app.auth.dependencies.token_utils import create_access_token
+from app.auth.dependencies.csrf_utils import create_csrf_token
+from app.auth.dependencies.jwt_utils import create_access_token
 from app.core.config import google_auth_settings, web_settings
 
 oauth = OAuth()
@@ -52,16 +53,28 @@ async def auth_via_google( request: Request, user_service: ServiceDependency ):
     json_profile = jsonable_encoder( user_profile, exclude = { "created_at", "updated_at" } )
     expires_delta = timedelta( minutes = 15 )
     jwt_token = create_access_token( json_profile, expires_delta )
-    # print( f"jwt:\n{jwt_token}" )
+    # print( f"jwt: {jwt_token}" )
 
     redirect_url = web_settings().FRONTEND_URL + "/index"
     response = RedirectResponse( redirect_url )
-    response.set_cookie( key = "access_token",
-                         value = jwt_token, 
-                         httponly = True,
-                         secure = True,  
-                         samesite = "none",  # "strict", "lax", "none"
-                         max_age = 3600,
+
+    response.set_cookie( 
+        key = "access_token",
+        value = jwt_token, 
+        httponly = True,
+        secure = True,  
+        samesite = "none",  # "strict", "lax", "none"
+        max_age = 3600,
+    )
+
+    csrf_token = create_csrf_token()
+    print( "csrf:", csrf_token )
+    response.set_cookie(
+        key = "csrf_token",
+        value = csrf_token,
+        httponly = False,
+        secure = True,
+        samesite = "none",
     )
 
     return response

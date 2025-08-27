@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
-from app.auth.dependencies.token_utils import auth_for_gradio
+from app.auth.dependencies.jwt_utils import auth_for_gradio
 from app.auth.router import auth_router
 from app.api.router import api_router
 from app.api.chat import router
@@ -70,7 +70,7 @@ app.add_middleware(
     allow_methods = [ "*" ],
     allow_headers = [ "*" ]
 )
-app.add_middleware( SessionMiddleware, secret_key = secrets.token_urlsafe( 32 ) )
+app.add_middleware( SessionMiddleware, secret_key = web_settings().SESSION_SECRET )
 
 @app.get( "/" )
 def greet_json():

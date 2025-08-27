@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Request, status
 from fastapi.responses import JSONResponse
-
-from app.auth.dependencies.token_utils import verify_jwt
+from app.auth.dependencies.jwt_utils import verify_jwt
 
 
 router = APIRouter()

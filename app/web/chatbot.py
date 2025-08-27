@@ -7,9 +7,11 @@ def chat_function( question, history: list, request: gr.Request ):
     try:  
         url = web_settings().BACKEND_URL + "/api/chat/ask"
         access_token = request.cookies.get( "access_token" )
+        csrf_token = request.cookies.get( "csrf_token" )
 
         headers = {
-            "Authorization": f"Bearer {access_token}"
+            "Authorization": f"Bearer {access_token}",
+            "X-CSRF-Token": csrf_token
         }
 
         payload = {

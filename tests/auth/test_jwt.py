@@ -1,7 +1,7 @@
 import pytest
 from authlib.jose.errors import ExpiredTokenError
 from datetime import datetime, timedelta
-from app.auth.dependencies.token_utils import create_access_token, decode_access_token
+from app.auth.dependencies.jwt_utils import create_access_token, decode_access_token
 
 # @pytest.mark.current
 def test_encoding_and_decoding_jwt_token():

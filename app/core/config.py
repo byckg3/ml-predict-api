@@ -55,6 +55,8 @@ class WebSettings( BaseSettings ):
 
     FRONTEND_URL: str = "http://127.0.0.1:8000"
     BACKEND_URL: str = "http://127.0.0.1:8000"
+    SESSION_SECRET: str
+    JWT_SECRET: str
 
     model_config = SettingsConfigDict( extra = "ignore" )
 

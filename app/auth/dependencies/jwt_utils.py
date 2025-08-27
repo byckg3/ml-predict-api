@@ -2,8 +2,9 @@ import time
 from fastapi import HTTPException, Request, status
 from datetime import datetime, timezone
 from authlib.jose import jwt
+from app.core.config import web_settings
 
-SECRET_KEY = "your-own-secret-key"
+SECRET_KEY = web_settings().JWT_SECRET
 header = { "alg": "HS256" }
 
 def create_access_token( payload: dict, expires_delta ):
@@ -23,7 +24,7 @@ def decode_access_token( token: str ):
 
 def verify_jwt( request: Request ):
     
-    jwt = get_token_from_header_or_cookie( request  )
+    jwt = get_jwt_from_header_or_cookie( request  )
 
     try:
         claims = decode_access_token( jwt )
@@ -36,9 +37,8 @@ def verify_jwt( request: Request ):
         raise HTTPException( status_code = status.HTTP_401_UNAUTHORIZED,
                              headers = { "WWW-Authenticate": "Bearer" },
                              detail = "Not authenticated" )
-    
 
-def get_token_from_header_or_cookie( request: Request  ) -> str:
+def get_jwt_from_header_or_cookie( request: Request,  ) -> str:
    
     auth_header = request.headers.get( "Authorization" )
     if auth_header and auth_header.startswith( "Bearer " ):
