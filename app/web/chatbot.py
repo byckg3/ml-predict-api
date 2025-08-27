@@ -14,12 +14,14 @@ def chat_function( question, history: list, request: gr.Request ):
             "X-CSRF-Token": csrf_token
         }
 
+        csrf_cookie = { "csrf_token": csrf_token }
+
         payload = {
             "question": question,
             "history": history
         }
 
-        with httpx.Client( headers = headers ) as client:
+        with httpx.Client( headers = headers, cookies = csrf_cookie ) as client:
             with client.stream( "POST", url, json = payload ) as response:
                 msg = ""
                 for text in response.iter_text():
