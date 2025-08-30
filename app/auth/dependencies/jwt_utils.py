@@ -1,13 +1,13 @@
 import time
 from fastapi import HTTPException, Request, status
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from authlib.jose import jwt
 from app.core.config import web_settings
 
 SECRET_KEY = web_settings().JWT_SECRET
 header = { "alg": "HS256" }
 
-def create_access_token( payload: dict, expires_delta ):
+def create_access_token( payload: dict, expires_delta = timedelta( minutes = 15 )):
 
     payload.update( { "exp": datetime.now( timezone.utc ) + expires_delta } )
     token_bytes: bytes = jwt.encode( header, payload, SECRET_KEY )
