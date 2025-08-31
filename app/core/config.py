@@ -53,8 +53,8 @@ class GoogleAuthSettings( BaseSettings ):
 
 class WebSettings( BaseSettings ):
 
-    FRONTEND_URL: str = "http://127.0.0.1:8000"
-    BACKEND_URL: str = "http://127.0.0.1:8000"
+    FRONTEND_URL: str = "http://127.0.0.1:7860"
+    BACKEND_URL: str = "http://127.0.0.1:7860"
     SESSION_SECRET: str
     JWT_SECRET: str
 

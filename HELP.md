@@ -12,8 +12,9 @@
 
 ### docker commands
 - docker pull docker.io/byckg3/ml-predict-api:latest
+- docker rmi -f <IMAGE_ID>
 - docker build . -t byckg3/ml-predict-api
-- docker run -it -p 8000:8000 --env-file .env byckg3/ml-predict-api:latest
+- docker run -it -p 7860:7860 --env-file .env byckg3/ml-predict-api:latest
 
 ### test commands
 - pytest -x tests/
