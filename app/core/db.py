@@ -17,12 +17,12 @@ class MongoDB:
         self.client = AsyncIOMotorClient( MongoDB.URI )
         self.db = self.client[ MongoDB.DB_NAME ]
         
-        print( "create monogodb connection successfully" )
+        print( "create MonogoDb connection successfully" )
 
     async def init_beanie( self ):
         await init_beanie( database = self.db, document_models = [ LiverDiseaseRecord, HeartDiseaseRecord, UserProfile ] )
 
-        print( "initialize beanie successfully" )
+        print( "initialize Beanie successfully" )
 
     async def ping_server( self ):
         # Send a ping to confirm a successful connection
@@ -50,7 +50,7 @@ class ChromaDB:
 
         self.collection = self.client.get_or_create_collection( name = name,
                                                                 embedding_function = embed_function )
-        print( "create chroma db connection successfully" )
+        print( "create ChromaDB connection successfully" )
 
     def load( self, n_records = -1 ):
 
@@ -63,9 +63,9 @@ class ChromaDB:
         self.add( liver_disease_df, n_records )
 
         if self.ping():
-            print( "data loaded successfully" )
+            print( "parquet data loaded successfully" )
         else:
-            print( "data loading failed" )
+            print( "parquet data loading failed" )
 
     def add( self, df, n_records = -1 ):
         

@@ -84,8 +84,9 @@ async def check_status():
         return { "status": "error" }
     
 
-# uvicorn app.main:app --reload
+# uvicorn app.main:app --host 127.0.0.1 --port 7860 --reload
 # python -m app.main
+# http://127.0.0.1:7860
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run( "app.main:app", host = "localhost", port = 8000, reload = True )
+    uvicorn.run( "app.main:app", host = "127.0.0.1", port = 7860, reload = True )

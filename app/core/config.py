@@ -38,10 +38,16 @@ class HuggingFaceSettings( BaseSettings ):
 
 class GeminiAPISettings( BaseSettings ):
 
-    GEMINI_API_KEY: str
+    API_KEY: str
+    MODEL_NAME: str
+    EMBEDDING_MODEL_NAME: str
     # TUNED_MODEL_ID: str
 
-    model_config = SettingsConfigDict( extra = "ignore" )
+    model_config = SettingsConfigDict( 
+        env_file_encoding = "utf-8",
+        env_prefix = "GEMINI_",
+        extra = "ignore",
+    )
 
 
 class GoogleAuthSettings( BaseSettings ):
@@ -64,7 +70,7 @@ class WebSettings( BaseSettings ):
 
 @lru_cache()
 def mongo_settings():
-    return MongoDBSettings()
+    return MongoDBSettings() # type: ignore
 
 @lru_cache()
 def chroma_settings():
@@ -72,19 +78,21 @@ def chroma_settings():
 
 @lru_cache()
 def hf_settings():
-    return HuggingFaceSettings()
+    return HuggingFaceSettings() # type: ignore
 
 @lru_cache()
 def gemini_settings():
-    return GeminiAPISettings()
+    settings = GeminiAPISettings() # type: ignore
+    # print( f"Gemini API settings:\n{settings}" )
+    return settings
 
 @lru_cache()
 def google_auth_settings():
-    return GoogleAuthSettings()
+    return GoogleAuthSettings() # type: ignore
 
 @lru_cache()
 def web_settings():
-    return WebSettings()
+    return WebSettings() # type: ignore
 
 # python -m app.config.settings
 if __name__ == "__main__":

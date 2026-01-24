@@ -1,3 +1,4 @@
+from chromadb import QueryResult
 from app.core.config import chroma_settings
 from app.core.db import ChromaDB
 
@@ -17,15 +18,23 @@ class ChromaRepository:
         self.embed_db.load() 
      
     def find_qa_texts( self, contents, n = 2 ):
-        result = self.collection.query( query_texts = contents, 
-                                        n_results = n,
-                                        where = { "category": "qa" }
-                                 )
+        result: QueryResult = self.collection.query( 
+            query_texts = contents, 
+            n_results = n,
+            where = { "category": "qa" }
+        )
+        if not result[ "documents" ]:
+            raise ValueError( "ChromaDB query returned no documents." )
+        
         return result[ "documents" ][ 0 ]
     
     def find_pdf_documents( self, contents, n = 2 ):
-        result = self.collection.query( query_texts = contents, 
-                                        n_results = n,
-                                        where = { "category": "pdf" }
-                                 )
+        result = self.collection.query( 
+            query_texts = contents, 
+            n_results = n,
+            where = { "category": "pdf" }
+        )
+        if not result[ "documents" ]:
+            raise ValueError( "ChromaDB query returned no pdf documents." )
+        
         return result[ "documents" ][ 0 ]

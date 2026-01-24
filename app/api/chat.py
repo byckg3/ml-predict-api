@@ -5,18 +5,18 @@ from fastapi.responses import JSONResponse, StreamingResponse
 from app.api import router
 from app.schemas.chat import QAPayload
 from app.schemas.prompt import HealthCare, HealthCarePrompt
-from app.services.genai import GenerativeAIService, ChatManager
+from app.services.genai import TextGenerationService, ChatManager
 
-def ai_service( request: Request ) -> GenerativeAIService:
+def ai_service( request: Request ) -> TextGenerationService:
 
     if not hasattr( request.app.state, "ai_service" ):
-        request.app.state.ai_service = GenerativeAIService()
+        request.app.state.ai_service = TextGenerationService()
 
     return request.app.state.ai_service
 
 router = APIRouter( prefix = "/chat" )
 
-ServiceDependency = Annotated[ GenerativeAIService, Depends( ai_service ) ]
+ServiceDependency = Annotated[ TextGenerationService, Depends( ai_service ) ]
 
 @router.get( "/" )
 async def websocket_info():
@@ -29,16 +29,19 @@ async def streaming_answer( qa: QAPayload, service: ServiceDependency ):
 
     try:
         qas = service.add_chat_history( qa.history )
+        # print( qas )
         
         rag_prompt = service.rag_prompt( qa.question )
+        # print( rag_prompt )
+        
         qas.append( { "role": "user", "parts": [ { "text": rag_prompt } ] } )
-    
+        
         return StreamingResponse( service.streaming_answer( qas ), 
                                   media_type = "text/event-stream" )
        
     except Exception as e:
-            print( e )
-            print( traceback.format_exc() ) 
+        print( e )
+        print( traceback.format_exc() ) 
 
     return JSONResponse( content = { "message": "An error occurred" }, 
                          status_code = status.HTTP_500_INTERNAL_SERVER_ERROR )
@@ -71,4 +74,4 @@ async def websocket_endpoint( user_id: str, websocket: WebSocket ):
         print( e )
         print( traceback.format_exc() )
 
-    chat_manager.disconnect( user_id, websocket )
+    await chat_manager.disconnect( user_id, websocket )

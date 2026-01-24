@@ -5,37 +5,31 @@ from google import genai
 from google.genai import types
 
 from app.core.config import gemini_settings
+from app.core.llm import GeminiAPIClient
 from app.repositories.embed import ChromaRepository
 from app.schemas.prompt import HealthCare
 
-class GenerativeAIService:
-    
-    API_KEY = gemini_settings().GEMINI_API_KEY
-    MODEL = "gemini-2.0-flash" #  os.getenv( "TUNED_MODEL_ID" )
-    
-    client = genai.Client( api_key = API_KEY )
+class TextGenerationService:
     
     def __init__( self, domain = HealthCare ):
         self.domain = domain
-        self.embed_repository = ChromaRepository( function = GenAIEmbeddingFunction( self.API_KEY ) )
-        self.content_config = types.GenerateContentConfig( 
-                                        system_instruction = self.domain.system_prompt )
+        self.embed_repository = ChromaRepository( function = GenAIEmbeddingFunction() )
+        self.client = GeminiAPIClient( self.domain.system_prompt )
         
     
     def answer( self, question ):
-        response = GenerativeAIService.client.models.generate_content(
-                                                        model = GenerativeAIService.MODEL,
-                                                        contents = [ question ] )
-        return response.text
+        response = self.client.generate_text( question )
+        return response
     
-    def streaming_answer( self, qa_records ):
-        response = GenerativeAIService.client.models.generate_content_stream( 
-                                                        model = GenerativeAIService.MODEL,
-                                                        config = self.content_config,
-                                                        contents = qa_records )
+    
+    async def streaming_answer( self, qa_records ):
+        text_generatror = self.client.generate_text_stream( qa_records )
                                         
-        for chunk in response:
-            yield chunk.text
+        async for text_chunk in text_generatror:
+            text_chunk = text_chunk or ""
+            
+            yield text_chunk
+            
 
     def rag_prompt( self, question ):
         qas = self.embed_repository.find_qa_texts( question )
@@ -68,14 +62,10 @@ class GenerativeAIService:
             
         return past
 
-    @classmethod
-    def create_chat( cls, domain = HealthCare ):
-
-        content_config = types.GenerateContentConfig( system_instruction = domain.system_prompt )
-        chat = cls.client.chats.create( model = cls.MODEL,
-                                        config = content_config )
+    def open_chat_session( self, domain = HealthCare ):
+        return self.client.create_chat()
         
-        return chat
+       
     
 class ChatSession:
 
@@ -87,14 +77,14 @@ class ChatManager:
 
     def __init__( self ):
         self.active_sessions: dict[ str, ChatSession ] = {}
-        self.genai_service = GenerativeAIService()
+        self.genai_service = TextGenerationService()
 
     async def connect( self, user_id: str, websocket: WebSocket ):
         
         if user_id not in self.active_sessions:
             await websocket.accept()
            
-            chat = self.genai_service.create_chat()
+            chat = self.genai_service.open_chat_session()
             session = ChatSession( chat, websocket )
 
             self.active_sessions[ user_id ] = session
@@ -102,9 +92,9 @@ class ChatManager:
         return self.active_sessions[ user_id ]
 
 
-    def disconnect( self,  user_id: str, websocket: WebSocket ):
+    async def disconnect( self,  user_id: str, websocket: WebSocket ):
 
-        websocket.close()
+        await websocket.close()
         if user_id in self.active_sessions:
             del self.active_sessions[ user_id ]
         
@@ -115,31 +105,37 @@ class ChatManager:
 
     async def broadcast( self, message: str ):
 
-        for session in self.active_sessions:
+        for session in self.active_sessions.values():
             await session.websocket.send_text( message )
 
 class GenAIEmbeddingFunction( EmbeddingFunction[ Documents ] ):
+    
+    API_KEY = gemini_settings().API_KEY
+    DEFAULT_MODEL_NAME = gemini_settings().EMBEDDING_MODEL_NAME
+    DEFAULT_TASK_TYPE = "RETRIEVAL_DOCUMENT"
 
-    def __init__( self, api_key: str = None, 
-                  model_name: str = "gemini-embedding-exp-03-07", 
-                  task_type = "SEMANTIC_SIMILARITY" ) -> None:
+    def __init__( self, api_key: str | None = None, 
+                  model_name: str | None = None, 
+                  task_type: str | None = None ) -> None:
         
-        if api_key is None:
-            api_key = gemini_settings().GEMINI_API_KEY
+        self.model_name = model_name if model_name else self.DEFAULT_MODEL_NAME
+        self.task_type = task_type if task_type else self.DEFAULT_TASK_TYPE
+        
+        self.client = genai.Client( api_key = self.API_KEY )
 
-        self.api_key = api_key  
-        self.client = genai.Client( api_key = self.api_key )
-        self.model_name = model_name
-        self.task_type = task_type
-
-    def __call__( self, input: Documents ) -> Embeddings:
+    def __call__( self, input: Documents ) -> list[ list[ float ] ]:
        
-        result = self.client.models.embed_content( model = self.model_name,
-                                                   contents = input,
-                                                   config = types.EmbedContentConfig( task_type = self.task_type )
-                                    )
-       
-        return [ embedding.values for embedding in result.embeddings ]
+        result = self.client.models.embed_content( 
+            model = self.model_name,
+            contents = input,
+            config = types.EmbedContentConfig( 
+                        task_type = self.task_type,
+                        output_dimensionality = 3072 )
+        )
+        if not result.embeddings:
+            raise ValueError( "GenAI embedding returned no embeddings." )
+        
+        return [ embedding.values for embedding in result.embeddings if embedding.values is not None ]
     
     @staticmethod
     def name() -> str:
