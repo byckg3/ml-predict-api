@@ -5,17 +5,28 @@ from google import genai
 from google.genai import types
 
 from app.core.config import gemini_settings
-from app.core.llm import GeminiAPIClient
+from app.core.llm import GeminiClient, LLMEvent
 from app.repositories.embed import ChromaRepository
+from app.schemas.heart import HeartDiseaseFeatures
 from app.schemas.prompt import HealthCare
+from app.services.disease import DiseasePredictionService
 
-class TextGenerationService:
+class GeminiService:
     
-    def __init__( self, domain = HealthCare ):
+    def __init__( self, predict_service: DiseasePredictionService, domain = HealthCare ):
         self.domain = domain
+        tools = types.Tool( 
+            function_declarations = [ 
+                types.FunctionDeclaration( **self.domain.function_declarations[ "predict_heart_risk" ] ) 
+            ] 
+        )
+        config = types.GenerateContentConfig( 
+            tools = [ tools ],
+            system_instruction = self.domain.system_prompt
+        )
+        self.risk_prediction_service = predict_service
         self.embed_repository = ChromaRepository( function = GenAIEmbeddingFunction() )
-        self.client = GeminiAPIClient( self.domain.system_prompt )
-        
+        self.client = GeminiClient( config )
     
     def answer( self, question ):
         response = self.client.generate_text( question )
@@ -23,13 +34,52 @@ class TextGenerationService:
     
     
     async def streaming_answer( self, qa_records ):
-        text_generatror = self.client.generate_text_stream( qa_records )
-                                        
-        async for text_chunk in text_generatror:
-            text_chunk = text_chunk or ""
+        contents: list = qa_records
+        
+        while True:
+            print( f"Sending contents to LLM: {contents}" )
+            event_stream = self.client.generate_text_stream( contents )
             
-            yield text_chunk
+            all_function_calls: list[ LLMEvent ] = []
+            async for event in event_stream:
+                
+                if event.type == "text":
+                    text_chunk = event.content or ""
+                    
+                    yield text_chunk
+                
+                elif event.type == "tool_call":
+                    all_function_calls.append( event )
+                    
+                elif event.type == "done":
+                    contents.append( types.Content( role = "model", parts = event.turn_contents ) )
+                    
+                else:
+                    yield f"\nError: {event.error_code}\n{event.error_message}\n"
             
+            if not all_function_calls:
+                break
+            
+            function_response_parts = []
+            for fc in all_function_calls:
+                
+                print( f"Function to call: {fc.tool_name}" )
+                print( f"Arguments: {fc.tool_args}" )
+                yield f"\n[評估中...]\n"
+                
+                result = "error"
+                if fc.tool_name == "predict_heart_risk":
+                    result = self.risk_prediction_service.predict_heart_risk( HeartDiseaseFeatures( **fc.tool_args ) ) # type: ignore
+                    print( f"result: {result}" )   
+
+                    function_response_parts.append(
+                        types.Part.from_function_response(
+                            name = fc.tool_name,
+                            response = { "result": result },
+                        ) 
+                    )
+
+            contents.append( types.Content( role = "user", parts = function_response_parts ) )
 
     def rag_prompt( self, question ):
         qas = self.embed_repository.find_qa_texts( question )
@@ -77,7 +127,7 @@ class ChatManager:
 
     def __init__( self ):
         self.active_sessions: dict[ str, ChatSession ] = {}
-        self.genai_service = TextGenerationService()
+        self.genai_service = GeminiService( DiseasePredictionService())
 
     async def connect( self, user_id: str, websocket: WebSocket ):
         
@@ -141,9 +191,9 @@ class GenAIEmbeddingFunction( EmbeddingFunction[ Documents ] ):
     def name() -> str:
         return "GenAIEmbeddingFunction"
     
-    def get_config(self) -> dict[ str, Any ]:
+    def get_config(self) -> dict[ str, Any ]: # type: ignore
         pass
 
     @staticmethod
-    def build_from_config(config: dict[ str, Any ]) -> "EmbeddingFunction[D]":
+    def build_from_config(config: dict[ str, Any ]) -> "EmbeddingFunction[D]": # type: ignore
         pass

@@ -3,20 +3,14 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Request, WebSocket, WebSocketDisconnect, status
 from fastapi.responses import JSONResponse, StreamingResponse
 from app.api import router
+from app.api.dependencies.service import ai_service
 from app.schemas.chat import QAPayload
 from app.schemas.prompt import HealthCare, HealthCarePrompt
-from app.services.genai import TextGenerationService, ChatManager
-
-def ai_service( request: Request ) -> TextGenerationService:
-
-    if not hasattr( request.app.state, "ai_service" ):
-        request.app.state.ai_service = TextGenerationService()
-
-    return request.app.state.ai_service
+from app.services.genai import GeminiService, ChatManager
 
 router = APIRouter( prefix = "/chat" )
 
-ServiceDependency = Annotated[ TextGenerationService, Depends( ai_service ) ]
+ServiceDependency = Annotated[ GeminiService, Depends( ai_service ) ]
 
 @router.get( "/" )
 async def websocket_info():

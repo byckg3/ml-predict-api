@@ -30,6 +30,7 @@
 - [MongoDB Atlas](https://cloud.mongodb.com/)
 - [Beanie Documentation](https://beanie-odm.dev/)
 - [Gemini API quickstart](https://ai.google.dev/gemini-api/docs/quickstart)
+- [Google AI Studio](https://aistudio.google.com/)
 - [Chroma](https://docs.trychroma.com/docs/overview/introduction)
 - [LangChain Tutorials](https://python.langchain.com/docs/tutorials/)
 - [Docker Spaces](https://huggingface.co/docs/hub/spaces-sdks-docker)

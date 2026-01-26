@@ -40,6 +40,12 @@ class DiseasePredictionService:
         features.set_target( int( result[ 0 ] ) )
         
         return features
+    
+    def predict_heart_risk( self, features: HeartDiseaseFeatures ):
+        
+        result = self.heart_predictor.predict( features )
+       
+        return int( result[ 0 ] )
 
 # python -m app.services.disease
 if __name__ == "__main__":

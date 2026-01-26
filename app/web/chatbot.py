@@ -47,8 +47,29 @@ chat_window_css = """
     width: 1000px;
 }
 """
+function_call_example = """
+這是我的生理數據，可以幫我評估心臟病的風險嗎?
+```json
+{
+    "age": 52,
+    "sex": 1,
+    "cp": 0,
+    "trestbps": 125,
+    "chol": 212,
+    "fbs": 0,
+    "restecg": 1,
+    "thalach": 168,
+    "exang": 0,
+    "oldpeak": 1,
+    "slope": 2,
+    "ca": 2,
+    "thal": 2,
+    "target": 0
+}
+```
+"""
 chat_window = gr.ChatInterface( fn = chat_function,
-                                examples = [ "提供哪些服務?", "該如何預防心臟病?", "該如何預防肝病?" ],
+                                examples = [ "提供哪些服務?", "該如何預防心臟病?", "該如何預防肝病?", function_call_example ],
                                 # editable = True,
                                 type = "messages", 
                                 autofocus = True,

@@ -2,6 +2,7 @@ import textwrap
 from beanie import PydanticObjectId
 from pydantic import BaseModel
 from langchain.prompts import PromptTemplate
+from google.genai import types
 
 class HealthCare:
     system_prompt: str = textwrap.dedent( """
@@ -11,7 +12,8 @@ class HealthCare:
     當使用者向你提問時，盡量以簡單明瞭且長話短說的方式回答領域內的問題
     使用者可能會持續提問，希望你可以記住之前的對話內容來關心使用者遇到的狀況
     若問到與預測結果相關的提問時，要告訴使用者我們的預測結果僅代表是否有潛在風險，建議使用者要配合醫師診斷以確認健康狀況。
-    若遇到不理智或向你挑釁的使用者提問時，請務必堅持你的醫療保健專業，禮貌性地簡單回覆即可，不需隨之起舞
+    若遇到不理智或向你挑釁的使用者提問時，請務必堅持你的醫療保健專業，禮貌性地簡單回覆即可，不需隨之起舞。
+    如果被詢問到是否可以幫忙評估心臟病風險，請呼叫 predict_heart_risk 函式來評估可能心臟病風險程度。
 
     以下是你務必要遵守的基本原則:
     1. 參考經過驗證的醫學資料庫 ( 如 UpToDate、PubMed、CDC、WHO )
@@ -56,6 +58,72 @@ class HealthCare:
     記住之前的對話內容來回應使用者問題
     若你需要更多資訊來提供準確建議，請主動詢問使用者。\n
     """ )
+    
+    # Define the function declaration for the model
+    function_declarations = {
+        "predict_heart_risk": {
+            "name": "predict_heart_risk",
+            "description": "當使用者要求評估心臟疾病風險時，請呼叫此函式。結果 0 代表無風險，1 代表有一定程度的風險",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "age": {
+                        "type": types.Type.INTEGER,
+                        "description": "年齡",
+                    },
+                    "sex": {
+                        "type": types.Type.INTEGER,
+                        "description": "性別，0 表示女性，1 表示男性",
+                    },
+                    "cp": {
+                        "type": types.Type.INTEGER,
+                        "description": "胸痛類型，0 表示無胸痛，1 = 典型心絞痛；2 = 非典型心絞痛；3 = 非心絞痛；4 = 無症狀性胸痛",
+                    },
+                    "trestbps": {
+                        "type": types.Type.INTEGER,
+                        "description": "靜息血壓( 以 mm Hg 為單位 )",
+                    },
+                    "chol": {
+                        "type": types.Type.INTEGER,
+                        "description": "血清膽固醇，單位 mg/dl( 血液膽固醇濃度 )",
+                    },
+                    "fbs": { 
+                        "type": types.Type.INTEGER,
+                        "description": "空腹血糖是否 > 120 mg/dl，1 表示 true，0 表示 false",
+                    },
+                    "restecg": {
+                        "type": types.Type.INTEGER,
+                        "description": "靜息心電圖結果，0 = 正常；1 = 有 ST-T 波異常；2 = 顯示可能或確定的左心室肥大",
+                    },
+                    "thalach": {
+                        "type": types.Type.INTEGER,
+                        "description": "運動或測試中達到的最大心跳率",
+                    },
+                    "exang": {
+                        "type": types.Type.INTEGER,
+                        "description": "運動誘發的心絞痛，1 表示有，0 表示無",
+                    },
+                    "oldpeak": {
+                        "type": types.Type.NUMBER,
+                        "description": "運動相比於休息狀態所引起的 ST 段壓低程度",
+                    },
+                    "slope": {
+                        "type": types.Type.INTEGER,
+                        "description": "ST 段峰值斜率，1 = 上坡；2 = 平緩；3 = 下坡( 最高運動 ST 段的斜率 )",
+                    },
+                    "ca": {
+                        "type": types.Type.INTEGER,
+                        "description": "螢光染色後顯示的主要血管數量( 0-3 )",
+                    },
+                    "thal": {
+                        "type": types.Type.INTEGER,
+                        "description": "心血管造影結果類別，0 = 正常；1 = 固定缺陷；2 = 可逆缺陷",
+                    },
+                },
+                "required": [ "age", "sex", "cp", "trestbps", "chol", "fbs", "restecg", "thalach", "exang", "oldpeak", "slope", "ca", "thal" ],
+            },
+        }
+    }
 
 class HealthCarePrompt( BaseModel ):
 

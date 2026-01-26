@@ -37,18 +37,18 @@ example = {
 # https://www.kaggle.com/datasets/johnsmith88/heart-disease-dataset
 class HeartDiseaseFeatures( BaseModel ):
     age: int
-    sex: int
-    cp: int                         # chest pain type ( 4 values )
+    sex: int = 0
+    cp: int = 0                     # chest pain type ( 4 values )
     trestbps: int                   # resting blood pressure
     chol: int                       # serum cholestoral in mg/dl
-    fbs: int                        # fasting blood sugar > 120 mg/dl
-    restecg: int                    # resting electrocardiographic results (values 0,1,2)
+    fbs: int = 0                    # fasting blood sugar > 120 mg/dl
+    restecg: int = 0                # resting electrocardiographic results (values 0,1,2)
     thalach: int                    # maximum heart rate achieved
     exang: int = 0                  # exercise induced angina
     oldpeak: float                  # ST depression induced by exercise relative to rest
     slope: int                      # the slope of the peak exercise ST segment
-    ca: int                         # number of major vessels (0-3) colored by flourosopy
-    thal: int                       # 0 = normal; 1 = fixed defect; 2 = reversable defect
+    ca: int = 0                     # number of major vessels (0-3) colored by flourosopy
+    thal: int = 0                   # 0 = normal; 1 = fixed defect; 2 = reversable defect
     target: int | None = None       # the presence of heart disease in the patient, 0 = no disease and 1 = disease
 
     def set_target( self, result ):
