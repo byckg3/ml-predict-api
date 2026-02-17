@@ -3,14 +3,14 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Request, WebSocket, WebSocketDisconnect, status
 from fastapi.responses import JSONResponse, StreamingResponse
 from app.api import router
-from app.api.dependencies.service import ai_service
-from app.schemas.chat import QAPayload
+from app.api.dependencies.service import chat_service
+from app.schemas.chat import ChatPayload
 from app.schemas.prompt import HealthCare, HealthCarePrompt
 from app.services.genai import GeminiService, ChatManager
 
 router = APIRouter( prefix = "/chat" )
 
-ServiceDependency = Annotated[ GeminiService, Depends( ai_service ) ]
+ServiceDependency = Annotated[ GeminiService, Depends( chat_service ) ]
 
 @router.get( "/" )
 async def websocket_info():
@@ -19,18 +19,12 @@ async def websocket_info():
 
 
 @router.post( "/ask", response_class = StreamingResponse )
-async def streaming_answer( qa: QAPayload, service: ServiceDependency ):
+async def streaming_answer( qa: ChatPayload, service: ServiceDependency ):
 
     try:
-        qas = service.add_chat_history( qa.history )
-        # print( qas )
+        text_generator = service.streaming_answer( qa )
         
-        rag_prompt = service.rag_prompt( qa.question )
-        # print( rag_prompt )
-        
-        qas.append( { "role": "user", "parts": [ { "text": rag_prompt } ] } )
-        
-        return StreamingResponse( service.streaming_answer( qas ), 
+        return StreamingResponse( text_generator, 
                                   media_type = "text/event-stream" )
        
     except Exception as e:
@@ -57,7 +51,7 @@ async def websocket_endpoint( user_id: str, websocket: WebSocket ):
         while True:
             question = await websocket.receive_text()
 
-            prompt = chat_manager.genai_service.rag_prompt( question )
+            prompt = chat_manager.genai_service.augment_input( question )
             # print( prompt )
             response = chatbot.send_message( prompt )
             

@@ -17,7 +17,7 @@ def chat_function( question, history: list, request: gr.Request ):
         csrf_cookie = { "csrf_token": csrf_token }
 
         payload = {
-            "question": question,
+            "user_input": question,
             "history": history
         }
 

@@ -1,6 +1,6 @@
 from typing import Any
 from pydantic import BaseModel
 
-class QAPayload( BaseModel ):
-    question: str
+class ChatPayload( BaseModel ):
+    user_input: str
     history: list[ Any ] = []

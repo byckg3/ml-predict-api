@@ -1,6 +1,5 @@
 from typing import Any
 from chromadb import Documents, EmbeddingFunction, Embeddings
-from fastapi import WebSocket
 from google import genai
 from google.genai import types
 
@@ -13,7 +12,7 @@ from app.schemas.heart import HeartDiseaseFeatures
 from app.schemas.prompt import HealthCare
 from app.services.disease import DiseasePredictionService
 
-class GeminiService:
+class ChatService:
     
     def __init__( self, predict_service: DiseasePredictionService, domain = HealthCare ):
         self.domain = domain
@@ -39,7 +38,7 @@ class GeminiService:
     
     async def streaming_answer( self, chat_payload: ChatPayload ):
         
-        augmented_prompt = self.augment_input( chat_payload.user_input )
+        augmented_prompt = self._augment_input( chat_payload.user_input )
         contents = self.llm_request_adapter.build_chat_request( augmented_prompt, history = chat_payload.history )
         
         while True:
@@ -90,7 +89,7 @@ class GeminiService:
             contents.append( tool_call_response_content )
             
 
-    def augment_input( self, question ):
+    def _augment_input( self, question ):
       
         retrieved_context = self._retrieve_relevant_context( question )
         prompt = self.domain.chat_template.format( **retrieved_context )
@@ -109,69 +108,10 @@ class GeminiService:
         }
         return retrieved_context
     
-    # https://ai.google.dev/api/caching?hl=zh-tw#Content
-    def add_chat_history( self, past_messages ):
-
-        past = []
-        for msg in past_messages:
-            
-            payload = { "role": "", "parts": [] }
-            if msg[ "role" ] == "user":
-                payload[ "role" ] = "user"
-
-            else:
-                payload[ "role" ] = "model"
-
-            payload[ "parts" ].append( { "text": msg[ "content" ] } )
-            past.append( payload )
-            
-        return past
 
     def open_chat_session( self, domain = HealthCare ):
         return self.client.create_chat()
-        
-       
     
-class ChatSession:
-
-    def __init__( self, chat, ws: WebSocket ):
-        self.chat = chat
-        self.websocket = ws
-
-class ChatManager:
-
-    def __init__( self ):
-        self.active_sessions: dict[ str, ChatSession ] = {}
-        self.genai_service = GeminiService( DiseasePredictionService())
-
-    async def connect( self, user_id: str, websocket: WebSocket ):
-        
-        if user_id not in self.active_sessions:
-            await websocket.accept()
-           
-            chat = self.genai_service.open_chat_session()
-            session = ChatSession( chat, websocket )
-
-            self.active_sessions[ user_id ] = session
-
-        return self.active_sessions[ user_id ]
-
-
-    async def disconnect( self,  user_id: str, websocket: WebSocket ):
-
-        await websocket.close()
-        if user_id in self.active_sessions:
-            del self.active_sessions[ user_id ]
-        
-    async def send_user_message( self, user_id: str, message: str ):
-
-        session = self.active_sessions[ user_id ]
-        await session.websocket.send_text( message )
-
-    async def broadcast( self, message: str ):
-
-        for session in self.active_sessions.values():
-            await session.websocket.send_text( message )
 
 class GenAIEmbeddingFunction( EmbeddingFunction[ Documents ] ):
     
