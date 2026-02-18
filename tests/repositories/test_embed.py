@@ -1,11 +1,11 @@
 import pytest
+from app.llm.gemini.service import GeminiEmbeddingFunction
 from app.repositories.embed import ChromaRepository
-from app.services.genai import GenAIEmbeddingFunction
 
 # @pytest.mark.current
 class TestChromaRepository:
 
-    repository = ChromaRepository( function = GenAIEmbeddingFunction() )
+    repository = ChromaRepository( function = GeminiEmbeddingFunction() )
 
     def test_find_qas( self ):
         num_results = 1

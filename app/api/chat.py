@@ -4,13 +4,14 @@ from fastapi import APIRouter, Depends, Request, WebSocket, WebSocketDisconnect,
 from fastapi.responses import JSONResponse, StreamingResponse
 from app.api import router
 from app.api.dependencies.service import chat_service
+from app.llm.gemini.service import ChatService
 from app.schemas.chat import ChatPayload
 from app.schemas.prompt import HealthCare, HealthCarePrompt
-from app.services.genai import GeminiService, ChatManager
+from app.services.genai import ChatManager
 
 router = APIRouter( prefix = "/chat" )
 
-ServiceDependency = Annotated[ GeminiService, Depends( chat_service ) ]
+ServiceDependency = Annotated[ ChatService, Depends( chat_service ) ]
 
 @router.get( "/" )
 async def websocket_info():

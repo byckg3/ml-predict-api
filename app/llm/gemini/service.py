@@ -14,7 +14,7 @@ from app.services.disease import DiseasePredictionService
 
 class ChatService:
     
-    def __init__( self, predict_service: DiseasePredictionService, domain = HealthCare ):
+    def __init__( self, prediction_service: DiseasePredictionService, domain = HealthCare ):
         self.domain = domain
         tool = types.Tool( 
             function_declarations = [ 
@@ -25,8 +25,8 @@ class ChatService:
             tools = [ tool ],
             system_instruction = self.domain.system_prompt
         )
-        self.risk_prediction_service = predict_service
-        self.embed_repository = ChromaRepository( function = GenAIEmbeddingFunction() )
+        self.risk_prediction_service = prediction_service
+        self.embed_repository = ChromaRepository( function = GeminiEmbeddingFunction() )
         self.client = GeminiClient( config )
         self.llm_request_adapter = RequestAdapter()
         
@@ -113,7 +113,7 @@ class ChatService:
         return self.client.create_chat()
     
 
-class GenAIEmbeddingFunction( EmbeddingFunction[ Documents ] ):
+class GeminiEmbeddingFunction( EmbeddingFunction[ Documents ] ):
     
     API_KEY = gemini_settings().API_KEY
     DEFAULT_MODEL_NAME = gemini_settings().EMBEDDING_MODEL_NAME
@@ -144,7 +144,7 @@ class GenAIEmbeddingFunction( EmbeddingFunction[ Documents ] ):
     
     @staticmethod
     def name() -> str:
-        return "GenAIEmbeddingFunction"
+        return "GeminiEmbeddingFunction"
     
     def get_config(self) -> dict[ str, Any ]: # type: ignore
         pass

@@ -3,7 +3,7 @@ import time
 import pytest
 from app.core.db import ChromaDB
 
-from app.services.genai import GenAIEmbeddingFunction
+from app.llm.gemini.service import GeminiEmbeddingFunction
 
 @pytest.mark.db
 class TestChromaDB:
@@ -14,7 +14,7 @@ class TestChromaDB:
 
     @pytest.fixture
     def chroma( self ):
-        chroma = ChromaDB( self.TEST_PATH, self.TEST_COLLECTION, GenAIEmbeddingFunction(), False )
+        chroma = ChromaDB( self.TEST_PATH, self.TEST_COLLECTION, GeminiEmbeddingFunction(), False )
 
         yield chroma
 

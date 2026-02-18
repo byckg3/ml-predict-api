@@ -50,7 +50,7 @@ class ChromaDB:
 
         self.collection = self.client.get_or_create_collection( name = name,
                                                                 embedding_function = embed_function )
-        print( "create ChromaDB connection successfully" )
+        print( "\nCreate ChromaDB connection successfully" )
 
     def load( self, n_records = -1 ):
 

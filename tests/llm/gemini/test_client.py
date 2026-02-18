@@ -1,7 +1,7 @@
 import pytest
-from google import genai
 from google.genai import types
-from app.core.llm import GeminiClient
+from app.llm.domain.models import LLMResponse
+from app.llm.gemini.client import GeminiClient
 
 def predict_lucky_number( min_int, max_int ) -> int:
     return 1
@@ -25,7 +25,7 @@ predict_function = {
     },
 }
 
-@pytest.mark.current
+# @pytest.mark.current
 class TestGeminiClient:
     
     @pytest.fixture
@@ -46,30 +46,23 @@ class TestGeminiClient:
 
         del client
 
-    async def test_generate_text_stream( self, gemini_client ):
+    async def test_generate_text_stream( self, gemini_client: GeminiClient ):
         
-        event_stream = gemini_client.generate_text_stream( "請給一個1~100的幸運數字" )
+        reponse_stream = gemini_client.generate_text_stream( "請給一個1~100的幸運數字" )
         
-        all_function_calls = []
-        async for event in event_stream:
+        all_function_calls: list[ LLMResponse ] = []
+        async for response in reponse_stream:
             
-            if event.type == "text":
-                text_chunk = event.content or ""
+            if response.text:
+                text_chunk = response.text
                 
                 print( text_chunk, end = "", flush = True )
                 
-            if event.type == "tool_call":
+            if response.tool_name:
+                all_function_calls.append( response )
                 
-                all_function_calls.append( event )
-                
-                min_int = event.tool_args.get( "min_int", 1 )
-                max_int = event.tool_args.get( "max_int", 100 )
-                
-                lucky_number = predict_lucky_number( min_int, max_int )
-                
-                print( f"\n預測的幸運號碼是: {lucky_number}\n" )
-                
+        # print( all_function_calls[ 0 ].tool_args)
         assert len( all_function_calls ) == 1
         assert all_function_calls[ 0 ].tool_name == "predict_lucky_number"
         assert all_function_calls[ 0 ].tool_args is not None
-        print( all_function_calls[ 0 ].tool_args)
+        
