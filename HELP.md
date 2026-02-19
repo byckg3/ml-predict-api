@@ -22,8 +22,7 @@
 - pytest -x tests/
 - pytest -m <TAG_NAME>
 
-### urls
-- http://localhost:8000/docs
+### links
 - [FastAPI Tutorial - User Guide](https://fastapi.tiangolo.com/tutorial/)
 - [Pydantic Settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings/)
 - [Authlib: Python Authentication](https://docs.authlib.org/en/latest/index.html)

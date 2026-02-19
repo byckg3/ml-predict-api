@@ -1,5 +1,5 @@
 from typing import Any
-from chromadb import Documents, EmbeddingFunction, Embeddings
+from chromadb import Documents, EmbeddingFunction
 from google import genai
 from google.genai import types
 

@@ -2,7 +2,7 @@ import pytest
 from app.llm.gemini.service import GeminiEmbeddingFunction
 from app.repositories.embed import ChromaRepository
 
-# @pytest.mark.current
+# @pytest.mark.test_only
 class TestChromaRepository:
 
     repository = ChromaRepository( function = GeminiEmbeddingFunction() )

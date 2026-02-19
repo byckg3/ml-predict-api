@@ -70,7 +70,9 @@ function_call_example1 = """
 """
 function_call_example2 = """
 這是我的身體狀況 可以幫我評估心臟病的風險嗎?
-年齡40歲 男性 空腹血糖122 mg/dl"""
+40歲男性 
+空腹血糖122 mg/dl
+"""
 
 chat_window = gr.ChatInterface( fn = chat_function,
                                 examples = [ "提供哪些服務?", 

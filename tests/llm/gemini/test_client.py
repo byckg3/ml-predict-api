@@ -1,7 +1,7 @@
 import pytest
 from google.genai import types
 from app.llm.domain.models import LLMResponse
-from app.llm.gemini.client import GeminiClient
+from app.llm.gemini.client import GeminiClient, RequestAdapter
 
 def predict_lucky_number( min_int, max_int ) -> int:
     return 1
@@ -25,7 +25,6 @@ predict_function = {
     },
 }
 
-# @pytest.mark.current
 class TestGeminiClient:
     
     @pytest.fixture
@@ -65,4 +64,27 @@ class TestGeminiClient:
         assert len( all_function_calls ) == 1
         assert all_function_calls[ 0 ].tool_name == "predict_lucky_number"
         assert all_function_calls[ 0 ].tool_args is not None
+
+@pytest.mark.test_only
+class TestRequestAdapter:
+    
+    @pytest.fixture
+    def request_adapter( self ) -> RequestAdapter:
+        return RequestAdapter()
+    
+    def test_build_content_with_text_parts_and_custom_role( self, request_adapter: RequestAdapter ):
         
+        items = [ types.Part.from_text( text = "Hello" ), 
+                  types.Part.from_text( text = "World" ) 
+        ]
+        content: types.Content = request_adapter.build_content( items, role = "model" )
+        
+        expected_content = {
+            "role": "model",
+            "parts": [
+                { "text": "Hello" },
+                { "text": "World" }
+            ]
+        }
+        
+        assert content.model_dump( exclude_none = True ) == expected_content

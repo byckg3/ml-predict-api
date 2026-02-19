@@ -108,7 +108,7 @@ class RequestAdapter:
             parts = [ types.Part.from_text( text = text ) ]
         )
         
-    def build_content( self, items: list[ Any ], role: str = "user" ):
+    def build_content( self, items: list[ Any ], role: str = "user" ) -> types.Content:
         return types.Content( role = role, parts = items )
     
     # https://ai.google.dev/api/caching#FunctionResponse
