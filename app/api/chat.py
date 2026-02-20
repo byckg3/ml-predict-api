@@ -51,7 +51,7 @@ async def websocket_endpoint( user_id: str, websocket: WebSocket ):
         while True:
             question = await websocket.receive_text()
 
-            prompt = chat_manager.genai_service.augment_input( question )
+            prompt = chat_manager.genai_service._augment_input( question )
             # print( prompt )
             response = chatbot.send_message( prompt )
             

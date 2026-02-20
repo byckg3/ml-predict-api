@@ -1,4 +1,4 @@
-from typing import Any, TypeVar, Union
+from typing import Any, Type, TypeVar, Union
 from beanie import Document, PydanticObjectId
 from beanie.operators import In
 
@@ -6,10 +6,9 @@ from app.schemas.heart import HeartDiseaseRecord
 from app.schemas.liver import LiverDiseaseRecord
 from app.repositories.nosql import DocumentRepository
 
-T = TypeVar( "T", bound = Document )
-class DocumentService:
+class DocumentService[ T: Document ]:
 
-    def __init__( self, document_class: T ):
+    def __init__( self, document_class: Type[ T ] ):
         self.repository = DocumentRepository( document_class )
         
     async def get_by_id( self, id: str ) -> Union[ T, None ]:
@@ -21,7 +20,7 @@ class DocumentService:
     async def save( self, doc: T ) -> T:
         return await self.repository.save( doc )
     
-    async def update_by_id( self, id, patch ) -> T:
+    async def update_by_id( self, id, patch ) -> T | None:
         return await self.repository.update_by_id( id, patch )
     
     async def delete_by_id( self, id ) -> int:
@@ -33,10 +32,11 @@ class DocumentService:
     async def id_exists( self, id ) -> bool:
         return await self.repository.id_exists( id )
     
+    
 U = TypeVar( "U", LiverDiseaseRecord, HeartDiseaseRecord )
-class RecordService( DocumentService ):
+class RecordService( DocumentService[ U ] ):
 
-    def __init__( self, record_class: U ):
+    def __init__( self, record_class: Type[ U ] ):
         super().__init__( record_class )
         self.record_class = record_class
 

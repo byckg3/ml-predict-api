@@ -23,7 +23,7 @@ async def liver_disease_record():
 
     return liver_disease_record
 
-@pytest.mark.db
+# @pytest.mark.test_only
 @pytest.mark.asyncio( loop_scope = "module" )
 class TestDocumentRepository:
 
@@ -46,12 +46,15 @@ class TestDocumentRepository:
         updated_document = await self.repository.update_by_id( saved_document.id, 
                                                                example[ "updated_value1" ] )
     
+        
+        assert updated_document is not None
         assert updated_document.features.alcohol_consumption == 18.2
         assert updated_document.features.smoking == 1
 
         # get
-        get_result = await self.repository.get_by_id( saved_document.id )
+        get_result = await self.repository.get_by_id( str( saved_document.id ) )
     
+        assert get_result is not None
         assert get_result.id is not None
         assert get_result.id == saved_document.id
 
@@ -60,7 +63,7 @@ class TestDocumentRepository:
         assert deleted_count == 1
 
         # get empty
-        empty_result = await self.repository.get_by_id( saved_document.id )
+        empty_result = await self.repository.get_by_id( str( saved_document.id ) )
         assert empty_result is None
 
     @pytest.mark.asyncio( loop_scope = "module" )

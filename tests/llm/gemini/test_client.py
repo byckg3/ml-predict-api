@@ -65,7 +65,7 @@ class TestGeminiClient:
         assert all_function_calls[ 0 ].tool_name == "predict_lucky_number"
         assert all_function_calls[ 0 ].tool_args is not None
 
-@pytest.mark.test_only
+# @pytest.mark.test_only
 class TestRequestAdapter:
     
     @pytest.fixture

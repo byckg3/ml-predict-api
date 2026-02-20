@@ -1,15 +1,15 @@
 from beanie import Document
 from datetime import datetime, timezone
-from typing import Any, TypeVar, Union
+from typing import Any, Type, TypeVar, Union
 
 T = TypeVar( "T", bound = Document )
-class DocumentRepository:
+class DocumentRepository[ T: Document ]:
 
-    def __init__( self, document_class: T ):
+    def __init__( self, document_class: Type[ T ] ):
 
         self.beanie_document = document_class
 
-    async def get_by_id( self, id: str ) -> Union[ T, None ]:
+    async def get_by_id( self, id: str ) -> T | None:
         return await self.beanie_document.get( id )
     
     async def find_by_criteria( self, search_criteria: Any, skip = 0, limit = 10 ) -> list[ T ]:
@@ -18,7 +18,7 @@ class DocumentRepository:
 
         return documents
     
-    async def find_one( self, search_criteria: Any ) -> T:
+    async def find_one( self, search_criteria: Any ) -> T | None:
         document = await  self.beanie_document.find_one( search_criteria )
 
         return document
@@ -31,7 +31,7 @@ class DocumentRepository:
     async def save( self, document: T ) -> T:
         return await document.save() 
     
-    async def update_by_id( self, id, patch ) -> T:
+    async def update_by_id( self, id, patch ) -> T | None:
         result = None
 
         document = await self.get_by_id( id )

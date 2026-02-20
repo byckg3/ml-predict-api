@@ -5,7 +5,7 @@ from app.core.db import ChromaDB
 
 from app.llm.gemini.services import GeminiEmbeddingFunction
 
-@pytest.mark.db
+# @pytest.mark.db
 class TestChromaDB:
 
     TEST_PATH = "./test_chroma"
