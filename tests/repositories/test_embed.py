@@ -1,5 +1,5 @@
 import pytest
-from app.llm.gemini.service import GeminiEmbeddingFunction
+from app.llm.gemini.services import GeminiEmbeddingFunction
 from app.repositories.embed import ChromaRepository
 
 # @pytest.mark.test_only

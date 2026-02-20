@@ -1,5 +1,5 @@
 from fastapi import Depends, Request
-from app.llm.gemini.service import ChatService
+from app.llm.gemini.services import ChatService
 from app.schemas.heart import HeartDiseaseRecord
 from app.schemas.liver import LiverDiseaseRecord
 from app.schemas.user import UserProfile

@@ -1,5 +1,5 @@
 from fastapi import WebSocket
-from app.llm.gemini.service import ChatService
+from app.llm.gemini.services import ChatService
 from app.services.disease import DiseasePredictionService
 
 class ChatSession:

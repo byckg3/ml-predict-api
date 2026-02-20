@@ -1,10 +1,10 @@
 from dataclasses import dataclass
-from typing import Any, AsyncIterator, Literal
+from typing import Any, AsyncIterator
 from google import genai
 from google.genai import types, errors
 
 from app.core.config import gemini_settings
-from app.llm.domain.models import LLMResponse, ToolCall
+from app.llm.dto import LLMResponse, ToolCall
     
 class GeminiClient:
     

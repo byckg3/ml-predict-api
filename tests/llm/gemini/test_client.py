@@ -1,6 +1,6 @@
 import pytest
 from google.genai import types
-from app.llm.domain.models import LLMResponse
+from app.llm.dto import LLMResponse
 from app.llm.gemini.client import GeminiClient, RequestAdapter
 
 def predict_lucky_number( min_int, max_int ) -> int:

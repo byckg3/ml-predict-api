@@ -4,26 +4,27 @@ from google import genai
 from google.genai import types
 
 from app.core.config import gemini_settings
-from app.llm.domain.models import ToolCall
+from app.llm.dto import ToolCall
+from app.llm.domain.prompts import HealthCarePolicy
 from app.llm.gemini.client import GeminiClient, RequestAdapter
+from app.llm.gemini.tools import function_declarations
 from app.repositories.embed import ChromaRepository
 from app.schemas.chat import ChatPayload
 from app.schemas.heart import HeartDiseaseFeatures
-from app.schemas.prompt import HealthCare
 from app.services.disease import DiseasePredictionService
 
 class ChatService:
     
-    def __init__( self, prediction_service: DiseasePredictionService, domain = HealthCare ):
-        self.domain = domain
+    def __init__( self, prediction_service: DiseasePredictionService, policy = HealthCarePolicy ):
+        self.domain_policy = policy
         tool = types.Tool( 
             function_declarations = [ 
-                types.FunctionDeclaration( **self.domain.function_declarations[ "predict_heart_risk" ] ) 
+                types.FunctionDeclaration( **function_declarations[ "predict_heart_risk" ] ) 
             ] 
         )
         config = types.GenerateContentConfig( 
             tools = [ tool ],
-            system_instruction = self.domain.system_prompt
+            system_instruction = self.domain_policy.system_prompt
         )
         self.risk_prediction_service = prediction_service
         self.embed_repository = ChromaRepository( function = GeminiEmbeddingFunction() )
@@ -92,7 +93,7 @@ class ChatService:
     def _augment_input( self, question ):
       
         retrieved_context = self._retrieve_relevant_context( question )
-        prompt = self.domain.chat_template.format( **retrieved_context )
+        prompt = self.domain_policy.prompt_template.format( **retrieved_context )
 
         return prompt
     
@@ -109,7 +110,7 @@ class ChatService:
         return retrieved_context
     
 
-    def open_chat_session( self, domain = HealthCare ):
+    def open_chat_session( self, domain = HealthCarePolicy ):
         return self.client.create_chat()
     
 

@@ -4,9 +4,8 @@ from fastapi import APIRouter, Depends, Request, WebSocket, WebSocketDisconnect,
 from fastapi.responses import JSONResponse, StreamingResponse
 from app.api import router
 from app.api.dependencies.service import chat_service
-from app.llm.gemini.service import ChatService
+from app.llm.gemini.services import ChatService
 from app.schemas.chat import ChatPayload
-from app.schemas.prompt import HealthCare, HealthCarePrompt
 from app.services.genai import ChatManager
 
 router = APIRouter( prefix = "/chat" )

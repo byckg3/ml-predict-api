@@ -3,7 +3,7 @@ import time
 import pytest
 from app.core.db import ChromaDB
 
-from app.llm.gemini.service import GeminiEmbeddingFunction
+from app.llm.gemini.services import GeminiEmbeddingFunction
 
 @pytest.mark.db
 class TestChromaDB:
