@@ -11,7 +11,7 @@ class LLMResponse:
     tool_name: str | None = None
     tool_args: dict | None = None
     
-    contents: list | None = None
+    contents: list[ Any ] | None = None
 
     error_code: int | str | None = None
     error_message: str | None = None

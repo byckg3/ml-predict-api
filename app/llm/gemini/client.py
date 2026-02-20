@@ -40,25 +40,12 @@ class GeminiClient:
             parsed_response_stream = response_adapter.parse_response_stream( response_stream )
             async for llm_response in parsed_response_stream:
                 yield llm_response
-            
-            full_response = response_adapter.parse_parts( response_adapter.accumulated_parts )
-            full_response.is_final = True
-            
-            yield full_response
 
-        except errors.ServerError as e:
+        except ( errors.ServerError, errors.ClientError ) as e:
             print( e )
-            print( f"server error message:\n{e.message}" )
+            print( f"error message:\n{e.message}" )
             
-            yield LLMResponse(
-                error_code = f"{e.code} {e.status}",
-                error_message = f"\n{e.message}",
-            )
-            
-        except errors.ClientError as e:
-            print( e )
-            print( f"client error message:\n{e.message}" )
-            
+            # Raise an exception in production
             yield LLMResponse(
                 error_code = f"{e.code} {e.status}",
                 error_message = f"\n{e.message}",
@@ -88,14 +75,14 @@ class RequestAdapter:
     def build_chat_request( self, prompt: str, history: list = [] ):
         
         contents = []
-        for content in history:
+        for item in history:
             
-            payload = { "role": "user", "parts": [] }
-            if content[ "role" ] != "user":
-                payload[ "role" ] = "model"
+            content_payload = { "role": "user", "parts": [] }
+            if item[ "role" ] != "user":
+                content_payload[ "role" ] = "model"
 
-            payload[ "parts" ].append( types.Part.from_text( text = content.get( "content", "" ) ) )
-            contents.append( payload )
+            content_payload[ "parts" ].append( types.Part.from_text( text = item.get( "content", "" ) ) )
+            contents.append( content_payload )
         
         text_content = self.build_text_content( prompt )
         contents.append( text_content )
@@ -136,7 +123,7 @@ class RequestAdapter:
 class ResponseAdapter:
     
     def __init__( self ):
-        self.accumulated_parts: list[ types.Part ] = []
+        pass
         
     
     def parse_response( self, response: types.GenerateContentResponse ) :
@@ -145,6 +132,7 @@ class ResponseAdapter:
     
     async def parse_response_stream( self, stream: AsyncIterator[ types.GenerateContentResponse ] ):
         
+        accumulated_parts: list[ types.Part ] = []
         async for chunk in stream :
             
             if not chunk.candidates or \
@@ -155,7 +143,7 @@ class ResponseAdapter:
             parts: list[ types.Part ] = chunk.candidates[ 0 ].content.parts
             for part in parts:
                 
-                self.accumulated_parts.append( part )
+                accumulated_parts.append( part )
                 if part.function_call:
                     
                     yield LLMResponse(
@@ -165,7 +153,12 @@ class ResponseAdapter:
                 
                 if part.text:
                     yield LLMResponse( text = part.text )
-                
+                    
+        full_response = self.parse_parts( accumulated_parts )
+        full_response.is_final = True
+        
+        yield full_response
+    
     
     def parse_parts( self, parts: list[ types.Part ] ) -> LLMResponse:
         
@@ -176,11 +169,18 @@ class ResponseAdapter:
             if part.text:
                 current_text += part.text
                 
-            else:
+            elif part.function_call:
                 if current_text:
                     parsed_parts.append( types.Part( text = current_text ) )
                     current_text = ""
                 
-            parsed_parts.append( part )
+                parsed_parts.append( part )
+            
+            else:
+                # other part types can be handled here
+                pass
+            
+        if current_text:
+            parsed_parts.append( types.Part( text = current_text ) )
             
         return LLMResponse( contents = parsed_parts )
