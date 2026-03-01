@@ -33,3 +33,4 @@
 - [Chroma](https://docs.trychroma.com/docs/overview/introduction)
 - [LangChain Tutorials](https://python.langchain.com/docs/tutorials/)
 - [Docker Spaces](https://huggingface.co/docs/hub/spaces-sdks-docker)
+- [Pytest Documentation](https://docs.pytest.org/en/stable/how-to/index.html)

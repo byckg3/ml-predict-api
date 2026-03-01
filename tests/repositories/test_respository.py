@@ -1,83 +1,76 @@
 from pathlib import Path
 import shutil
 import pytest
-import pytest_asyncio
+
 from app.schemas.liver import LiverDiseaseRecord, example
 from app.core.db import MongoDB
 from app.repositories.nosql import DocumentRepository
 from app.repositories.models import HFModelRepository
 
-@pytest_asyncio.fixture( loop_scope = "module" )
-async def setup_mongo():
-    MongoDB.DB_NAME = "test"
-    monogo = MongoDB()
-    await monogo.init_beanie()
-
-    yield
-
-    await monogo.close()
-
-@pytest_asyncio.fixture( loop_scope = "module" )
-async def liver_disease_record():
-    liver_disease_record = LiverDiseaseRecord( **example[ "created_record" ] )
-
-    return liver_disease_record
-
 # @pytest.mark.test_only
-@pytest.mark.asyncio( loop_scope = "module" )
+@pytest.mark.usefixtures( "setup_mongo" )
 class TestDocumentRepository:
-
-    repository = DocumentRepository( LiverDiseaseRecord )
 
     def setup_method( self, method ):
         pass
         
     def teardown_method( self, method ):
         pass
+    
+    
+    @pytest.fixture( scope = "class" )
+    def record_repository( self ):
+        return DocumentRepository( LiverDiseaseRecord )
 
-    async def test_repository_crud_operations( self, setup_mongo, liver_disease_record ):
+    @pytest.fixture( scope = "class" )
+    async def liver_disease_record( self ):
+
+        liver_disease_record = LiverDiseaseRecord( **example[ "created_record" ] )
+
+        return liver_disease_record
+    
+
+    async def test_repository_crud_operations( self, record_repository, liver_disease_record ):
     
         # save
-        saved_document = await self.repository.save( liver_disease_record )
+        saved_document = await record_repository.save( liver_disease_record )
 
         assert saved_document.id is not None
 
         # update
-        updated_document = await self.repository.update_by_id( saved_document.id, 
+        updated_document = await record_repository.update_by_id( saved_document.id, 
                                                                example[ "updated_value1" ] )
     
-        
         assert updated_document is not None
         assert updated_document.features.alcohol_consumption == 18.2
         assert updated_document.features.smoking == 1
 
         # get
-        get_result = await self.repository.get_by_id( str( saved_document.id ) )
+        get_result = await record_repository.get_by_id( str( saved_document.id ) )
     
         assert get_result is not None
         assert get_result.id is not None
         assert get_result.id == saved_document.id
 
         # delete
-        deleted_count = await self.repository.delete_by_id( saved_document.id )
+        deleted_count = await record_repository.delete_by_id( saved_document.id )
         assert deleted_count == 1
 
         # get empty
-        empty_result = await self.repository.get_by_id( str( saved_document.id ) )
+        empty_result = await record_repository.get_by_id( str( saved_document.id ) )
         assert empty_result is None
 
-    @pytest.mark.asyncio( loop_scope = "module" )
-    async def test_service_delete_all_documents( self, setup_mongo, liver_disease_record ):
 
-        deleted_count = await self.repository.delete_all()
+    async def test_service_delete_all_documents( self, record_repository, liver_disease_record ):
+
+        deleted_count = await record_repository.delete_all()
         assert deleted_count >= 0, f"failed: Expected >= 0 but got { deleted_count }"
 
-        empty_list = await self.repository.find_all()
+        empty_list = await record_repository.find_all()
         assert len( empty_list ) == 0, f"failed: Expected 0 but got { len( empty_list ) }"
 
 
 @pytest.mark.hf
-@pytest.mark.asyncio( loop_scope = "module" )
 class TestHFModelRepository:
 
     repository = HFModelRepository()

@@ -1,35 +1,23 @@
-
 import pytest
-import pytest_asyncio
 from app.schemas.heart import HeartDiseaseRecord, example
-from app.core.db import MongoDB
 from app.services.nosql import RecordService
 
-@pytest_asyncio.fixture( loop_scope = "module" )
-async def setup_mongo():
-    MongoDB.DB_NAME = "test"
-    monogo = MongoDB()
-    await monogo.init_beanie()
 
-    yield
-
-    await monogo.close()
-
-@pytest_asyncio.fixture( loop_scope = "module" )
-async def heart_record_service():
+@pytest.fixture( scope = "module" )
+async def heart_record_service( setup_mongo ):
     heart_record_service = RecordService( HeartDiseaseRecord )
 
     return heart_record_service
 
+# @pytest.mark.test_only
 @pytest.mark.db
-@pytest.mark.asyncio( loop_scope = "module" )
-async def test_service_crud_operations( setup_mongo, heart_record_service ):
+async def test_service_crud_operations( heart_record_service ):
 
     heart_record = HeartDiseaseRecord( **example[ "created_record" ] )
 
     # save
     save_result = await heart_record_service.save( heart_record )
-    # print( save_result )
+    print( save_result )
     assert save_result.id is not None
     assert save_result.id == heart_record.id
     
@@ -57,9 +45,9 @@ async def test_service_crud_operations( setup_mongo, heart_record_service ):
     get_empty_result = await heart_record_service.get_by_id( heart_record.id )
     assert get_empty_result is None
 
+# @pytest.mark.test_only
 @pytest.mark.db
-@pytest.mark.asyncio( loop_scope = "module" )
-async def test_service_delete_all_documents( setup_mongo, heart_record_service ):
+async def test_service_delete_all_documents( heart_record_service ):
 
     deleted_count = await heart_record_service.delete_all()
     assert deleted_count >= 0, f"failed: Expected >= 0 but got { deleted_count }"

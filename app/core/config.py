@@ -6,11 +6,25 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 if os.path.exists( ".env" ):
     from dotenv import load_dotenv
     load_dotenv()
+    
+ENV = os.getenv( "ENV", "" )
+
+env_file = ".env"
+if ENV:
+    env_file = f".env.{ENV}"
 
 class MongoDBSettings( BaseSettings ):
 
     MONGO_URI: str
     DB_NAME: str
+
+    model_config = SettingsConfigDict( extra = "ignore" )
+    
+    
+class PostgreSQLSettings( BaseSettings ):
+
+    DATABASE_URL: str
+    TEST_DB_URL: str = ""
 
     model_config = SettingsConfigDict( extra = "ignore" )
 
@@ -73,6 +87,10 @@ def mongo_settings():
     return MongoDBSettings() # type: ignore
 
 @lru_cache()
+def postgre_settings():
+    return PostgreSQLSettings() # type: ignore
+
+@lru_cache()
 def chroma_settings():
     return ChromaSettings()
 
@@ -94,7 +112,7 @@ def google_auth_settings():
 def web_settings():
     return WebSettings() # type: ignore
 
-# python -m app.config.settings
+# python -m app.core.config
 if __name__ == "__main__":
-    settings = hf_settings()
-    print( settings )
+    settings = postgre_settings()
+    print( settings.DATABASE_URL )
