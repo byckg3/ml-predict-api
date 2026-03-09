@@ -73,14 +73,17 @@ class TestDocumentRepository:
 @pytest.mark.hf
 class TestHFModelRepository:
 
-    repository = HFModelRepository()
     download_dir = "./temp"
+    
+    @pytest.fixture( scope = "class" )
+    def hf_repository( self ):
+        return HFModelRepository()
 
-    async def test_repository_download_successfully( self ):
+    async def test_repository_download_successfully( self, hf_repository: HFModelRepository ):
         
         repo_filepath = "liver/sklearn/random_forest/01/input_example.json"
 
-        local_filepath = await self.repository.download( repo_filepath, self.download_dir )
+        local_filepath = await hf_repository.download( repo_filepath, self.download_dir )
         file_path = Path( local_filepath )
         
         assert file_path.exists() == True, f"failed: Expected {file_path} exists"

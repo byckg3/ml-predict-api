@@ -3,6 +3,9 @@
 - python -m venv .venv
 - source .venv/bin/activate( .venv\Scripts\activate )
 - pyenv versions
+- pyenv install --list
+- pyenv local <PYTHON_VERSION>
+- pip install -r requirements.txt
 - uvicorn app.main:app --reload
 - python -m app.main
 - curl -o openapi.json http://127.0.0.1:8000/openapi.json
