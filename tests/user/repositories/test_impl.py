@@ -6,18 +6,8 @@ from app.db.postgres.connection import get_engine, get_session_factory, init_tab
 from app.user.models import User, example
 from app.user.repositories.impl import UserRepository
 
-@pytest.mark.test_only
+# @pytest.mark.test_only
 class TestUserRepository:
-    
-    @pytest.fixture( scope = "class" )
-    async def async_session_factory( self ) :
-        async_engine = get_engine( env = "test" )
-        await init_tables( async_engine, [ User ] )
-        
-        yield get_session_factory( async_engine )
-        
-        await async_engine.dispose()
-
     
     @pytest.fixture( scope = "class" )
     async def test_user( self ):
@@ -31,26 +21,27 @@ class TestUserRepository:
             user_repository = UserRepository( session )
             
             # save
-            user = user_repository.save_user( test_user )
+            user = await user_repository.save( test_user )
             await session.flush()
-            # print( f"User saved with ID: {user.id}" )
-            # print( user )
+            # print( f"Saved user:\n{user}" )
             assert user.id is not None
             assert user.public_id is not None
             assert user.created_at is not None
             
             user_public_id = str( user.public_id )
             
-            # update user
+            
+            # update
             updated_name = "New Name"
-            await user_repository.update_by_public_id( user_public_id, { "name": updated_name } )
-            await session.flush()
+            updated_user = await user_repository.update_by_public_id( user_public_id, { "name": updated_name } )
+            await session.flush()                  # Synchronize changes to the DB
+            await session.refresh( updated_user )  # Fetch the latest values from the DB
+            # print( f"Updated user:\n{updated_user}" )
             
             
-            #  get by public_id
-            queried_user = await user_repository.get_by_public_id( user_public_id )
-            # await session.flush()
-            # print( f"Queried user: {queried_user}" )
+            # find by public_id
+            queried_user = await user_repository.find_by_public_id( user_public_id )
+            # print( f"Queried user:\n{queried_user}" )
             assert queried_user is not None
             assert queried_user.id == user.id
             assert queried_user.name == updated_name
@@ -61,8 +52,8 @@ class TestUserRepository:
             assert deleted_count == 1
 
 
-            # get all users
-            all_users = await user_repository.get_all()
+            # find all
+            all_users = await user_repository.find_all()
             assert len( all_users ) == 0
             
             
@@ -75,12 +66,11 @@ class TestUserRepository:
             user_repository = UserRepository( session )
             
             # save a user
-            new_user = user_repository.save_user( test_user )
+            new_user = await user_repository.save( test_user )
             await session.flush()
             
-            
             # delete user
-            await user_repository.delete_user( new_user )
+            await user_repository.delete( new_user )
             await session.flush()
             
             

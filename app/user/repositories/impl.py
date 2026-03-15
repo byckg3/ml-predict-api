@@ -10,37 +10,37 @@ class UserRepository:
         self._async_session = async_session
         
         
-    def save_user( self, user: User ) -> User:
+    async def save( self, user: User ) -> User:
         self._async_session.add( user )
                
         return user
     
     
-    async def get_by_public_id( self, id: str ) -> User | None:
+    async def delete( self, user: User ):
+        await self._async_session.delete( user )
+        
+    
+    async def find_by_public_id( self, id: str ) -> User | None:
         stmt = select( User ).where( User.public_id == id )
         
         return await self._async_session.scalar( stmt )
     
     
-    async def get_all( self, limit: int = 10, offset: int = 0 ) -> list[ User ]:
-        stmt = select( User ).limit( limit ).offset( offset )
+    async def find_all( self, limit: int = 10, offset: int = 0 ) -> list[ User ]:
+        stmt = select( User ).order_by( User.id ).limit( limit ).offset( offset )
         result = await self._async_session.execute( stmt )
         
         return list( result.scalars().all() )
     
     
     async def update_by_public_id( self, id: str, patch: dict ) -> User | None:
-        user = await self.get_by_public_id( id )
+        user = await self.find_by_public_id( id )
         
         if user:
             for key, value in patch.items():
                 setattr( user, key, value )
         
         return user
-    
-    
-    async def delete_user( self, user: User ):
-        await self._async_session.delete( user )
     
     
     async def delete_by_public_id( self, id ):
