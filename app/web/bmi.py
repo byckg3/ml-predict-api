@@ -34,7 +34,6 @@ bmi_calculator = gr.Interface( fn = calculate_bmi,
                                outputs = gr.Textbox( label = "BMI( Body Mass Index )", value = "0.0" ),
                                title = "BMI Calculator",
                                description = "Enter your weight and height to instantly get your BMI",
-                               css = container_css,
                                flagging_mode = "never"
 )
 

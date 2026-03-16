@@ -12,9 +12,9 @@ from app.api.chat import router
 from app.core.config import web_settings
 from app.core.db import MongoDB
 from app.services.disease import DiseasePredictionService
-from app.web.chatbot import chat_window
-from app.web.bmi import bmi_calculator
-from app.web.index import signin, main
+from app.web.chatbot import chat_window, chat_window_css
+from app.web.bmi import bmi_calculator, container_css
+from app.web.index import signin, main, blocks_css
 
 @asynccontextmanager
 async def app_lifespan( app: FastAPI ):
@@ -43,23 +43,27 @@ app = gr.mount_gradio_app( app,
                            bmi_calculator,
                            path = "/bmi",
                            auth_dependency = auth_for_gradio,
+                           css = container_css,
 )
 
 app = gr.mount_gradio_app( app, 
                            chat_window, 
                            path = "/chatbot",
                            auth_dependency = auth_for_gradio,
+                           css = chat_window_css
 )
 
 app = gr.mount_gradio_app( app, 
                            main, 
                            path = "/index",
                            auth_dependency = auth_for_gradio,
+                           css = blocks_css,
 )
 
 app = gr.mount_gradio_app( app, 
                            signin, 
                            path = "/signin",
+                           css = blocks_css,
 )
 
 app.add_middleware(

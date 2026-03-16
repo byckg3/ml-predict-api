@@ -81,7 +81,5 @@ chat_window = gr.ChatInterface( fn = chat_function,
                                              function_call_example1, 
                                              function_call_example2 ],
                                 # editable = True,
-                                type = "messages", 
                                 autofocus = True,
-                                css = chat_window_css,
 )

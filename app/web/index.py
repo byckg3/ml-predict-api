@@ -32,14 +32,14 @@ blocks_css = """
 }
 """
 
-with gr.Blocks( css = blocks_css ) as signin:
+with gr.Blocks() as signin:
     gr.Markdown( "## Welcome to Gradio!", elem_classes = [ "center-text" ] )
     signin_btn = gr.Button( "Sign in with Google", 
                             link = "/auth/google/login", 
                             elem_classes = [ "center" ],
     )
 
-with gr.Blocks( css = blocks_css ) as main:
+with gr.Blocks() as main:
     with gr.Column():
         title = gr.Markdown( elem_classes = [ "center-text" ], )
         links = gr.Markdown( "",  )

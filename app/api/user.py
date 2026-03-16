@@ -15,18 +15,18 @@ router = APIRouter( prefix = "/user", )
 ServiceDependency = Annotated[ UserProfileService, Depends( user_profile_service ) ]
 
 @router.get( "/profile/{id}" )
-async def get_profile( id: PydanticObjectId, service: ServiceDependency ) -> UserProfile:
+async def get_profile( id: str, service: ServiceDependency ):
 
     return await DocumentController.get_document( id, service )
 
 @router.get( "/profiles" )
-async def get_all_profiles( service: ServiceDependency, page: int = 1, page_size: int = 10 ) -> list[ UserProfile ]:
+async def get_all_profiles( service: ServiceDependency, page: int = 1, page_size: int = 10 ):
     
     return await DocumentController.get_all_documents( service, page, page_size )
 
 @router.post( "/login" )
 async def login( service: ServiceDependency, 
-                 login_info: dict[ str, Any ] = Body( example = example[ "login_info" ] ) ) -> UserProfile:
+                 login_info: dict[ str, Any ] = Body( example = example[ "login_info" ] ) ):
     
     try:
         user_profile = await service.find_by_email( login_info[ "email" ] )
@@ -42,28 +42,28 @@ async def login( service: ServiceDependency,
 
 @router.post( "/profile", status_code = status.HTTP_201_CREATED )
 async def save_profile( service: ServiceDependency, 
-                        profile: UserProfile = Body( example = example[ "created_profile" ] ) ) -> UserProfile:
+                        profile: UserProfile = Body( example = example[ "created_profile" ] ) ):
     
     return await DocumentController.save_document( profile, service )
 
 @router.put( "/profile/{id}" )
-async def put_profile( id: PydanticObjectId, service: ServiceDependency, 
-                      patch: dict[ str, Any ] = Body( example = { "name": "John" } ) ) -> UserProfile:
+async def put_profile( id: str, service: ServiceDependency, 
+                      patch: dict[ str, Any ] = Body( example = { "name": "John" } ) ):
 
     return await DocumentController.update_document( id, patch, service )
         
 @router.patch( "/profile/{id}" )
-async def update_profile( id: PydanticObjectId, service: ServiceDependency, 
-                         patch: dict[ str, Any ] = Body( example = { "email": "test123@email.com" } ) ) -> UserProfile:
+async def update_profile( id: str, service: ServiceDependency, 
+                         patch: dict[ str, Any ] = Body( example = { "email": "test123@email.com" } ) ):
 
     return await put_profile( id, service, patch )
 
 @router.delete( "/profile/{id}", status_code = status.HTTP_204_NO_CONTENT )
-async def delete_profile( id: PydanticObjectId, service: ServiceDependency ) -> None:
+async def delete_profile( id: str, service: ServiceDependency ):
 
     return await DocumentController.delete_document( id, service )
 
 @router.delete( "/profiles", status_code = status.HTTP_204_NO_CONTENT )
-async def delete_all_profiles( service: ServiceDependency ) -> None:
+async def delete_all_profiles( service: ServiceDependency ):
 
     return await DocumentController.delete_all_document( service )

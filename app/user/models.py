@@ -5,16 +5,6 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.postgres.models import Base, IdMixin, TimestampMixin
 
-example = {
-    "login_info": {
-        "email": f"mike123456@email.com"
-    },
-    "created_profile": {
-        "name": "Mike",
-        "email": f"mike{ int( datetime.now().timestamp() ) }@email.com"
-    }
-}
-
 class User( IdMixin, TimestampMixin, Base ):
     __tablename__ = "users"
 
