@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio.session import AsyncSession, async_sessionmaker
 
+from app.user.models import User
 from app.user.repositories.impl import UserRepository
 
 class UserService:
@@ -23,7 +24,7 @@ class UserService:
             raise e
         
         
-    async def find_by_id( self, id: str ):
+    async def find_by_id( self, id: str ) -> User | None:
         try:
             async with self._async_session_factory() as session:
                 async with session.begin():
@@ -38,7 +39,7 @@ class UserService:
             raise e
         
         
-    async def find_all( self, limit: int = 10, offset: int = 0 ):
+    async def find_all( self, limit: int = 10, offset: int = 0 ) -> list[ User ]:
         try:
             async with self._async_session_factory() as session:
                 async with session.begin():
@@ -53,7 +54,7 @@ class UserService:
             raise e
         
         
-    async def update_by_id( self, id: str, patch: dict ):
+    async def update_by_id( self, id: str, patch: dict ) -> User | None:
         try:
             async with self._async_session_factory() as session:
                 async with session.begin():
@@ -70,7 +71,7 @@ class UserService:
             raise e
         
     
-    async def delete_by_id( self, id: str ):
+    async def delete_by_id( self, id: str ) -> int:
         try:
             async with self._async_session_factory() as session:
                 async with session.begin():
@@ -84,7 +85,7 @@ class UserService:
             print( f"Error in delete_by_id: { e }" )
             raise e
     
-    async def delete_all( self ):
+    async def delete_all( self ) -> int:
         try:
             async with self._async_session_factory() as session:
                 async with session.begin():

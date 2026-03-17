@@ -5,10 +5,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
-from app.auth.dependencies.jwt_utils import auth_for_gradio
-from app.auth.router import auth_router
+from app.api.auth.dependencies.jwt_utils import auth_for_gradio
+from app.api.auth.router import auth_router
 from app.api.router import api_router
-from app.api.chat import router
 from app.core.config import web_settings
 from app.core.db import MongoDB
 from app.services.disease import DiseasePredictionService

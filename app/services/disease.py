@@ -27,11 +27,15 @@ class DiseasePredictionService:
     @overload
     def predict( self, features: HeartDiseaseFeatures ):
         ...
-
+        
+    @overload
     def predict( self, features: LiverDiseaseFeatures ):
+        ...
+
+    def predict( self, features: HeartDiseaseFeatures | LiverDiseaseFeatures ):
 
         result = None
-        if isinstance( features, LiverDiseaseFeatures ):   
+        if isinstance( features, LiverDiseaseFeatures ):
             result = self.liver_predictor.predict( features )
         
         elif isinstance( features, HeartDiseaseFeatures ):

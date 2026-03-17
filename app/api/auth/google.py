@@ -3,21 +3,21 @@ from authlib.integrations.starlette_client import OAuth, OAuthError
 from fastapi import APIRouter, HTTPException, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse, RedirectResponse
-from app.api.user import ServiceDependency
-from app.auth.dependencies.csrf_utils import create_csrf_token
-from app.auth.dependencies.jwt_utils import create_access_token
+from app.api.v1.endpoints.user import ServiceDependency
+from app.api.auth.dependencies.csrf_utils import create_csrf_token
+from app.api.auth.dependencies.jwt_utils import create_access_token
 from app.core.config import google_auth_settings, web_settings
 from cachetools import TTLCache
 
 oauth = OAuth()
 oauth.register(
-        name = "google",
-        server_metadata_url = "https://accounts.google.com/.well-known/openid-configuration",
-        client_id = google_auth_settings().CLIENT_ID,
-        client_secret = google_auth_settings().CLIENT_SECRET,
-        client_kwargs = {
-            "scope": "openid email profile"
-        }
+    name = "google",
+    server_metadata_url = "https://accounts.google.com/.well-known/openid-configuration",
+    client_id = google_auth_settings().CLIENT_ID,
+    client_secret = google_auth_settings().CLIENT_SECRET,
+    client_kwargs = {
+        "scope": "openid email profile"
+    }
 )
 otc_store = TTLCache( maxsize = 1000, ttl = 300 )
 

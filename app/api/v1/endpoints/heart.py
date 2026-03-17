@@ -1,11 +1,10 @@
 import random
 import traceback
 from typing import Annotated, Any
-from beanie import PydanticObjectId
 from fastapi import APIRouter, Body, Depends
 from fastapi import status
 from fastapi.responses import JSONResponse
-from app.api.controller import DocumentController, RecordController
+from app.api.v1.controller import DocumentController, RecordController
 from app.api.dependencies.service import heart_record_service, predict_service
 from app.schemas.heart import HeartDiseaseFeatures, HeartDiseaseRecord, example
 from app.services.nosql import RecordService
@@ -16,52 +15,52 @@ router = APIRouter( prefix = "/disease/heart" )
 ServiceDependency = Annotated[ RecordService, Depends( heart_record_service ) ]
 
 @router.get( "/record/{id}" )
-async def get_record( id: PydanticObjectId, service: ServiceDependency ) -> HeartDiseaseRecord:
+async def get_record( id: str, service: ServiceDependency ):
 
     return await DocumentController.get_document( id, service )
     
 
 @router.get( "/records/{user_id}" )
-async def find_user_records( user_id: PydanticObjectId , service: ServiceDependency, 
-                             page: int = 1, page_size: int = 10 ) -> list[ HeartDiseaseRecord ]:
+async def find_user_records( user_id: str , service: ServiceDependency, 
+                             page: int = 1, page_size: int = 10 ):
     
     return await RecordController.find_user_records( user_id, service, page, page_size )
 
 
 @router.get( "/records" )
-async def get_all_records( service: ServiceDependency, page: int = 1, page_size: int = 10 ) -> list[ HeartDiseaseRecord ]:
+async def get_all_records( service: ServiceDependency, page: int = 1, page_size: int = 10 ):
     
     return await DocumentController.get_all_documents( service, page, page_size )
 
 
 @router.post( "/record", status_code = status.HTTP_201_CREATED )
-async def save_record( service: ServiceDependency, record: HeartDiseaseRecord ) -> HeartDiseaseRecord:
+async def save_record( service: ServiceDependency, record: HeartDiseaseRecord ):
     
     return await DocumentController.save_document( record, service )
 
 
 @router.put( "/record/{id}" )
-async def put_record( id: PydanticObjectId, service: ServiceDependency, 
-                      patch: dict[ str, Any ] = Body( examples = [ example[ "updated_value1" ] ] ) ) -> HeartDiseaseRecord:
+async def put_record( id: str, service: ServiceDependency, 
+                      patch: dict[ str, Any ] = Body( examples = [ example[ "updated_value1" ] ] ) ):
 
     return await DocumentController.update_document( id, patch, service )
         
 
 @router.patch( "/record/{id}" )
-async def update_record( id: PydanticObjectId, service: ServiceDependency, 
-                         patch: dict[ str, Any ] = Body( examples =  [ example[ "updated_value2" ] ] ) ) -> HeartDiseaseRecord:
+async def update_record( id: str, service: ServiceDependency, 
+                         patch: dict[ str, Any ] = Body( examples =  [ example[ "updated_value2" ] ] ) ):
 
     return await put_record( id, service, patch )
 
 
 @router.delete( "/record/{id}", status_code = status.HTTP_204_NO_CONTENT )
-async def delete_record( id: PydanticObjectId, service: ServiceDependency ) -> None:
+async def delete_record( id: str, service: ServiceDependency ):
 
     return await DocumentController.delete_document( id, service )
 
 
 @router.delete( "/records", status_code = status.HTTP_204_NO_CONTENT )
-async def delete_all_records( service: ServiceDependency ) -> None:
+async def delete_all_records( service: ServiceDependency ):
 
     return await DocumentController.delete_all_document( service )
         

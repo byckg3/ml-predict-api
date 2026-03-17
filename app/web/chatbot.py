@@ -2,10 +2,12 @@ import httpx
 import gradio as gr
 from app.core.config import web_settings
 
+url = web_settings().BACKEND_URL + "/api/v1/chat/ask"
+
 def chat_function( question, history: list, request: gr.Request ):
     print( "Chat function called..." )
     try:  
-        url = web_settings().BACKEND_URL + "/api/chat/ask"
+        
         access_token = request.cookies.get( "access_token" )
         csrf_token = request.cookies.get( "csrf_token" )
 
