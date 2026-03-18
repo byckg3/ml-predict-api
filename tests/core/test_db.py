@@ -1,7 +1,7 @@
 import shutil
 import time
 import pytest
-from app.core.db import ChromaDB
+from app.db.vector.database import ChromaDB
 
 from app.llm.gemini.services import GeminiEmbeddingFunction
 

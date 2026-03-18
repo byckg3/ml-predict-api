@@ -9,7 +9,7 @@ from app.api.auth.dependencies.jwt_utils import auth_for_gradio
 from app.api.auth.router import auth_router
 from app.api.router import api_router
 from app.core.config import web_settings
-from app.core.db import MongoDB
+from app.db.document.database import MongoDB
 from app.services.disease import DiseasePredictionService
 from app.web.chatbot import chat_window, chat_window_css
 from app.web.bmi import bmi_calculator, container_css

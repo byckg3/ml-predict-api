@@ -1,6 +1,6 @@
 from chromadb import QueryResult
 from app.core.config import chroma_settings
-from app.core.db import ChromaDB
+from app.db.vector.database import ChromaDB
 
 
 class ChromaRepository:

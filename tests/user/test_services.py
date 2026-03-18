@@ -1,8 +1,8 @@
 
 import pytest
 from sqlalchemy.ext.asyncio.session import AsyncSession, async_sessionmaker
-from app.db.postgres.connection import get_engine, get_session_factory, init_tables
-from app.user.models import User, example
+from app.user.models import User
+from app.user.schemas import example
 from app.user.services import UserService
 
 @pytest.mark.test_only
@@ -63,7 +63,7 @@ class TestUserService:
         
         assert queried_user is not None
         assert queried_user.id == test_user.id
-        assert queried_user.public_id == test_user.public_id
+        assert str( queried_user.public_id ) == id
         
     
     async def test_delete_user_by_id( self, user_service: UserService, test_user: User ):

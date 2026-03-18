@@ -3,7 +3,6 @@ import shutil
 import pytest
 
 from app.schemas.liver import LiverDiseaseRecord, example
-from app.core.db import MongoDB
 from app.repositories.nosql import DocumentRepository
 from app.repositories.models import HFModelRepository
 

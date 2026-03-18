@@ -2,7 +2,7 @@ import pytest
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio.engine import AsyncEngine
 
-from app.db.postgres.connection import get_engine
+from app.db.relational.database import get_engine
 
 @pytest.fixture( scope = "module" )
 def async_engine() -> AsyncEngine:

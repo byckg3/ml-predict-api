@@ -1,7 +1,7 @@
 import pytest
 
-from app.core.db import MongoDB
-from app.db.postgres.connection import get_engine, get_session_factory, init_tables
+from app.db.document.database import MongoDB
+from app.db.relational.database import get_engine, get_session_factory, init_tables
 from app.user.models import User
 
 # Possible values for scope are: function, class, module, package or session

@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 from sqlalchemy import Table
 
 from app.core.config import ENV, postgre_settings
-from app.db.postgres.models import Base
+from app.db.relational.models import Base
 
 def get_engine( env: str = ENV ) -> AsyncEngine:
     if env == "test":

@@ -2,8 +2,8 @@ import pytest
 from typing import Any
 from sqlalchemy.ext.asyncio.session import AsyncSession, async_sessionmaker
 
-from app.db.postgres.connection import get_engine, get_session_factory, init_tables
-from app.user.models import User, example
+from app.user.models import User
+from app.user.schemas import example
 from app.user.repositories.impl import UserRepository
 
 # @pytest.mark.test_only
