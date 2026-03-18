@@ -1,6 +1,6 @@
 from typing import Type
 from app.services.nosql import DocumentService
-from app.schemas.user import UserProfile
+from app.user.v1.schemas import UserProfile
 
 class UserProfileService( DocumentService[ UserProfile ] ):
 

@@ -5,7 +5,7 @@ from pymongo.asynchronous.database import AsyncDatabase
 from app.core.config import mongo_settings
 from app.schemas.heart import HeartDiseaseRecord
 from app.schemas.liver import LiverDiseaseRecord
-from app.schemas.user import UserProfile
+from app.user.v1.schemas import UserProfile
 
 class MongoDB:
 

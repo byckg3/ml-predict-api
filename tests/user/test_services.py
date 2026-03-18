@@ -2,7 +2,7 @@
 import pytest
 from sqlalchemy.ext.asyncio.session import AsyncSession, async_sessionmaker
 from app.user.models import User
-from app.user.schemas import example
+from app.user.v2.schemas import example
 from app.user.services import UserService
 
 @pytest.mark.test_only

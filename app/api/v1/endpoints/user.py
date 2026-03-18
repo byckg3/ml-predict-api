@@ -7,7 +7,7 @@ from app.api.v1.controller import DocumentController
 from app.api.dependencies.service import user_profile_service
 from app.services.nosql import DocumentService
 from app.services.user import UserProfileService
-from app.schemas.user import UserProfile, example
+from app.user.v1.schemas import UserProfile, example
 
 router = APIRouter( prefix = "/user", )
 

@@ -2,7 +2,7 @@ import pytest
 from typing import Any
 
 from app.repositories.nosql import DocumentRepository
-from app.schemas.user import UserProfile, example
+from app.user.v1.schemas import UserProfile, example
 
 
 @pytest.fixture( scope = "module" )
