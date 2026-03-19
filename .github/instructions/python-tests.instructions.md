@@ -16,6 +16,7 @@ When writing Python tests:
 - Mock external dependencies (databases, APIs, file operations)
 - Use parameterized tests for testing multiple similar scenarios
 - Test edge cases and error conditions, not just happy paths
+- Make tests readable and maintainable.
 
 ## Example Test Pattern
 ```python

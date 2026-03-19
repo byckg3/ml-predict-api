@@ -2,15 +2,16 @@
 import pytest
 from sqlalchemy.ext.asyncio.session import AsyncSession, async_sessionmaker
 from app.user.models import User
-from app.user.v2.schemas import example
+from app.user.v2.schemas import examples
 from app.user.services import UserService
 
-@pytest.mark.test_only
+# @pytest.mark.test_only
 class TestUserService:
     
     @pytest.fixture( scope = "class" )
     async def test_user( self ):
-        user_data: dict = example[ "created_profile" ]
+        user_data: dict = examples[ "base_profile" ]
+        
         return User( **user_data )
     
     
@@ -65,6 +66,24 @@ class TestUserService:
         assert queried_user.id == test_user.id
         assert str( queried_user.public_id ) == id
         
+        
+    async def test_find_user_by_email_not_found( self, user_service: UserService ):
+        
+        non_existent_email = "nonexistent@example.com"
+        queried_user = await user_service.find_by_email( non_existent_email )
+        
+        assert queried_user is None
+        
+    
+    async def test_find_user_by_email( self, user_service: UserService, test_user: User ):
+        
+        email = test_user.email
+        queried_user = await user_service.find_by_email( email )
+        
+        assert queried_user is not None
+        assert queried_user.email == email
+        assert queried_user.id == test_user.id
+        
     
     async def test_delete_user_by_id( self, user_service: UserService, test_user: User ):
         
@@ -76,3 +95,5 @@ class TestUserService:
         # Verify deletion
         queried_user = await user_service.find_by_id( id )
         assert queried_user is None
+        
+        

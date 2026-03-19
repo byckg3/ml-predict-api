@@ -20,7 +20,7 @@ class UserService:
             return user
             
         except Exception as e:
-            print( f"Error in save: { e }" )
+            print( f"Error in save:\n{ e }" )
             raise e
         
         
@@ -35,7 +35,22 @@ class UserService:
             return user
             
         except Exception as e:
-            print( f"Error in find_by_id: { e }" )
+            print( f"Error in find_by_id:\n{ e }" )
+            raise e
+        
+        
+    async def find_by_email( self, email: str ) -> User | None:
+        try:
+            async with self._async_session_factory() as session:
+                async with session.begin():
+                    
+                    user_repository = UserRepository( session )
+                    user = await user_repository.find_by_email( email )
+            
+            return user
+            
+        except Exception as e:
+            print( f"Error in find_by_email:\n{ e }" )
             raise e
         
         
@@ -50,7 +65,7 @@ class UserService:
             return users
             
         except Exception as e:
-            print( f"Error in find_all: { e }" )
+            print( f"Error in find_all:\n{ e }" )
             raise e
         
         
@@ -61,13 +76,14 @@ class UserService:
                     
                     user_repository = UserRepository( session )
                     user = await user_repository.update_by_public_id( id, patch )
-                    
-                await session.refresh( user )
+                
+                if user:
+                    await session.refresh( user )
                 
             return user
             
         except Exception as e:
-            print( f"Error in update_by_id: { e }" )
+            print( f"Error in update_by_id:\n{ e }" )
             raise e
         
     
@@ -82,8 +98,9 @@ class UserService:
             return deleted_count
             
         except Exception as e:
-            print( f"Error in delete_by_id: { e }" )
+            print( f"Error in delete_by_id:\n{ e }" )
             raise e
+    
     
     async def delete_all( self ) -> int:
         try:
@@ -96,5 +113,5 @@ class UserService:
             return deleted_count
             
         except Exception as e:
-            print( f"Error in delete_all: { e }" )
+            print( f"Error in delete_all:\n{ e }" )
             raise e

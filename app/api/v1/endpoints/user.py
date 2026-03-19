@@ -18,10 +18,12 @@ async def get_profile( id: str, service: ServiceDependency ):
 
     return await DocumentController.get_document( id, service )
 
+
 @router.get( "/profiles" )
 async def get_all_profiles( service: ServiceDependency, page: int = 1, page_size: int = 10 ):
     
     return await DocumentController.get_all_documents( service, page, page_size )
+
 
 @router.post( "/login" )
 async def login( service: ServiceDependency, 
@@ -38,12 +40,14 @@ async def login( service: ServiceDependency,
     
     return JSONResponse( content = { "message": "Invalid credentials" }, 
                          status_code = status.HTTP_401_UNAUTHORIZED )
+    
 
 @router.post( "/profile", status_code = status.HTTP_201_CREATED )
 async def save_profile( service: ServiceDependency, 
                         profile: UserProfile = Body( example = example[ "created_profile" ] ) ):
     
     return await DocumentController.save_document( profile, service )
+
 
 @router.put( "/profile/{id}" )
 async def put_profile( id: str, service: ServiceDependency, 

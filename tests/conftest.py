@@ -14,7 +14,7 @@ def anyio_backend():
 async def setup_mongo( anyio_backend ):
     MongoDB.DB_NAME = "test"
     monogo = MongoDB()
-    await monogo.init_beanie()
+    await monogo.init()
 
     yield
 

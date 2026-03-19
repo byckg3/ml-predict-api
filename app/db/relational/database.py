@@ -6,6 +6,7 @@ from sqlalchemy import Table
 
 from app.core.config import ENV, postgre_settings
 from app.db.relational.models import Base
+from app.user.models import User
 
 def get_engine( env: str = ENV ) -> AsyncEngine:
     if env == "test":
@@ -13,7 +14,7 @@ def get_engine( env: str = ENV ) -> AsyncEngine:
     else:
         db_url = postgre_settings().DATABASE_URL
     
-    print( f"PostgreSQL URI: {db_url}" )
+    # print( f"PostgreSQL URI: {db_url}" )
         
     return create_async_engine( re.sub( r'^postgresql:', "postgresql+asyncpg:", db_url ), echo = True )
 
@@ -23,7 +24,8 @@ def get_session_factory( async_engine: AsyncEngine ) -> async_sessionmaker[ Asyn
 
 
 M = TypeVar( "M", bound = Base )
-async def init_tables( async_engine: AsyncEngine, model_types: list[ Type[ M ] ] | None = None ):
+async def init_tables( async_engine: AsyncEngine, 
+                       model_types: list[ Type[ M ] ] | None = [ User ] ):
     
     async with async_engine.begin() as async_conn:
         
@@ -43,9 +45,11 @@ async def init_tables( async_engine: AsyncEngine, model_types: list[ Type[ M ] ]
             
         else:
             await async_conn.run_sync( Base.metadata.create_all )
+            
+    print( "Initialized relational database tables successfully" )
     
     
-# python -m app.dbs.postgre
+# python -m app.db.relational.database
 if __name__ == "__main__":
     async_engine = get_engine()
     asyncio.run( init_tables( async_engine ) )

@@ -3,15 +3,16 @@ from typing import Any
 from sqlalchemy.ext.asyncio.session import AsyncSession, async_sessionmaker
 
 from app.user.models import User
-from app.user.v2.schemas import example
+from app.user.v2.schemas import examples
 from app.user.repositories.impl import UserRepository
 
-# @pytest.mark.test_only
+@pytest.mark.test_only
 class TestUserRepository:
     
     @pytest.fixture( scope = "class" )
     async def test_user( self ):
-        user_data: dict[ Any, Any ] = example[ "created_profile" ]
+        user_data: dict[ Any, Any ] = examples[ "base_profile" ]
+        
         return User( **user_data )
     
     
@@ -29,7 +30,6 @@ class TestUserRepository:
             assert user.created_at is not None
             
             user_public_id = str( user.public_id )
-            
             
             # update
             updated_name = "New Name"
@@ -56,7 +56,6 @@ class TestUserRepository:
             all_users = await user_repository.find_all()
             assert len( all_users ) == 0
             
-            
             await session.rollback()
             
     
@@ -79,5 +78,26 @@ class TestUserRepository:
             # print( f"Deleted { deleted_count } users" )
             assert deleted_count == 0
             
+            await session.rollback()
+            
+            
+    async def test_find_by_email( self, async_session_factory: async_sessionmaker[ AsyncSession ], test_user: User ):
+        
+        async with async_session_factory() as session:
+            user_repository = UserRepository( session )
+            
+            # save a user
+            saved_user = await user_repository.save( test_user )
+            await session.flush()
+            
+            # find by email
+            found_user = await user_repository.find_by_email( test_user.email )
+            assert found_user is not None
+            assert found_user.id == saved_user.id
+            assert found_user.email == test_user.email
+            
+            # find by non-existent email
+            non_existent_user = await user_repository.find_by_email( "nonexistent@example.com" )
+            assert non_existent_user is None
             
             await session.rollback()

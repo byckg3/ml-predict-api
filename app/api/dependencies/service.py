@@ -2,7 +2,8 @@ from fastapi import Depends, Request
 from app.llm.gemini.services import ChatService
 from app.schemas.heart import HeartDiseaseRecord
 from app.schemas.liver import LiverDiseaseRecord
-from app.schemas.user import UserProfile
+from app.user.services import UserService
+from app.user.v1.schemas import UserProfile
 from app.services.nosql import RecordService
 from app.services.disease import DiseasePredictionService
 from app.services.user import UserProfileService
@@ -30,6 +31,15 @@ def user_profile_service( request: Request ) -> UserProfileService:
         
     return request.app.state.user_profile_service
 
+
+def user_service( request: Request ):
+    
+    if not hasattr( request.app.state, "user_service" ):
+        session_factory = request.app.state.postgres_session_factory
+        request.app.state.user_service = UserService( session_factory )
+        
+    return request.app.state.user_service
+    
 
 def predict_service( request: Request ) -> DiseasePredictionService:
 

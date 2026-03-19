@@ -1,4 +1,6 @@
-from beanie import init_beanie
+from typing import Type, TypeVar
+
+from beanie import Document, init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.asynchronous.database import AsyncDatabase
 
@@ -7,6 +9,7 @@ from app.schemas.heart import HeartDiseaseRecord
 from app.schemas.liver import LiverDiseaseRecord
 from app.user.v1.schemas import UserProfile
 
+D = TypeVar( "D", bound = Document )
 class MongoDB:
 
     URI = mongo_settings().MONGO_URI
@@ -16,23 +19,24 @@ class MongoDB:
         self.client = AsyncIOMotorClient( MongoDB.URI )
         self.db = self.client[ MongoDB.DB_NAME ]
         
-        print( "create MonogoDb connection successfully" )
+        print( "Created MongoDB connection successfully" )
 
-    async def init_beanie( self ):
+    async def init( self, 
+                    doc_types: list[ Type[ D ] ] | None = [ LiverDiseaseRecord, HeartDiseaseRecord, UserProfile ] ):
         
         if self.db is None:
-            raise ValueError( "database instance cannot be None" )
+            raise ValueError( "Database instance cannot be None" )
         
         await init_beanie( database = self.db,  # type: ignore
-                           document_models = [ LiverDiseaseRecord, HeartDiseaseRecord, UserProfile ] )
-
-        print( "initialize Beanie successfully" )
+                           document_models = doc_types )
+        
+        print( "Initialized Beanie document models successfully" )
 
     async def ping_server( self ):
         # Send a ping to confirm a successful connection
         try:
-            await self.client.admin.command( 'ping' )
-            print( "Pinged your deployment. You successfully connected to MongoDB!" )
+            await self.client.admin.command( "ping" )
+            print( "Pinged MongoDB server successfully" )
 
             return True
 
@@ -42,8 +46,9 @@ class MongoDB:
 
     async def close( self ):
         self.client.close()
+        print( "Closed MongoDB connection successfully" )
 
 
-# python -m app.core.db
+# python -m app.db.document.database
 if __name__ == "__main__":
     pass    

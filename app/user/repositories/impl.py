@@ -26,6 +26,12 @@ class UserRepository:
         return await self._async_session.scalar( stmt )
     
     
+    async def find_by_email( self, email: str ) -> User | None:
+        stmt = select( User ).where( User.email == email )
+        
+        return await self._async_session.scalar( stmt )
+    
+    
     async def find_all( self, limit: int = 10, offset: int = 0 ) -> list[ User ]:
         stmt = select( User ).order_by( User.id ).limit( limit ).offset( offset )
         result = await self._async_session.execute( stmt )

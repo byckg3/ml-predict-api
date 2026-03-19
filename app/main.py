@@ -1,6 +1,4 @@
-import secrets
 import gradio as gr
-from fastapi.responses import RedirectResponse
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -10,6 +8,7 @@ from app.api.auth.router import auth_router
 from app.api.router import api_router
 from app.core.config import web_settings
 from app.db.document.database import MongoDB
+from app.db.relational.database import get_engine, get_session_factory, init_tables
 from app.services.disease import DiseasePredictionService
 from app.web.chatbot import chat_window, chat_window_css
 from app.web.bmi import bmi_calculator, container_css
@@ -19,10 +18,14 @@ from app.web.index import signin, main, blocks_css
 async def app_lifespan( app: FastAPI ):
 
     monogo = MongoDB()
-    await monogo.init_beanie()
+    await monogo.init()
 
     app.state.mongo = monogo
-    app.state.db = monogo.db
+    app.state.mongo_db = monogo.db
+    
+    app.state.postgres_engine = get_engine()
+    await init_tables( app.state.postgres_engine )
+    app.state.postgres_session_factory = get_session_factory( app.state.postgres_engine )
 
     predict_service = DiseasePredictionService()
     await predict_service.models_init()
@@ -33,6 +36,7 @@ async def app_lifespan( app: FastAPI ):
 
     await monogo.close()
     chat_window.close()
+    
 
 app = FastAPI( lifespan = app_lifespan )
 app.include_router( api_router )
