@@ -18,7 +18,9 @@ examples: dict[ str, JsonDict ] = {
     "created_profile": {
         "public_id": "123e4567-e89b-12d3-a456-426614174000",
         "name": "Mike",
-        "email": f"mike{ int( datetime.now().timestamp() ) }@email.com"
+        "email": f"mike{ int( datetime.now().timestamp() ) }@email.com",
+        "created_at": "2026-03-19T14:01:28.267205Z",
+        "updated_at": "2026-03-19T16:47:29.157480Z",
     }
 }
 

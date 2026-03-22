@@ -34,7 +34,7 @@ async def get_all_profiles( service: ServiceDependency, page: int = 1, page_size
 
 @router.post( "/login", response_model = UserProfile )
 async def login( service: ServiceDependency, 
-                 login_info: dict[ str, Any ] = Body( example = examples[ "login_info" ] ) ):
+                 login_info: dict[ str, Any ] = Body( examples = [ examples[ "login_info" ] ] ) ):
     
     user = await service.find_by_email( login_info.get( "email", "" ) )
     if not user:
@@ -46,7 +46,7 @@ async def login( service: ServiceDependency,
 
 @router.post( "/profile", response_model = UserProfile, status_code = status.HTTP_201_CREATED )
 async def save_profile( service: ServiceDependency, 
-                        base_profile: UserPatch = Body( example = examples[ "base_profile" ] ) ):
+                        base_profile: UserPatch = Body( examples = [ examples[ "base_profile" ] ] ) ):
     
     new_user = await service.save( User( **base_profile.model_dump() ) )
     
@@ -55,7 +55,7 @@ async def save_profile( service: ServiceDependency,
 
 @router.put( "/profile/{id}", response_model = UserProfile )
 async def put_profile( id: str, service: ServiceDependency, 
-                       patch: UserPatch = Body( example = { "name": "John" } ) ):
+                       patch: UserPatch = Body( examples = [ examples[ "base_profile" ] ] ) ):
     
     updated_content = patch.model_dump( exclude_unset = True )
     update_profile = await service.update_by_id( id, updated_content )
@@ -69,7 +69,7 @@ async def put_profile( id: str, service: ServiceDependency,
 
 @router.patch( "/profile/{id}", response_model = UserProfile )
 async def update_profile( id: str, service: ServiceDependency, 
-                          patch: UserPatch = Body( example = { "email": "test123@email.com" } ) ):
+                          patch: UserPatch = Body( examples = [ examples[ "base_profile" ] ] ) ):
 
     return await put_profile( id, service, patch )
 

@@ -1,7 +1,8 @@
-from fastapi import Depends, Request
+from fastapi import Depends, Request, WebSocket
 from app.llm.gemini.services import ChatService
 from app.schemas.heart import HeartDiseaseRecord
 from app.schemas.liver import LiverDiseaseRecord
+from app.services.genai import ChatManager
 from app.user.services import UserService
 from app.user.v1.schemas import UserProfile
 from app.services.nosql import RecordService
@@ -52,3 +53,11 @@ def chat_service( request: Request, predict_service = Depends( predict_service )
         request.app.state.chat_service = ChatService( predict_service)
 
     return request.app.state.chat_service
+
+
+def chat_manager( websocket: WebSocket ) -> ChatManager:
+
+    if not hasattr( websocket.app.state, "chat_manager" ):
+        websocket.app.state.chat_manager = ChatManager()
+
+    return websocket.app.state.chat_manager

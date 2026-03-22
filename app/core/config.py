@@ -8,10 +8,8 @@ if os.path.exists( ".env" ):
     load_dotenv()
     
 ENV = os.getenv( "ENV", "" )
-
-env_file = ".env"
 if ENV:
-    env_file = f".env.{ENV}"
+    print( f"\nCurrent environment: {ENV}" )
 
 class MongoDBSettings( BaseSettings ):
 

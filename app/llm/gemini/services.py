@@ -129,7 +129,7 @@ class GeminiEmbeddingFunction( EmbeddingFunction[ Documents ] ):
         
         self.client = genai.Client( api_key = self.API_KEY )
 
-    def __call__( self, input: Documents ) -> list[ list[ float ] ]:
+    def __call__( self, input: Documents ) -> list[ list[ float ] ]: # type: ignore
        
         result = self.client.models.embed_content( 
             model = self.model_name,

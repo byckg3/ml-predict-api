@@ -6,7 +6,7 @@ from app.user.models import User
 from app.user.v2.schemas import examples
 from app.user.repositories.impl import UserRepository
 
-@pytest.mark.test_only
+# @pytest.mark.test_only
 class TestUserRepository:
     
     @pytest.fixture( scope = "class" )

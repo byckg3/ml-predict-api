@@ -16,7 +16,9 @@ from app.web.index import signin, main, blocks_css
 
 @asynccontextmanager
 async def app_lifespan( app: FastAPI ):
-
+    
+    print( f"\nStarting up the application..." )
+    
     monogo = MongoDB()
     await monogo.init()
 
@@ -34,6 +36,8 @@ async def app_lifespan( app: FastAPI ):
     
     yield
 
+    print( f"\nShutting down the application..." )
+    
     await monogo.close()
     chat_window.close()
     

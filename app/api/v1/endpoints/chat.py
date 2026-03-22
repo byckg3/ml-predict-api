@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Request, WebSocket, WebSocketDisconnect, status
 from fastapi.responses import JSONResponse, StreamingResponse
 from app.api import router
-from app.api.dependencies.service import chat_service
+from app.api.dependencies.service import chat_service, chat_manager
 from app.llm.gemini.services import ChatService
 from app.schemas.chat import ChatPayload
 from app.services.genai import ChatManager
@@ -33,12 +33,14 @@ async def streaming_answer( qa: ChatPayload, service: ServiceDependency ):
 
     return JSONResponse( content = { "message": "An error occurred" }, 
                          status_code = status.HTTP_500_INTERNAL_SERVER_ERROR )
+    
 
-
-chat_manager = ChatManager()
+ChatManagerDependency = Annotated[ ChatManager, Depends( chat_manager ) ]
 
 @router.websocket( "/{user_id}" )
-async def websocket_endpoint( user_id: str, websocket: WebSocket ):
+async def websocket_endpoint( user_id: str, 
+                              websocket: WebSocket, 
+                              chat_manager: ChatManagerDependency ):
     
     user_session = await chat_manager.connect( user_id, websocket )
     chatbot = user_session.chat
