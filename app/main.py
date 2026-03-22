@@ -8,7 +8,7 @@ from app.api.auth.router import auth_router
 from app.api.router import api_router
 from app.core.config import web_settings
 from app.db.document.database import MongoDB
-from app.db.relational.database import get_engine, get_session_factory, init_tables
+from app.db.relational.database import get_async_engine, get_session_factory, init_tables
 from app.services.disease import DiseasePredictionService
 from app.web.chatbot import chat_window, chat_window_css
 from app.web.bmi import bmi_calculator, container_css
@@ -25,7 +25,7 @@ async def app_lifespan( app: FastAPI ):
     app.state.mongo = monogo
     app.state.mongo_db = monogo.db
     
-    app.state.postgres_engine = get_engine()
+    app.state.postgres_engine = get_async_engine()
     await init_tables( app.state.postgres_engine )
     app.state.postgres_session_factory = get_session_factory( app.state.postgres_engine )
 

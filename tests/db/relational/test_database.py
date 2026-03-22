@@ -2,11 +2,11 @@ import pytest
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio.engine import AsyncEngine
 
-from app.db.relational.database import get_engine
+from app.db.relational.database import get_async_engine
 
 @pytest.fixture( scope = "module" )
 def async_engine() -> AsyncEngine:
-    return get_engine( env = "test" )
+    return get_async_engine()
 
 
 # @pytest.mark.test_only

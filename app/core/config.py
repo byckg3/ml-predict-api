@@ -1,4 +1,5 @@
 import os
+import re
 from functools import lru_cache
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -25,7 +26,16 @@ class PostgreSQLSettings( BaseSettings ):
     TEST_DB_URL: str = ""
 
     model_config = SettingsConfigDict( extra = "ignore" )
-
+    
+    @property
+    def async_db_url( self ) -> str:
+        db_url = self.DATABASE_URL
+        if ENV == "test" and self.TEST_DB_URL:
+            db_url = self.TEST_DB_URL
+        
+        return re.sub( r'^postgresql:', "postgresql+asyncpg:", db_url )
+    
+    
 class ChromaSettings( BaseSettings ):
 
     CHROMA_DB_COLLECTION: str = "gad245-g1-chromadb-embedding"

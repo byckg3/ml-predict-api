@@ -1,7 +1,7 @@
 import pytest
 
 from app.db.document.database import MongoDB
-from app.db.relational.database import get_engine, get_session_factory, init_tables
+from app.db.relational.database import get_async_engine, get_session_factory, init_tables
 from app.user.models import User
 
 # Possible values for scope are: function, class, module, package or session
@@ -24,7 +24,7 @@ async def setup_mongo( anyio_backend ):
 @pytest.fixture( scope = "session" )
 async def async_session_factory() :
     
-    async_engine = get_engine( env = "test" )
+    async_engine = get_async_engine()
     await init_tables( async_engine, [ User ] )
     
     yield get_session_factory( async_engine )

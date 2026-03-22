@@ -8,15 +8,11 @@ from app.core.config import ENV, postgre_settings
 from app.db.relational.models import Base
 from app.user.models import User
 
-def get_engine( env: str = ENV ) -> AsyncEngine:
-    if env == "test":
-        db_url = postgre_settings().TEST_DB_URL
-    else:
-        db_url = postgre_settings().DATABASE_URL
-    
+def get_async_engine() -> AsyncEngine:
+    db_url = postgre_settings().async_db_url
     # print( f"PostgreSQL URI: {db_url}" )
         
-    return create_async_engine( re.sub( r'^postgresql:', "postgresql+asyncpg:", db_url ), echo = True )
+    return create_async_engine( db_url, echo = True )
 
 
 def get_session_factory( async_engine: AsyncEngine ) -> async_sessionmaker[ AsyncSession ]:
@@ -51,5 +47,5 @@ async def init_tables( async_engine: AsyncEngine,
     
 # python -m app.db.relational.database
 if __name__ == "__main__":
-    async_engine = get_engine()
+    async_engine = get_async_engine()
     asyncio.run( init_tables( async_engine ) )
