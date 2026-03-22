@@ -1,8 +1,5 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 from app.api.v1.endpoints import chat, heart, liver, user
-from app.api.auth.dependencies.csrf_utils import verify_csrf_token
-from app.api.auth.dependencies.jwt_utils import verify_jwt
-from app.api.auth import google
 
 v1_router = APIRouter( prefix = "/v1" )
 

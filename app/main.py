@@ -83,9 +83,11 @@ app.add_middleware(
 )
 app.add_middleware( SessionMiddleware, secret_key = web_settings().SESSION_SECRET )
 
+
 @app.get( "/" )
 def greet_json():
     return { "Hello": "World" }
+
 
 @app.get( "/check" )
 async def check_status():

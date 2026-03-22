@@ -3,12 +3,15 @@ from fastapi import status
 from fastapi.testclient import TestClient
 from unittest.mock import create_autospec
 
+from app.api.auth.dependencies.csrf_utils import create_csrf_token
+from app.api.auth.dependencies.jwt_utils import create_access_token
 from app.api.dependencies.service import user_service
 from app.main import app
 from app.user.services import UserService
 from app.user.v2.schemas import UserProfile, examples
 
 base_path = "/api/v2/user"
+
 
 @pytest.fixture
 def mock_user_service():
@@ -21,23 +24,33 @@ def mock_user_service():
     
     # app.dependency_overrides.clear()
     del app.dependency_overrides[ user_service ]
-    
+
 
 @pytest.fixture( scope = "module" )
 def client():
-    with TestClient( app ) as client:
+    
+    jwt_token = create_access_token( payload = examples[ "base_profile" ] )
+    csrf_token = create_csrf_token()
+    
+    auth_cookies = { "csrf_token": csrf_token }
+    auth_headers = { "Authorization": f"Bearer {jwt_token}",
+                "X-CSRF-Token": csrf_token  }
+    
+    with TestClient( app = app, 
+                     cookies = auth_cookies, 
+                     headers = auth_headers ) as client:
         yield client
 
 
-# @pytest.mark.test_only
+@pytest.mark.test_only
 def test_get_profile_not_found( client, mock_user_service ):
 	
-	response = client.get( f"{ base_path }/profile/test-id" )
+	response = client.get( url = f"{ base_path }/profile/test-id" )
 
 	assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
-# @pytest.mark.test_only
+@pytest.mark.test_only
 def test_user_crud_flow( client: TestClient ):
     
     # save profile
@@ -75,7 +88,7 @@ def test_user_crud_flow( client: TestClient ):
     assert response.status_code == status.HTTP_204_NO_CONTENT
     
 
-# @pytest.mark.test_only
+@pytest.mark.test_only
 def test_save_profile_with_invalid_input( client: TestClient ):
     response = client.post(
         f"{ base_path }/profile",

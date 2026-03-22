@@ -38,6 +38,7 @@ def verify_jwt( request: Request ):
                              headers = { "WWW-Authenticate": "Bearer" },
                              detail = "Not authenticated" )
 
+
 def get_jwt_from_header_or_cookie( request: Request,  ) -> str:
    
     auth_header = request.headers.get( "Authorization" )
