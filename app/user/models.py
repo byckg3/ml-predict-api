@@ -12,7 +12,6 @@ class User( IdMixin, TimestampMixin, Base ):
     email: Mapped[ str ] = mapped_column( String( 50 ), nullable = False, unique = True )
     name: Mapped[ str | None ] = mapped_column( String( 20 ), default = "unknown", nullable = True )
     
-    
     def __repr__( self ):
         data = {
             "id": self.id,

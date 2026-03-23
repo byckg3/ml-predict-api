@@ -42,7 +42,7 @@ def client():
         yield client
 
 
-@pytest.mark.test_only
+# @pytest.mark.test_only
 def test_get_profile_not_found( client, mock_user_service ):
 	
 	response = client.get( url = f"{ base_path }/profile/test-id" )
@@ -50,7 +50,7 @@ def test_get_profile_not_found( client, mock_user_service ):
 	assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
-@pytest.mark.test_only
+# @pytest.mark.test_only
 def test_user_crud_flow( client: TestClient ):
     
     # save profile
@@ -88,7 +88,7 @@ def test_user_crud_flow( client: TestClient ):
     assert response.status_code == status.HTTP_204_NO_CONTENT
     
 
-@pytest.mark.test_only
+# @pytest.mark.test_only
 def test_save_profile_with_invalid_input( client: TestClient ):
     response = client.post(
         f"{ base_path }/profile",

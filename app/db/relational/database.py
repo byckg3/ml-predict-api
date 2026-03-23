@@ -44,6 +44,30 @@ async def init_tables( async_engine: AsyncEngine,
             
     print( "Initialized relational database tables successfully" )
     
+
+async def drop_tables( async_engine: AsyncEngine,
+                       model_types: list[ Type[ M ] ] | None = [ User ] ):
+    
+    async with async_engine.begin() as async_conn:
+        
+        if ENV == "test" and model_types:
+            
+            tables: list[ Table ] = []
+            for model in model_types:
+                if hasattr( model, "__table__" ) and isinstance( model.__table__, Table ):
+                    tables.append( model.__table__ )
+            
+            await async_conn.run_sync(
+                lambda sync_conn: Base.metadata.drop_all(
+                    bind = sync_conn,
+                    tables = tables
+                )
+            )
+            
+            print( "Dropped relational database tables successfully" )
+            
+        else:
+            print( "Skipping drop_tables since 'test' environment is not active" )
     
 # python -m app.db.relational.database
 if __name__ == "__main__":

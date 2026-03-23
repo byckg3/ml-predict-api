@@ -1,7 +1,7 @@
 import pytest
 
 from app.db.document.database import MongoDB
-from app.db.relational.database import get_async_engine, get_session_factory, init_tables
+from app.db.relational.database import drop_tables, get_async_engine, get_session_factory, init_tables
 from app.user.models import User
 
 # Possible values for scope are: function, class, module, package or session
@@ -29,4 +29,5 @@ async def async_session_factory() :
     
     yield get_session_factory( async_engine )
     
+    # await drop_tables( async_engine, [ User ] )
     await async_engine.dispose()
