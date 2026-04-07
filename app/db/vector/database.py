@@ -16,9 +16,9 @@ class ChromaDB:
 
     def load( self, n_records = -1 ):
 
-        qa_data_df = pd.read_parquet( "./data/qa.parquet", engine = "pyarrow" )
-        heart_disease_df = pd.read_parquet( "./data/heart_disease.parquet", engine = "pyarrow" )
-        liver_disease_df = pd.read_parquet( "./data/liver_disease.parquet", engine = "pyarrow" )
+        qa_data_df = pd.read_parquet( "./data/qa.parquet" )
+        heart_disease_df = pd.read_parquet( "./data/heart_disease.parquet" )
+        liver_disease_df = pd.read_parquet( "./data/liver_disease.parquet" )
 
         self.add( qa_data_df, n_records )
         self.add( heart_disease_df, n_records )
@@ -30,7 +30,7 @@ class ChromaDB:
             print( "parquet data loading failed" )
 
     def add( self, df, n_records = -1 ):
-        
+
         n = df.shape[ 0 ]
         if n_records >= 0:
             n = min( n, n_records )
@@ -46,13 +46,13 @@ class ChromaDB:
                 ids = ids,
                 metadatas = metadatas,
         )
-    
+
     def ping( self ):
         try:
             result = self.collection.get( limit = 1 )
             if result:
                 return True
-            
+
         except Exception as e:
             print( e )
 
