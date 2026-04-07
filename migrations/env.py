@@ -35,6 +35,33 @@ print( "Loaded tables:", target_metadata.tables.keys() )
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
+def include_object( obj, name, type_, reflected, compare_to ):
+    """
+    Decides whether or not to include a database object in the autogenerate scan.
+
+    :param obj: The database object being inspected ( e.g., Table, Column, or Index object ).
+    :param name: The name of the object as a string ( e.g., "users" or "email" ).
+    :param type_: The type of object, such as "table", "column", "index", or "foreign_key_constraint".
+    :param reflected: Boolean. True if the object was found in the database ( reflected ), 
+                      False if it exists only in the local SQLAlchemy models.
+    :param compare_to: The counterpart object from the other side. 
+                       - If reflected is True, this is the model's version of the object ( None if missing ).
+                       - If reflected is False, this is the database's version of the object ( None if missing ).
+    """
+    
+    # Check if the object being inspected is a Table
+    if type_ == "table":
+        
+        # If the table exists in the database ( reflected = True), 
+        # but is not defined in the SQLAlchemy models ( compare_to is None ),
+        # return False to exclude it from the migration logic.
+        # This prevents Alembic from generating 'op.drop_table()' operations.
+        if reflected and compare_to is None:
+            return False
+    
+    # For all other cases, return True to fallback to Alembic's default comparison behavior.
+    return True
+
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
@@ -54,6 +81,7 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        include_object = include_object,
     )
 
     with context.begin_transaction():
@@ -61,7 +89,11 @@ def run_migrations_offline() -> None:
 
 
 def do_run_migrations(connection: Connection) -> None:
-    context.configure(connection=connection, target_metadata=target_metadata)
+    context.configure( 
+        connection = connection, 
+        target_metadata = target_metadata, 
+        include_object = include_object
+    )
 
     with context.begin_transaction():
         context.run_migrations()
