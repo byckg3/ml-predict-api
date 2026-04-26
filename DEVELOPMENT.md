@@ -8,7 +8,7 @@
 - pip install -r requirements.txt
 - uvicorn app.main:app --reload
 - python -m app.main
-- curl -o openapi.json http://127.0.0.1:8000/openapi.json
+- curl -o openapi.json http://127.0.0.1:7860/openapi.json
 
 ### git commands
 - git push origin main && git push hf main

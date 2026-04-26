@@ -83,7 +83,7 @@ This project is a FastAPI backend with mounted Gradio apps, disease-risk predict
   - `pytest.toml` uses strict markers and `-xvs` by default.
 
 - **Docker and utility commands**
-  - See `HELP.md` for Docker, git-lfs, and quick command references.
+  - See `DEVELOPMENT.md` for Docker, git-lfs, and quick command references.
 
 ## Conventions and Patterns
 
