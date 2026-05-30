@@ -25,6 +25,12 @@
 - pytest -x tests/
 - pytest -m <TAG_NAME>
 
+### uv commands
+- uv venv
+- uv add <PACKAGE_NAME>
+- uv remove <PACKAGE_NAME>
+- uv run python -m app.main
+
 ### links
 - [FastAPI Tutorial - User Guide](https://fastapi.tiangolo.com/tutorial/)
 - [Pydantic Settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings/)
