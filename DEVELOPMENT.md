@@ -46,3 +46,4 @@
 - [Docker Spaces](https://huggingface.co/docs/hub/spaces-sdks-docker)
 - [Pytest Documentation](https://docs.pytest.org/en/stable/how-to/index.html)
 - [uv docs](https://docs.astral.sh/uv/)
+- [Alembic Documentation](https://alembic.sqlalchemy.org/en/latest/index.html)
