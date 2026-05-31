@@ -11,15 +11,17 @@
 - curl -o openapi.json http://127.0.0.1:7860/openapi.json
 
 ### git commands
+- git remote -v
+- git remote set-url <REPO_ALIAS> <URL>
 - git push origin main && git push hf main
 - git lfs install
 - git lfs pull
 
 ### docker commands
-- docker pull docker.io/byckg3/ml-predict-api:latest
+- docker pull docker.io/byckg3/gad245-g1-api:latest
 - docker rmi -f <IMAGE_ID>
-- docker build . -t byckg3/ml-predict-api
-- docker run -it -p 7860:7860 --env-file .env byckg3/ml-predict-api:latest
+- docker build . -t byckg3/gad245-g1-api
+- docker run -it -p 7860:7860 --env-file .env byckg3/gad245-g1-api:latest
 
 ### test commands
 - pytest -x tests/
@@ -43,3 +45,4 @@
 - [LangChain Tutorials](https://python.langchain.com/docs/tutorials/)
 - [Docker Spaces](https://huggingface.co/docs/hub/spaces-sdks-docker)
 - [Pytest Documentation](https://docs.pytest.org/en/stable/how-to/index.html)
+- [uv docs](https://docs.astral.sh/uv/)
